@@ -1,0 +1,97 @@
+/* Estilos para el contenedor principal del login */
+.login-container {
+  display: flex; /* Usa flexbox para centrar el contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  min-height: 100vh; /* Ocupa toda la altura de la ventana */
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%); /* Fondo degradado verde */
+  padding: 20px; /* Espacio interno */
+}
+
+/* Tarjeta visual del login */
+.login-card {
+  background: rgba(255, 255, 255, 0.95); /* Fondo blanco semi-transparente */
+  padding: 2.5rem; /* Espacio interno amplio */
+  border-radius: 15px; /* Bordes redondeados */
+  box-shadow: 0 10px 30px rgba(45, 80, 22, 0.3); /* Sombra para profundidad */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  max-width: 450px; /* Máximo ancho de la tarjeta */
+  border: 2px solid #4a7c59; /* Borde verde */
+}
+
+/* Encabezado del login */
+.login-header {
+  text-align: center; /* Centra el texto */
+  margin-bottom: 2rem; /* Espacio debajo del encabezado */
+  color: #2d5016; /* Color de texto verde oscuro */
+}
+
+.login-header h1 {
+  font-size: 1.8rem; /* Tamaño grande para el título */
+  margin-bottom: 0.5rem; /* Espacio debajo del título */
+}
+
+.login-header p {
+  color: #4a7c59; /* Color de texto verde */
+  font-size: 0.9rem; /* Tamaño de texto pequeño */
+}
+
+/* Grupo de inputs (usuario y contraseña) */
+.input-group {
+  margin-bottom: 1.5rem; /* Espacio debajo de cada grupo */
+}
+
+.input-group label {
+  display: block; /* El label ocupa toda la línea */
+  margin-bottom: 0.5rem; /* Espacio debajo del label */
+  font-weight: 600; /* Texto en negrita */
+  color: #2d5016; /* Color de texto verde oscuro */
+}
+
+.input-group input {
+  width: 100%; /* El input ocupa todo el ancho */
+  padding: 1rem; /* Espacio interno */
+  border: 2px solid #8aac7d; /* Borde verde claro */
+  border-radius: 8px; /* Bordes redondeados */
+  font-size: 1rem; /* Tamaño de texto normal */
+  background: #f8faf7; /* Fondo claro */
+}
+
+/* Estilo cuando el input está enfocado */
+.input-group input:focus {
+  outline: none; /* Quita el borde azul por defecto */
+  border-color: #4a7c59; /* Borde verde más oscuro */
+  background: white; /* Fondo blanco */
+}
+
+/* Botón de login */
+.login-btn {
+  width: 100%; /* Ocupa todo el ancho */
+  padding: 1rem; /* Espacio interno */
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%); /* Fondo degradado verde */
+  color: white; /* Texto blanco */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  font-size: 1.1rem; /* Texto un poco más grande */
+  font-weight: 600; /* Texto en negrita */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+}
+
+/* Efecto al pasar el mouse sobre el botón */
+.login-btn:hover {
+  transform: translateY(-2px); /* Eleva el botón ligeramente */
+  box-shadow: 0 5px 15px rgba(45, 80, 22, 0.4); /* Sombra más intensa */
+}
+
+/* Pie de página del login */
+.login-footer {
+  text-align: center; /* Centra el texto */
+  margin-top: 2rem; /* Espacio arriba del pie */
+  padding-top: 1rem; /* Espacio interno arriba */
+  border-top: 1px solid #8aac7d; /* Línea verde arriba */
+}
+
+.login-footer p {
+  color: #4a7c59; /* Color de texto verde */
+  font-size: 0.8rem; /* Texto pequeño */
+}
