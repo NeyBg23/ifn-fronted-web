@@ -11,7 +11,6 @@ function Login() {
   // Función que maneja el envío del formulario
   const handleSubmit = async (e) => { // <- Agregaste 'async' aquí
     e.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
-    
 
     // --- NUEVA LÓGICA DE SUPABASE ---
     console.log('Intentando login con:', email);
