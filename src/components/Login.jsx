@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; // Importa React y el hook useState para manejar estados locales
-import './Login.css'; // Importa los estilos CSS para el componente Login
+import '../styles/Login.css'; // Importa los estilos CSS para el componente Login
 import { supabase } from '../lib/supabaseClient'; //Integramos supabase al Login
-import Usuario from '../backend/class/usuario.js'; // Importa la clase usuario
+import Usuario from '../services/usuario.js'; // Importa la clase usuario
 
 // Componente funcional Login
 function Login() {

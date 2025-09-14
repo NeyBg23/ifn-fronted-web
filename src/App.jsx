@@ -1,7 +1,7 @@
 //// 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
 import React from 'react';  // ← Trae la biblioteca React (obligatorio
 import Login from './components/Login';   // ← Importa nuestro componente Login
-import './App.css';   // ← Importa los estilos para este componente
+import './styles/App.css';   // ← Importa los estilos para este componente
 
 // 2️: DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
