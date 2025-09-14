@@ -59,7 +59,7 @@ function Login() {
               type="password" // Campo de tipo contraseña
               value={password} // Valor actual del estado password
               onChange={(e) => setPassword(e.target.value)} // Actualiza el estado password al escribir
-              placeholder="••••••••" // Texto de ayuda
+              placeholder="••••••••••••••••••••••••" // Texto de ayuda
               required // Campo obligatorio
             />
           </div>
