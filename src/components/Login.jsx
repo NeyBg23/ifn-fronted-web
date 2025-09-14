@@ -1,108 +1,79 @@
-import React, { useState } from 'react';
-import './Login.css';
-import { supabase } from '../lib/supabaseClient';
-import Usuario from '../backend/class/usuario.js';
+import React, { useState } from 'react'; // Importa React y el hook useState para manejar estados locales
+import './Login.css'; // Importa los estilos CSS para el componente Login
+import { supabase } from '../lib/supabaseClient'; //Integramos supabase al Login
+import Usuario from '../backend/class/usuario.js'; // Importa la clase usuario
 
+// Componente funcional Login
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  // Define los estados locales para email y password usando useState
+  const [email, setEmail] = useState(''); // Estado para el email del usuario
+  const [password, setPassword] = useState(''); // Estado para la contraseña del usuario
+  const [loading, setLoading] = useState(false); // 
+  // Función que maneja el envío del formulario
+  const handleSubmit = async (e) => { // <- Agregaste 'async' aquí
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
 
-  // Estado para mostrar el modal QR
-  const [showQR, setShowQR] = useState(false);
-  const [qrCode, setQrCode] = useState(null);
-  const [secret, setSecret] = useState(null);
+    setLoading(true); // Inicia el estado de carga
 
-  // Generar QR MFA
-  const generarMFA = async () => {
-    const { data, error } = await supabase.auth.mfa.enroll({
-      factorType: "totp",
-      friendlyName: "IFN App"
-    });
+    const correoLimpio = email.trim().toLowerCase(); // Normaliza el correo
 
-    if (error) return console.log("El usuario ya está registrado en MFA.");
+    const usuarioVerificado = (await Usuario.validarCredenciales(correoLimpio, password, supabase, setLoading));
     
-    setQrCode(data.totp.qr_code);
-    setSecret(data.totp.secret);
-    setShowQR(true); // 🔥 Muestra el modal
+    
+    setLoading(false); // Finaliza el estado de carga
+
+    if (!usuarioVerificado || !usuarioVerificado.success) return alert('Credenciales inválidas. Por favor, intenta de nuevo.');
+    else alert('¡Éxito! Bienvenido ' + correoLimpio);
   };
 
-  // Manejo del login
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const correoLimpio = email.trim().toLowerCase();
-    const usuarioVerificado = await Usuario.validarCredenciales(
-      correoLimpio,
-      password,
-      supabase,
-      setLoading
-    );
-
-    if (!usuarioVerificado) {
-      alert('Credenciales inválidas. Por favor, intenta de nuevo.');
-    } else {
-      alert('¡Éxito! Bienvenido ' + correoLimpio);
-      await generarMFA(); // 🔥 Genera QR al iniciar sesión
-    }
-  };
-
+  // Renderiza el formulario de login
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
+    <div className="login-container">{/* Contenedor principal del login */}
+      <div className="login-card">{/* Tarjeta visual del login */}
+        <div className="login-header">{/* Encabezado del login */}
           <h1>Inventario Forestal Nacional</h1>
           <p>Sistema de gestión forestal sostenible</p>
         </div>
 
+        {/* Formulario de login */}
         <form className="login-form" onSubmit={handleSubmit}>
-          <div className="input-group">
+          <div className="input-group">{/* Grupo para el input de usuario */}
             <label>🌳 Usuario:</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="usuario@forestal.com"
-              required
+              type="email" // Campo de tipo email
+              value={email} // Valor actual del estado email
+              onChange={(e) => setEmail(e.target.value)} // Actualiza el estado email al escribir
+              placeholder="usuario@forestal.com" // Texto de ayuda
+              required // Campo obligatorio
             />
           </div>
 
-          <div className="input-group">
+          <div className="input-group">{/* Grupo para el input de contraseña */}
             <label>🔑 Contraseña:</label>
             <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
+              type="password" // Campo de tipo contraseña
+              value={password} // Valor actual del estado password
+              onChange={(e) => setPassword(e.target.value)} // Actualiza el estado password al escribir
+              placeholder="••••••••" // Texto de ayuda
+              required // Campo obligatorio
             />
           </div>
 
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? '🔄 Conectando...' : '🍃 Ingresar al Sistema'}
+          {/* Botón para enviar el formulario */}
+          <button type="submit" className="login-btn" disabled={loading}> {/* se deshabilita mientras carga*/}
+            {loading ? '🔄 Conectando...' : '🍃 Ingresar al Sistema'} {/*  Cambia el texto*/}
           </button>
         </form>
 
+        {/* Pie de página del login */}
         <div className="login-footer">
           <p>Ministerio del Ambiente • Sistema Nacional Forestal</p>
-          <p>© 2024 Todos los derechos reservados</p>
+          <p>© 2024 Todos los derechos reservados</p> {/* Aviso de derechos reservados */}
         </div>
       </div>
-
-      {/* 🔥 Modal QR */}
-      {showQR && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Escanea este QR en Google Authenticator</h2>
-            {qrCode && <img src={qrCode} alt="QR Code" />}
-            {secret && <p><b>Secret:</b> {secret}</p>}
-            <button onClick={() => setShowQR(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
+// Exporta el componente Login para que pueda ser usado en otras partes de la aplicación
 export default Login;
