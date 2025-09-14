@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; // Importa React y el hook useState para manejar estados locales
 import './Login.css'; // Importa los estilos CSS para el componente Login
 import { supabase } from '../lib/supabaseClient'; //Integramos supabase al Login
-import usuario from '../backend/class/usuario.js'; // Importa la clase usuario
+import Usuario from '../backend/class/usuario.js'; // Importa la clase usuario
 
 // Componente funcional Login
 function Login() {
@@ -13,33 +13,16 @@ function Login() {
   const handleSubmit = async (e) => { // <- Agregaste 'async' aquí
     e.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
 
-    // --- NUEVA LÓGICA DE SUPABASE ---
-    console.log('Intentando login con:', email);
-
-    // Intento de inicio de sesión con Supabase 
-    // Esto es para el supabase en la zona de Authentication -> Users, pero no es lo mismo que la tabla "usuarios"
-    /*
-    if (error) {
-      alert('Error al iniciar sesión: ' + error.message);
-      console.error("Error de Supabase:", error);
-    } else {
-      alert('¡Éxito! Bienvenido ' + data.user.email);
-      console.log("Usuario logueado:", data);
-      // window.location.href = "/admin"; // (Para después)
-    }
-    // --- FIN DE LA NUEVA LÓGICA ---
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    */
     setLoading(true); // Inicia el estado de carga
 
     const correoLimpio = email.trim().toLowerCase(); // Normaliza el correo
 
-    if (!(await usuario.validarCredenciales(correoLimpio, password, supabase, setLoading))) { // Valida las credenciales
+    const usuarioVerificado = (await Usuario.validarCredenciales(correoLimpio, password, supabase, setLoading));
+
+    if (!usuarioVerificado) { // Valida las credenciales
       alert('Credenciales inválidas. Por favor, intenta de nuevo.');
     } else {
+      console.log(usuarioVerificado);
       alert('¡Éxito! Bienvenido ' + correoLimpio);
     }
   };
