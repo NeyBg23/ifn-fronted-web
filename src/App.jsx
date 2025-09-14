@@ -1,26 +1,24 @@
-//// 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
-import React from 'react';  // ← Trae la biblioteca React (obligatorio
-import Login from './components/Login';   // ← Importa nuestro componente Login
-import './styles/App.css';   // ← Importa los estilos para este componente
+// 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+import Login from "./components/Login";   
+import Home from "./pages/Home";
+import "./styles/App.css";
 
-// 2️: DEFINIR EL COMPONENTE PRINCIPAL
+// 2️ DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
-  // 3️: RETORNAR LO QUE SE VA A MOSTRAR
   return (
     <div className="App">
-      <Login />
+      {/* Envolvemos todo con Router */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />   {/* Página inicial */}
+          <Route path="/home" element={<Home />} /> {/* Página Home */}
+        </Routes>
+      </Router>
     </div>
   );
 }
 
-// 4️: EXPORTAR EL COMPONENTE PARA USARLO EN OTROS LADOS
+// 3️ EXPORTAR EL COMPONENTE PARA USARLO EN OTROS LADOS
 export default App;
-
-
-//function App() → Crea un componente llamado App
-
-//return () → Dice "esto es lo que voy a mostrar"
-
-//<div className="App"> → Un contenedor con clase CSS "App"
-
-//<Login /> → Aquí usamos nuestro componente Login ← ¡EL IMPORTANTE!

@@ -2,10 +2,12 @@ import React, { useState } from 'react'; // Importa React y el hook useState par
 import '../styles/Login.css'; // Importa los estilos CSS para el componente Login
 import { supabase } from '../lib/supabaseClient'; //Integramos supabase al Login
 import Usuario from '../services/usuario.js'; // Importa la clase usuario
+import { useNavigate } from "react-router-dom";
 
 // Componente funcional Login
 function Login() {
   // Define los estados locales para email y password usando useState
+  const navigate = useNavigate();
   const [email, setEmail] = useState(''); // Estado para el email del usuario
   const [password, setPassword] = useState(''); // Estado para la contraseña del usuario
   const [loading, setLoading] = useState(false); // 
@@ -23,7 +25,10 @@ function Login() {
     setLoading(false); // Finaliza el estado de carga
 
     if (!usuarioVerificado || !usuarioVerificado.success) return alert('Credenciales inválidas. Por favor, intenta de nuevo.');
-    else alert('¡Éxito! Bienvenido ' + correoLimpio);
+    
+    alert('¡Éxito! Bienvenido ' + correoLimpio);
+    
+    navigate('/home');
   };
 
   // Renderiza el formulario de login
