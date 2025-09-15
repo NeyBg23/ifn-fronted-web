@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";   
 import Home from "./pages/Home";
 import "./styles/App.css";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // 2️ DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
@@ -13,7 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />   {/* Página inicial */}
-          <Route path="/home" element={<Home />} /> {/* Página Home */}
+          <Route path="/home" element={<ProtectedRoute > <Home/> </ProtectedRoute>} /> {/* Página Home */}
         </Routes>
       </Router>
     </div>
