@@ -38,6 +38,8 @@ function ProtectedRoute({ children }) {
             Authorization: `Bearer ${parsedSession.access_token}`,
           },
         });
+
+        console.log(res.ok);
         
         if (!res.ok) {
           // Token inválido o expirado
@@ -50,7 +52,7 @@ function ProtectedRoute({ children }) {
         setIsValid(false);
       }
     };
-    console.log("asd");
+
     checkSession();
   }, []);
 
@@ -58,8 +60,6 @@ function ProtectedRoute({ children }) {
   if (isValid === null) {
     return <div>🔄 Validando sesión...</div>;
   }
-
-  console.log(isValid);
 
   // 5. Si no es válido → redirigir al login
   if (!isValid) {
