@@ -65,6 +65,8 @@ function ProtectedRoute({ children }) {
     return <div>🔄 Validando sesión...</div>;
   }
 
+  console.log(isValid);
+
   // 5. Si no es válido → redirigir al login
   if (!isValid) {
     return <Navigate to="/" replace />;
