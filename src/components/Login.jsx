@@ -56,7 +56,7 @@ function Login() {
       // localStorage.setItem("access_token", data.session.access_token);
 
       alert("¡Éxito! Bienvenido 🌳");
-      navigate("/home");
+      navigate("/admin");
     } catch (error) {
       console.error("Error de conexión:", error);
       setLoading(false);
