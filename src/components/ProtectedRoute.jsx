@@ -22,19 +22,14 @@ function ProtectedRoute({ children }) {
     const checkSession = async () => {
       const session = localStorage.getItem("session");
 
-      // 1. Si no hay sesión en localStorage → inválido
-      if (!session) {
-        setIsValid(false);
-        return;
-      }
+      console.log(session)
 
+      // 1. Si no hay sesión en localStorage → inválido
+      if (!session) return setIsValid(false);
       const parsedSession = JSON.parse(session);
 
       // 2. Si no existe access_token → inválido
-      if (!parsedSession?.access_token) {
-        setIsValid(false);
-        return;
-      }
+      if (!parsedSession?.access_token) return setIsValid(false);
 
       try {
         // 3. Validar token contra el backend autenVerifi
@@ -44,17 +39,12 @@ function ProtectedRoute({ children }) {
           },
         });
         
-        console.log(res);
-        alert("hola");
-        
         if (!res.ok) {
           // Token inválido o expirado
           localStorage.removeItem("session"); // limpiar sesión corrupta
           setIsValid(false);
-        } else {
-          // Token válido
-          setIsValid(true);
-        }
+        } else setIsValid(true); // Token valido
+
       } catch (error) {
         console.error("Error validando token:", error);
         setIsValid(false);
