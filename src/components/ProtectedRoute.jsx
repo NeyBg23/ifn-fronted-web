@@ -29,7 +29,7 @@ function ProtectedRoute({ children }) {
       // 2. Si no existe access_token → inválido
       if (!parsedSession?.access_token) return setIsValid(false);
 
-      console.log(parsedSession);
+      console.log(parsedSession.access_token);
 
       try {
         // 3. Validar token contra el backend autenVerifi
