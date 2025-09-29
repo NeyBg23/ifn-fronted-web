@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/Home.css'; // Importa los estilos CSS para el componente Login
 
 const Home = () => {

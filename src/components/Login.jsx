@@ -1,5 +1,4 @@
 // src/pages/Login.jsx
-import React, { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
 
@@ -26,11 +25,6 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    console.log("API_URL ->", API_URL);  // Verificar qué URL se está usando
-    console.log("Login endpoint ->", `${API_URL}/auth/login`);  // Verificar el endpoint completo
-
-
 
     try {
       // Llamada al backend (dev => /api/auth/login ; prod => https://mi-backend.vercel.app/auth/login)
