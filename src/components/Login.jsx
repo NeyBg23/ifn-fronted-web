@@ -30,8 +30,6 @@ function Login() {
     console.log("API_URL ->", API_URL);  // Verificar qué URL se está usando
     console.log("Login endpoint ->", `${API_URL}/auth/login`);  // Verificar el endpoint completo
 
-
-
     try {
       // Llamada al backend (dev => /api/auth/login ; prod => https://mi-backend.vercel.app/auth/login)
       const res = await fetch(`${API_URL}/auth/login`, {
