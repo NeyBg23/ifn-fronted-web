@@ -1,4 +1,5 @@
 // 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
 
 // Importamos las páginas y componentes
@@ -9,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute"; // Envuelve rutas priv
 // Estilos globales
 import "./styles/App.css";
 
+
 // 2️ DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
   return (
@@ -16,12 +18,12 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />   
-          <Route path="/home" element=
-          {
+          <Route path="/home" element={
             <ProtectedRoute> 
               <Home />
             </ProtectedRoute>
-          } />
+            } 
+          />
         </Routes>
       </Router>
     </div>
