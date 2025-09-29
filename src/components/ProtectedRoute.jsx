@@ -21,15 +21,15 @@ function ProtectedRoute({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       const session = localStorage.getItem("session");
-
-      console.log(session)
-
+      
       // 1. Si no hay sesión en localStorage → inválido
       if (!session) return setIsValid(false);
       const parsedSession = JSON.parse(session);
 
       // 2. Si no existe access_token → inválido
       if (!parsedSession?.access_token) return setIsValid(false);
+
+      console.log(parsedSession);
 
       try {
         // 3. Validar token contra el backend autenVerifi
