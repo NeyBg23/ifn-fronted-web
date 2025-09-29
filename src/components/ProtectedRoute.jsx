@@ -50,7 +50,7 @@ function ProtectedRoute({ children }) {
         setIsValid(false);
       }
     };
-
+    console.log("asd");
     checkSession();
   }, []);
 
