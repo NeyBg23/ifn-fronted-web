@@ -31,11 +31,12 @@ function ProtectedRoute({ children }) {
 
       try {
         // 3. Validar token contra el backend autenVerifi
-        const res = await fetch("/api/auth/perfil", {
+        const res = await fetch("https://iam-auten-verifi-service-ifn-git-main-udis-ifn-projects.vercel.app/auth/perfil", {
           headers: {
             Authorization: `Bearer ${parsedSession.access_token}`,
           },
         });
+
         
         if (!res.ok) {
           // Token inválido o expirado
