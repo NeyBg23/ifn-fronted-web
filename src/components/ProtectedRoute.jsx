@@ -14,6 +14,7 @@ import { Navigate } from "react-router-dom";
  * 4. Si el token es válido → renderiza children.
  * 5. Si no → borra la sesión y redirige al login.
  */
+
 function ProtectedRoute({ children }) {
   const [isValid, setIsValid] = useState(null); // null = cargando, true = válido, false = inválido
 
@@ -42,7 +43,10 @@ function ProtectedRoute({ children }) {
             Authorization: `Bearer ${parsedSession.access_token}`,
           },
         });
-
+        
+        console.log(res);
+        alert("hola");
+        
         if (!res.ok) {
           // Token inválido o expirado
           localStorage.removeItem("session"); // limpiar sesión corrupta

@@ -47,11 +47,8 @@ function Login() {
       const data = await res.json();
       setLoading(false);
 
-      if (!res.ok) {
-        // Mostrar el mensaje de error que venga del backend si existe
-        alert(data.error || "Credenciales inválidas ❌");
-        return;
-      }
+      // Mostrar el mensaje de error que venga del backend si existe
+      if (!res.ok) return alert(data.error || "Credenciales inválidas ❌");
 
       // Guardar sesión completa en localStorage (incluye access_token, refresh_token, user)
       // localStorage es solo para la sesión del navegador (no expone claves del backend)
