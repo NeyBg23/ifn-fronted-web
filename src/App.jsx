@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Importamos las páginas y componentes
 import Login from "./components/Login";   // Página de login (acceso)
-import Home from "./pages/admin/Home";          // Página principal (protegida)
+import HomeAdmin from "./pages/admin/Home";          // Página principal Admin (protegida)
+import HomeUser from "./pages/user/Home";          // Página principal Admin (protegida)
 import ProtectedRoute from "./components/ProtectedRoute"; // Envuelve rutas privadas
 
 // Estilos globales
@@ -17,9 +18,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />   
-          <Route path="/home" element={
+          <Route path="/admin" element={
             <ProtectedRoute> 
-              <Home />
+              <HomeAdmin />
+            </ProtectedRoute>
+            } 
+          />
+          <Route path="/user" element={
+            <ProtectedRoute> 
+              <HomeUser />
             </ProtectedRoute>
             } 
           />
