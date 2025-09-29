@@ -1,10 +1,9 @@
 // 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
 
 // Importamos las páginas y componentes
 import Login from "./components/Login";   // Página de login (acceso)
-import Home from "./pages/Home";          // Página principal (protegida)
+import Home from "./pages/admin/Home";          // Página principal (protegida)
 import ProtectedRoute from "./components/ProtectedRoute"; // Envuelve rutas privadas
 
 // Estilos globales
