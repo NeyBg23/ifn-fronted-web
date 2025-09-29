@@ -67,7 +67,7 @@ function ProtectedRoute({ children }) {
 
   // 5. Si no es válido → redirigir al login
   if (!isValid) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // 6. Si es válido → renderizar el contenido protegido
