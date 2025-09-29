@@ -29,8 +29,6 @@ function ProtectedRoute({ children }) {
       // 2. Si no existe access_token → inválido
       if (!parsedSession?.access_token) return setIsValid(false);
 
-      console.log(parsedSession.access_token);
-
       try {
         // 3. Validar token contra el backend autenVerifi
         const res = await fetch("/api/auth/perfil", {
@@ -38,8 +36,6 @@ function ProtectedRoute({ children }) {
             Authorization: `Bearer ${parsedSession.access_token}`,
           },
         });
-
-        console.log(res.ok);
         
         if (!res.ok) {
           // Token inválido o expirado
