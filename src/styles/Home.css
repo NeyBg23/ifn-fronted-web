@@ -4,7 +4,6 @@ body {
 
 .custom-navbar {
   background-color: #2c5f2d;
-  width: 20vh;
 }
 
 .home-container {
@@ -14,6 +13,10 @@ body {
 
 .content {
   padding-top: 80px;
+}
+
+.navbar-nav {
+  width: 20vh;
 }
 
 .nav-link.active {
