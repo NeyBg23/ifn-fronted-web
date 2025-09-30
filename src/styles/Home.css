@@ -48,5 +48,6 @@ body {
 
 /* Asegura que el contenido se vea bien */
 .offcanvas-body {
+  position: center;
   padding: 1rem;
 }
