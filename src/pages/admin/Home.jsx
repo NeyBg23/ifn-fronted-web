@@ -51,7 +51,7 @@ const Home = () => {
             aria-controls="offcanvasDarkNavbar"
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon">Holaa</span>
           </button>
           <div
             className="offcanvas offcanvas-end custom-navbar text-bg-dark"
@@ -59,7 +59,6 @@ const Home = () => {
             id="offcanvasDarkNavbar"
             aria-labelledby="offcanvasDarkNavbarLabel"
           >
-            Holaa
             <div className="offcanvas-header custom-navbar">
               <h5 className="offcanvas-title" id="offcanvasDarkNavbarLabel">
                 Menu Administrador
