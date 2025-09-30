@@ -4,8 +4,8 @@ import "../../styles/Home.css";
 const Brigadas = () => {
 
     const fetchBrigadas = () => {
-        console.log("asd");
         for (let i = 0; i < 5; i++) {
+            console.log("asd");
             <div className="card" style={{ width: "18rem" }}>
                 <img src="https://cdn.pixabay.com/photo/2023/03/16/08/42/camping-7856198_640.jpg" class="card-img-top" alt="imagen_empleado"/>
                 <div class="card-body">
