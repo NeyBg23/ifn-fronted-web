@@ -5,9 +5,9 @@ const Home = () => {
         <div className="home-container">
         <nav className="navbar navbar-dark custom-navbar fixed-top">
             <div className="container-fluid">
-            <a className="navbar-brand" href="#">Inventario Forestal Nacional</a>
+            <a className="navbar-toggler" href="#">Inventario Forestal Nacional</a>
             <button
-                className="navbar-toggler"
+                className="navbar-brand"
                 type="button"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasDarkNavbar"
