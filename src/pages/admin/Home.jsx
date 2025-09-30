@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../styles/Home.css";
 import { useNavigate } from "react-router-dom";
-import { Brigadas } from "./Brigadas.jsx";
+import Brigadas from "./Brigadas.jsx";
 
 const Home = () => {
   // Estado que guarda la sección actual
@@ -18,7 +18,9 @@ const Home = () => {
           </>
         );
       case "brigadas":
-        return Brigadas;
+
+        return <Brigadas/>;
+
       case "conglomerados":
         return (
           <>
@@ -124,8 +126,10 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Contenido principal */}
-      <main className="content p-4 mt-5">{renderContent()}</main>
+        {/* Contenido dinámico */}
+        <main className="content p-4 mt-5">
+            {renderContent()}
+        </main>
     </div>
   );
 };
