@@ -3,9 +3,9 @@ import '../../styles/Home.css'; // Importa los estilos CSS para el componente Lo
 const Home = () => {
     return (
         <div className="home-container">
-            <nav class="navbar navbar-dark bg-dark fixed-top">
+            <nav style="background-color:#4a7c59;" class="navbar navbar-dark bg-dark fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Offcanvas dark navbar</a>
+                <a class="navbar-brand" href="#">Inventario Forestal Nacional</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
