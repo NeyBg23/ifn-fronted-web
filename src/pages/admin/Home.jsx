@@ -30,7 +30,7 @@ const Home = () => {
                         <li><a class="dropdown-item" href="#">Action</a></li>
                         <li><a class="dropdown-item" href="#">Another action</a></li>
                         <li>
-                            <div class="dropdown-divider"></div>
+                            <hr class="dropdown-divider"></hr>
                         </li>
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
