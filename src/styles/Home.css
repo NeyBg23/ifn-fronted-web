@@ -42,3 +42,11 @@ body {
 .navbar-spacer {
   width: 18px;
 }
+.offcanvas-end.custom-navbar {
+  width: 250px !important; /* ajusta el ancho a tu gusto */
+}
+
+/* Asegura que el contenido se vea bien */
+.offcanvas-body {
+  padding: 1rem;
+}
