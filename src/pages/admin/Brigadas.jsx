@@ -3,9 +3,6 @@ import "../../styles/Home.css";
 const Brigadas = () => {
   return (
     <>
-    <br />
-    <br />
-    
     <h1>Brigadas</h1>
     <p>Aquí puedes gestionar las brigadas registradas.</p>
     </>

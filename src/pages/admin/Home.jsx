@@ -38,8 +38,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-        <br />
-        <br />
         <nav className="navbar navbar-dark custom-navbar fixed-top">
             <div className="container-fluid ">
             <a className="navbar-brand" href={ useNavigate("/admin")}>
@@ -125,6 +123,8 @@ const Home = () => {
             </div>
             </div>
         </nav>
+        <br />
+        <br />
 
         {/* Contenido dinámico */}
         <main className="content p-4 mt-5">
