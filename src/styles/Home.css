@@ -5,3 +5,7 @@ body {
 .custom-navbar {
     background-color: #4a7c59;
 }
+
+.navbar-toggler-icon .h5 {
+    width: 100px;
+}
