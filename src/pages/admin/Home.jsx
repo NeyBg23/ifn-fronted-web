@@ -41,7 +41,7 @@ const Home = () => {
         <nav className="navbar navbar-dark custom-navbar fixed-top">
             <div className="container-fluid ">
             <a className="navbar-brand" href={ useNavigate("/admin")}>
-                Inventario Forestal Nacional
+                Inventario Forestal Nacionallllll
             </a>
             <button
                 className="navbar-toggler"
