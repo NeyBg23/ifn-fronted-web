@@ -6,7 +6,7 @@ const Brigadas = () => {
   return (
     <>
     <h1>Brigadas</h1>
-    <p>Aquí puedes gestionar las brigadas registradas.</p>
+    <p>Aquí puedes gestionar las brigadas registradas.eeeeeeeeeeeeeeeeee</p>
     </>
   );
 };
