@@ -71,7 +71,7 @@ const Home = () => {
               ></button>
             </div>
             <div className="offcanvas-body">
-              <ul className="navbar-nav justify-content-end flex-grow-5 pe-3">
+              <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item">
                   <button
                     className={`nav-link btn btn-link text-start ${
