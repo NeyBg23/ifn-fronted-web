@@ -7,5 +7,5 @@ body {
 }
 
 .navbar-toggler-icon .h5 {
-    left: 500px;
+    left: -500px;
 }
