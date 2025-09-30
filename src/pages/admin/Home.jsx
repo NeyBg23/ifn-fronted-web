@@ -59,7 +59,7 @@ const Home = () => {
             id="offcanvasDarkNavbar"
             aria-labelledby="offcanvasDarkNavbarLabel"
           >
-            <div className="offcanvas-header">
+            <div className="offcanvas-header custom-navbar">
               <h5 className="offcanvas-title" id="offcanvasDarkNavbarLabel">
                 Menu Administrador
               </h5>
