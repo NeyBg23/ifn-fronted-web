@@ -3,7 +3,7 @@ import "../../styles/Home.css";
 const Brigadas = () => {
   const fetchBrigadas = () => {
     const cards = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       cards.push(
         <div key={i} className="card" style={{ width: "18rem", margin: "1rem" }}>
           <img
