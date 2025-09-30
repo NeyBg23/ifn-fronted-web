@@ -1,15 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../../styles/Home.css";
 import { useNavigate } from "react-router-dom";
 import Brigadas from "./Brigadas.jsx";
 import Conglomerados from "./Conglomerados.jsx";
 import Perfil from "./Perfil.jsx";
-
-useEffect(() => {
-  if (!["home", "brigadas", "conglomerados", "perfil"].includes(section)) {
-    navigate("/admin");
-  }
-}, [section, navigate]);
 
 
 const Home = () => {
@@ -50,7 +44,7 @@ const Home = () => {
         <nav className="navbar navbar-dark custom-navbar fixed-top">
             <div className="container-fluid ">
             <a className="navbar-brand" href="#" onClick={() => navigate("/admin")}>
-              Inventario Forestal Nacionaleee
+              Inventario Forestal Nacionaleeee
             </a>
             <button
                 className="navbar-toggler"
