@@ -1,20 +1,26 @@
-body {
-    background: #ffff;
-}
-
 .custom-navbar {
-    background-color: #4a7c59;
+  background-color: #2c5f2d;
 }
 
-.cards-container-brigadas {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  justify-content: center;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.home-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
 
-.colorBody {
-  background-color: #4a7c59;
+.content {
+  padding-top: 80px;
+}
+
+.nav-link.active {
+  color: #ffeb3b !important;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: white !important;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #ffeb3b !important;
 }
