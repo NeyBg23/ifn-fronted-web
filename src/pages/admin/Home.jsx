@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../styles/Home.css";
 import { useNavigate } from "react-router-dom";
 import Brigadas from "./Brigadas.jsx";
 import Conglomerados from "./Conglomerados.jsx";
 import Perfil from "./Perfil.jsx";
 
+useEffect(() => {
+  if (!["home", "brigadas", "conglomerados", "perfil"].includes(section)) {
+    navigate("/admin");
+  }
+}, [section, navigate]);
+
+
 const Home = () => {
+  const navigate = useNavigate();
+
   // Estado que guarda la sección actual
   const [section, setSection] = useState("home");
 
@@ -32,7 +41,7 @@ const Home = () => {
         return <Perfil/>;
 
       default:
-        return useNavigate("/admin");
+        return <h2>Sección no encontrada</h2>;
     }
   };
 
@@ -40,8 +49,8 @@ const Home = () => {
     <div className="home-container">
         <nav className="navbar navbar-dark custom-navbar fixed-top">
             <div className="container-fluid ">
-            <a className="navbar-brand" href={ useNavigate("/admin")}>
-                Inventario Forestal Nacionallllll
+            <a className="navbar-brand" href="#" onClick={() => navigate("/admin")}>
+              Inventario Forestal Nacionaleee
             </a>
             <button
                 className="navbar-toggler"
