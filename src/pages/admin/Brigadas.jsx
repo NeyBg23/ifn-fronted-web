@@ -10,7 +10,7 @@ const Brigadas = () => {
 
       <div className="cards-container-brigadas">
         {brigadas.map((num) => (
-          <div key={num} className="card" style={{ width: "10rem", color: "white" }}>
+          <div key={num} className="card" style={{ width: "20rem", color: "white" }}>
             <img
               src="https://cdn.pixabay.com/photo/2023/03/16/08/42/camping-7856198_640.jpg"
               className="card-img-top"
