@@ -24,3 +24,13 @@
 .nav-link:hover {
   color: #ffeb3b !important;
 }
+
+.navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navbar-spacer {
+  width: 48px;
+}
