@@ -65,9 +65,6 @@ const Home = () => {
                 aria-labelledby="offcanvasDarkNavbarLabel"
             >
                 <div className="offcanvas-header custom-navbar">
-                <h5 className="offcanvas-title" id="offcanvasDarkNavbarLabel">
-                    Menu Administrador
-                </h5>
                 <button
                     type="button"
                     className="btn-close btn-close-white"
@@ -126,8 +123,6 @@ const Home = () => {
             </div>
             </div>
         </nav>
-        <br />
-        <br />
 
         {/* Contenido dinámico */}
         <main className="content p-4 mt-5">

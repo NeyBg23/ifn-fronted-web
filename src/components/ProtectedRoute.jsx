@@ -37,7 +37,6 @@ function ProtectedRoute({ children }) {
           },
         });
 
-        
         if (!res.ok) {
           // Token inválido o expirado
           localStorage.removeItem("session"); // limpiar sesión corrupta
