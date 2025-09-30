@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../styles/Home.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   // Estado que guarda la sección actual
@@ -45,7 +46,7 @@ const Home = () => {
     <div className="home-container">
       <nav className="navbar navbar-dark custom-navbar fixed-top">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href={ useNavigate("/admin")}>
             Inventario Forestal Nacional
           </a>
           <button
