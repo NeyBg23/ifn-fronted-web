@@ -6,6 +6,6 @@ body {
     background-color: #4a7c59;
 }
 .custom-navbar .offcanvas-end {
-  width: auto !important; /* Ajusta el ancho al contenido */
+  width: auto; /* Ajusta el ancho al contenido */
   min-width: 180px;       /* Tamaño mínimo para que no quede muy angosto */
 }
