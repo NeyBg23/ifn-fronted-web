@@ -15,6 +15,6 @@ body {
   margin: 0 auto;
 }
 
-.card-body {
+.cards-container-brigadas .card-body {
   background-color: "red"
 }
