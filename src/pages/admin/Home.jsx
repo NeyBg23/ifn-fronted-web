@@ -11,7 +11,7 @@ const Home = () => {
                 </button>
                 <div class="offcanvas offcanvas-end custom-navbar text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+                    <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu Administrador</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -20,7 +20,16 @@ const Home = () => {
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="#">Brigadas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Conglomerados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Empleados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Perfil</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
