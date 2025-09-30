@@ -39,7 +39,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <nav className="navbar navbar-dark custom-navbar fixed-top">
-        <div className="container-fluid">
+        <div className="container-fluid justify-content-center">
           <a className="navbar-brand" href={ useNavigate("/admin")}>
             Inventario Forestal Nacional
           </a>
