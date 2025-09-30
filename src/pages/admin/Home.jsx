@@ -5,7 +5,7 @@ const Home = () => {
         <div className="home-container">
             <nav class="navbar navbar-dark custom-navbar fixed-top">
             <div class="container-fluid">
-                <a class= "navbar-brand" href="#" d-flex justify-content-center align-items-center vh-100>Inventario Forestal Nacional</a>
+                <a class= "navbar-brand" href="#" >Inventario Forestal Nacional</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
