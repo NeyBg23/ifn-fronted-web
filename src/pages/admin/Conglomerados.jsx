@@ -3,9 +3,9 @@ import "../../styles/Home.css";
 const Conglomerados = () => {
   return (
     <>
-    <hr />
-    <hr />
-    
+    <br />
+    <br />
+
     <h1>Conglomerados</h1>
     <p>ConglomeradosConglomeradosConglomerados</p>
     </>
