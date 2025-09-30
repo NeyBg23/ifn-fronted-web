@@ -16,7 +16,7 @@ const Brigadas = () => {
               className="card-img-top"
               alt="imagen_empleado"
             />
-            <div className="card-body" style={{ background-color: "red"}}>
+            <div className="card-body" style={{ color: "red"}}>
               <h5 className="card-title">Brigada {num}</h5>
               <p className="card-text">
                 Una breve descripción de la brigada.
