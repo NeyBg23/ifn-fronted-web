@@ -51,8 +51,8 @@ const Home = () => {
             aria-controls="offcanvasDarkNavbar"
             aria-label="Toggle navigation"
           >
+            <h5>Menu</h5>
             <span className="navbar-toggler-icon">
-                <h5>Menu</h5>
             </span>
           </button>
           <div
