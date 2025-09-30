@@ -39,6 +39,14 @@ body {
   transform: translateX(-50%);
 }
 
+.offcanvas-body.custom-navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente */
+  justify-content: center; /* Centra verticalmente (opcional) */
+  text-align: center; /* Centra el texto de los botones */
+}
+
 .navbar-spacer {
   width: 18px;
 }
@@ -48,6 +56,5 @@ body {
 
 /* Asegura que el contenido se vea bien */
 .offcanvas-body {
-  position: center;
   padding: 1rem;
 }
