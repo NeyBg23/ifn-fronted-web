@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../../styles/Home.css";
 import { useNavigate } from "react-router-dom";
 import Brigadas from "./Brigadas.jsx";
+import Conglomerados from "./Conglomerados.jsx";
+import Perfil from "./Perfil.jsx";
 
 const Home = () => {
   // Estado que guarda la sección actual
@@ -22,21 +24,15 @@ const Home = () => {
         return <Brigadas/>;
 
       case "conglomerados":
-        return (
-          <>
-            <h1>Conglomerados</h1>
-            <p>Aquí verás la lista de conglomerados.</p>
-          </>
-        );
+
+        return <Conglomerados/>;
+
       case "perfil":
-        return (
-          <>
-            <h1>Perfil</h1>
-            <p>Información del administrador.</p>
-          </>
-        );
+        
+        return <Perfil/>;
+
       default:
-        return <h1>Bienvenido</h1>;
+        return useNavigate("/admin");
     }
   };
 
