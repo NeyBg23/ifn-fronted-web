@@ -40,15 +40,9 @@ body {
 }
 .offcanvas.offcanvas-end.custom-navbar {
   background-color: #2c5f2d !important;
+  align-items: center;
+  width: 260px;
 }
-/* Centrar los elementos dentro del cuerpo del offcanvas */
-.offcanvas-body.custom-navbar {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-}
-
 
 .navbar-spacer {
   width: 18px;
