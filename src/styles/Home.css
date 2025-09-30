@@ -49,9 +49,9 @@ body {
 
 /* Centrar cada elemento del menú */
 .offcanvas-body.custom-navbar .nav-item {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
 }
 
 /* Centrar el título */
