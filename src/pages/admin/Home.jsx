@@ -39,8 +39,8 @@ const Home = () => {
   return (
     <div className="home-container">
       <nav className="navbar navbar-dark custom-navbar fixed-top">
-        <div className="container-fluid">
-          <a className="navbar-brand justify-content-center" href={ useNavigate("/admin")}>
+        <div className="container-fluid ">
+          <a className="navbar-brand" href={ useNavigate("/admin")}>
             Inventario Forestal Nacional
           </a>
           <button
