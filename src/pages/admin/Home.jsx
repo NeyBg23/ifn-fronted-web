@@ -48,7 +48,7 @@ const Home = () => {
             </div>
             </nav>
             {/* Contenido principal */}
-            <main className="content p-4" style={{ marginLeft: "250px" }}>
+            <main className="content p-4" style={{ marginLeft: "200px" }}>
                 <h1>Bienvenido</h1>
                 <p>Contenido principal aquí...</p>
             </main>
