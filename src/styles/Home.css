@@ -81,3 +81,13 @@ body {
   width: 250px !important; /* ajusta el ancho a tu gusto */
 }
 
+.crearBrigada {
+  border-radius: 50px;
+  width:fit-content;
+  margin: 50px;
+}
+
+.crearBrigada .btn-success {
+  padding: 20px;
+
+}
