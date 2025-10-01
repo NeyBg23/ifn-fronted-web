@@ -8,6 +8,14 @@ body {
   background-color: #2c5f2d;
 }
 
+.card-text{
+  color: black;
+}
+
+.card-title{
+  color: black;
+}
+
 .home-container {
   min-height: 100vh;
   background-color: #f8f9fa;
