@@ -101,3 +101,8 @@ body {
 .card-img-top {
   border-radius: 40px;
 }
+
+.border-3 {
+  width: 235px;
+  border-color: #17c42e !important;
+}

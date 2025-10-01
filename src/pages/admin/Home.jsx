@@ -145,6 +145,8 @@ const Home = () => {
                     </button>
                     </li>
 
+                    <hr class="border border-primary border-3 opacity-75"/>
+
                     <li className="nav-item">
                     <button
                         className={`nav-link btn btn-link text-start ${
