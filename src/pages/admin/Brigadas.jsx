@@ -30,7 +30,7 @@ const Brigadas = () => {
             <div key={num} className="card" style={{ width: "20rem", color: "white" }}>
               <img
                 src={image}
-                className="card-img-top"
+                className="card-img-top" styles={{ border-radius: 50px }}
                 alt="imagen_empleado"
               />
               <div className="card-body colorBody">
