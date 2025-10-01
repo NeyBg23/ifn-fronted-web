@@ -1,4 +1,5 @@
 import "../../styles/Home.css";
+import image from "../../img/banner.jpg";
 
 const Brigadas = () => {
   const brigadas = Array.from({ length: 6 }, (_, i) => i + 1);
@@ -12,14 +13,18 @@ const Brigadas = () => {
         {brigadas.map((num) => (
           <div key={num} className="card" style={{ width: "20rem", color: "white" }}>
             <img
-              src="https://cdn.pixabay.com/photo/2023/03/16/08/42/camping-7856198_640.jpg"
+              src={image}
               className="card-img-top"
               alt="imagen_empleado"
             />
             <div className="card-body colorBody">
-              <h5 className="card-title">Brigada {num}</h5>
+              <h5 className="card-title"><b>BRIGADA</b><br /> Torbellino {num}</h5>
               <p className="card-text">
-                Una breve descripción de la brigada.
+                <b>JEFE DE BRIGADA</b> Carlos Martin Pinto Grisales
+                <br />
+                <b>PARTICIPANTES</b> 25 Miembros
+                <br />
+                <b>¿EN EXPEDICIÓN?</b><div id="estado-brigada">Están en expedición</div>
               </p>
               <a href="#" className="btn btn-primary">
                 Ver Brigada

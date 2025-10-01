@@ -7,12 +7,26 @@ body {
   position: absolute;
   background-color: #2c5f2d;
 }
+.cards-container-brigadas {
+  position: relative;
+}
+.card {
+  --bs-card-spacer-y: 0rem;
+  --bs-card-spacer-x: 0rem;
+  --bs-card-border-width: 1px;
+  border-radius: 50px;
+  display: inline-block;
+  min-width: 400px;
+  padding: 1.5em;
+  margin: 10px;
+}
 
 .card-text{
   color: black;
 }
 
 .card-title{
+  margin-top: 10PX;
   color: black;
 }
 
@@ -47,6 +61,12 @@ body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+.offcanvas.offcanvas-end {
+  right:auto;
+  transform: translateX(0);
+  top: auto;
+  left: -10px;
 }
 .offcanvas.offcanvas-end.custom-navbar {
   background-color: #2c5f2d !important;
