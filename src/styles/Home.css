@@ -1,3 +1,4 @@
+
 body {
     background: #ffff;
     align-items: center;
@@ -89,8 +90,14 @@ body {
 
 .crearBrigada .btn-success {
   padding: 20px;
+  font-size: 15px;
 
 }
+
 .pe-3 {
   align-items: anchor-center;
+}
+
+.card-img-top {
+  border-radius: 40px;
 }
