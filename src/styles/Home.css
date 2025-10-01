@@ -1,3 +1,4 @@
+
 body {
     background: #ffff;
     align-items: center;
@@ -89,6 +90,7 @@ body {
 
 .crearBrigada .btn-success {
   padding: 20px;
+  font-size: 10px;
 
 }
 .card-img-top {
