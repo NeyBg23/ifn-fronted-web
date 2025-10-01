@@ -78,7 +78,7 @@ body {
   width: 18px;
 }
 .offcanvas-end .custom-navbar {
-  width: 250px !important; /* ajusta el ancho a tu gusto */
+  left: inherit;
 }
 
 .crearBrigada {
@@ -90,4 +90,7 @@ body {
 .crearBrigada .btn-success {
   padding: 20px;
 
+}
+.pe-3 {
+  align-items: anchor-center;
 }

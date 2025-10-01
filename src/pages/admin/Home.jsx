@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Brigadas from "./Brigadas.jsx";
 import Conglomerados from "./Conglomerados.jsx";
 import Perfil from "./Perfil.jsx";
-
+import Empleados from "./Empleados.jsx";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -33,6 +33,19 @@ const Home = () => {
       case "perfil":
         
         return <Perfil/>;
+
+      case "empleados": 
+
+        return <Empleados/>;
+      
+      case "sesion_off": {
+        localStorage.removeItem("session"); // Elimino la sesión de ese usuario
+        setSection(""); // Evito que cuando haga el "alert"
+        // no vuelva a ejecutar el session_off y vaya a default
+        alert("Se ha cerrado sesión correctamente.");
+
+        return navigate("/") // Lo envio finalmente al home
+      }
 
       default:
         return <h2>Sección no encontrada</h2>;
@@ -107,6 +120,19 @@ const Home = () => {
                         Conglomerados
                     </button>
                     </li>
+
+                    <li className="nav-item">
+                    <button
+                        className={`nav-link btn btn-link text-start ${
+                        section === "empleados" ? "active" : ""
+                        }`}
+                        onClick={() => setSection("empleados")}
+                        data-bs-dismiss="offcanvas"
+                    >
+                        Empleados
+                    </button>
+                    </li>
+
                     <li className="nav-item">
                     <button
                         className={`nav-link btn btn-link text-start ${
@@ -116,6 +142,18 @@ const Home = () => {
                         data-bs-dismiss="offcanvas"
                     >
                         Perfil
+                    </button>
+                    </li>
+
+                    <li className="nav-item">
+                    <button
+                        className={`nav-link btn btn-link text-start ${
+                        section === "sesion_off" ? "active" : ""
+                        }`}
+                        onClick={() => setSection("sesion_off")}
+                        data-bs-dismiss="offcanvas"
+                    >
+                        Cerrar Sesión
                     </button>
                     </li>
                 </ul>
