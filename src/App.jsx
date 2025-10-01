@@ -10,7 +10,6 @@ import ProtectedRoute from "./components/ProtectedRoute"; // Envuelve rutas priv
 // Estilos globales
 import "./styles/App.css";
 
-
 // 2️ DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
   return (
