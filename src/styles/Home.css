@@ -91,3 +91,6 @@ body {
   padding: 20px;
 
 }
+.card-img-top {
+  border-radius: 50px;
+}
