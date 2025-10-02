@@ -182,7 +182,7 @@ body {
 .modal button:hover {
   background: #196619;
 }
-@media (max-width: 868px) {
+@media (max-width: 768px) {
   .login-container {
     margin-right: -10%;
     position: absolute;
