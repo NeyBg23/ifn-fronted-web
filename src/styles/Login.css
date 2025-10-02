@@ -10,7 +10,7 @@ body {
 }
 
 .login {
-  background-color: #96e096;
+  background-color: #a4d4a4;
   display: flex;
   justify-content: flex-end; /* Empuja el contenido a la derecha */
   align-items: center;
