@@ -77,6 +77,17 @@ function Login() {
           <p>
             El Inventario Forestal Nacional de Colombia es una herramienta estratégica que permite conocer el estado, distribución y características de los bosques del país. Su objetivo principal es generar información confiable y actualizada para la gestión sostenible de los recursos forestales y la formulación de políticas ambientales eficaces.
           </p>
+          <iframe
+            width="760"
+            height="415"
+            src="https://www.youtube.com/embed/rT9RKbue0hE?autoplay=1&mute=1"
+            title="Inventario Forestal Nacional"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+
       </div>
 
       <div className="login-container">
