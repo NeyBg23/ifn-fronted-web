@@ -40,10 +40,6 @@ body {
   padding-top: 100px !important; /*El Important es para darle importancia a esta linea antes que el css de Bootstrap*/
 }
 
-.navbar-nav {
-  width: 20vh;
-}
-
 .nav-link.active {
   color: #17c42e !important;
   font-weight: bold;
@@ -105,4 +101,9 @@ body {
 .border-3 {
   width: 235px;
   border-color: #17c42e !important;
+}
+
+.offcanvas, .offcanvas-lg, .offcanvas-md, .offcanvas-sm, .offcanvas-xl, .offcanvas-xxl {
+  --bs--bs-offcanvas-padding-x: 2em;
+  --bs-offcanvas-padding-y: 2em;
 }

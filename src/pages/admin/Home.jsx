@@ -41,7 +41,7 @@ const Home = () => {
       case "sesion_off": {
         localStorage.removeItem("session"); // Elimino la sesión de ese usuario
         setSection(""); // Evito que cuando haga el "alert"
-        // no vuelva a ejecutar el session_off y vaya a default
+        // vuelva a ejecutar el session_off y vaya a default directamente
         alert("Se ha cerrado sesión correctamente.");
 
         return navigate("/") // Lo envio finalmente al home
