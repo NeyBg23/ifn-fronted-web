@@ -182,13 +182,24 @@ body {
 .modal button:hover {
   background: #196619;
 }
+
 @media (max-width: 768px) {
-  .login-container {
-    margin-right: -10%;
-    position: absolute;
+  .login {
+    justify-content: center;
+    padding: 10px;
   }
+
+  .login-container {
+    width: 100%;
+    max-width: 90%;
+    height: auto;
+    aspect-ratio: auto;
+    margin: 0;
+    padding: 20px;
+  }
+
+
   .informacion-relevante {
-    margin-top: 150%;
-    margin-left: 5%;
+    display: none; /* Oculta en móvil */
   }
 }
