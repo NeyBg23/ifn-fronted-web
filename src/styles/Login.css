@@ -1,23 +1,31 @@
+
 body {
   background-image: url("../img/crax.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+.trabajadores_img {
+  width: 100px;
+}
 
 .login {
-    display: flex;
-    justify-content: flex-end; /* Empuja el contenido a la derecha */
-    align-items: center;
-    height: 100vh;
-    padding-right: 20px; /* Espacio desde el borde derecho */
-    box-sizing: border-box;
+  background-color: #96e096;
+  display: flex;
+  justify-content: flex-end; /* Empuja el contenido a la derecha */
+  align-items: center;
+  height: 100vh;
+  padding-right: 20px; /* Espacio desde el borde derecho */
+  box-sizing: border-box;
 }
 
 .informacion-relevante {
-  margin-top: -20%;
-  color: #196619;
+  margin-top: 0%;
+  color: #103b10;
   position:inherit;
+}
+.informacion-relevante p {
+  max-width: 800px;
 }
 
 /* Estilos para el contenedor principal del login */

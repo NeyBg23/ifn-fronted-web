@@ -2,6 +2,7 @@
 import { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
+import image_empleado from "../img/ranger.png";
 
 /**
  * Login.jsx
@@ -69,8 +70,13 @@ function Login() {
     <div className="login">
       <div className="informacion-relevante">
           <h3>
-            Bienvenido a la página del Inventario Forestal Nacional
+            <img className= "trabajadores_img" src={image_empleado} alt="trabajadores_img" />
+            <b>BIENVENIDO AL INVENTARIO FORESTAL NACIONAL</b>
           </h3>
+          <hr />
+          <p>
+            El Inventario Forestal Nacional de Colombia es una herramienta estratégica que permite conocer el estado, distribución y características de los bosques del país. Su objetivo principal es generar información confiable y actualizada para la gestión sostenible de los recursos forestales y la formulación de políticas ambientales eficaces.
+          </p>
       </div>
 
       <div className="login-container">
