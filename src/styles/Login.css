@@ -191,11 +191,10 @@ body {
 
   .login-container {
     width: 100%;
-    max-width: 90%;
+    max-width: 100%;
     height: auto;
     aspect-ratio: auto;
-    margin: 0;
-    padding: 20px;
+    padding: 10px;
   }
 
 
