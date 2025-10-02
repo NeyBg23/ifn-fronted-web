@@ -6,9 +6,8 @@ import { useState } from "react";
 const Brigadas = () => {
   const [ruta, setRuta] = useState("Brigadas");
   const brigadas = Array.from({ length: 8 }, (_, i) => i + 1);
-  const navigate = useNavigate(); // ✅ corregido
+  const navigate = useNavigate(); 
 
-  // ✅ Para cambiar ruta del navegador si quieres hacerlo con navigate
   const handleNavigate = (dir) => {
     navigate(`/${dir}`);
   };

@@ -4,6 +4,22 @@ body {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.login {
+    display: flex;
+    justify-content: flex-end; /* Empuja el contenido a la derecha */
+    align-items: center;
+    height: 100vh;
+    padding-right: 20px; /* Espacio desde el borde derecho */
+    box-sizing: border-box;
+}
+
+.informacion-relevante {
+  margin-top: -20%;
+  color: #196619;
+  position:inherit;
+}
+
 /* Estilos para el contenedor principal del login */
 .login-container {
   position: relative; /* Necesario para posicionar el círculo */
@@ -14,7 +30,7 @@ body {
   height: 700px;        /* Alto fijo */
   border-radius: 100%;   /* Hace el contenedor circular */
   background: white; /* Fondo blanco para el resto */
-  margin: 40px auto;    /* Centra verticalmente con margen */
+  margin: 100px auto;    /* Centra verticalmente con margen */
   box-shadow: 0 10px 30px rgba(45, 80, 22, 0.3);
 }
 
@@ -29,7 +45,7 @@ body {
   background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
   border-radius: 50%;
   z-index: 0; /* Detrás del contenido */
-  box-shadow: 0 10px 30px rgba(45, 80, 22, 0.2);
+  box-shadow: 0 100px 30px rgba(45, 80, 22, 0.2);
 }
 
 /* Tarjeta visual del login */
@@ -165,4 +181,14 @@ body {
 
 .modal button:hover {
   background: #196619;
+}
+@media (max-width: 868px) {
+  .login-container {
+    margin-right: -10%;
+    position: absolute;
+  }
+  .informacion-relevante {
+    margin-top: 150%;
+    margin-left: 5%;
+  }
 }

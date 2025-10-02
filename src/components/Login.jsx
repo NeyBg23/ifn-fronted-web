@@ -65,49 +65,58 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        {/* Cabecera */}
-        <div className="login-header">
-          <h1>Inventario Forestal Nacional</h1>
-          <p>Sistema de gestión forestal sostenible</p>
-        </div>
 
-        {/* Formulario */}
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>🌳 Usuario:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="usuario@forestal.com"
-              required
-              disabled={loading}
-            />
+    <div className="login">
+      <div className="informacion-relevante">
+          <h3>
+            Bienvenido a la página del Inventario Forestal Nacional
+          </h3>
+      </div>
+
+      <div className="login-container">
+        <div className="login-card">
+          {/* Cabecera */}
+          <div className="login-header">
+            <h1>Inventario Forestal Nacional</h1>
+            <p>Sistema de gestión forestal sostenible</p>
           </div>
 
-          <div className="input-group">
-            <label>🔑 Contraseña:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              disabled={loading}
-            />
+          {/* Formulario */}
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label>🌳 Usuario:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="usuario@forestal.com"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="input-group">
+              <label>🔑 Contraseña:</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? "🔄 Conectando..." : "🍃 Ingresar al Sistema"}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="login-footer">
+            <p>Ministerio del Ambiente • Sistema Nacional Forestal</p>
+            <p>© 2024 Todos los derechos reservados</p>
           </div>
-
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "🔄 Conectando..." : "🍃 Ingresar al Sistema"}
-          </button>
-        </form>
-
-        {/* Footer */}
-        <div className="login-footer">
-          <p>Ministerio del Ambiente • Sistema Nacional Forestal</p>
-          <p>© 2024 Todos los derechos reservados</p>
         </div>
       </div>
     </div>
