@@ -42,12 +42,9 @@ header {
 }
         
 .login {
-  background-color: #a4d4a4;
+  background-color: #c5ebac;
   display: flex;
-  justify-content: flex-end; /* Empuja el contenido a la derecha */
-  align-items: center;
-  height: 100vh;
-  padding-right: 20px; /* Espacio desde el borde derecho */
+  justify-content: center;
   box-sizing: border-box;
 }
 
