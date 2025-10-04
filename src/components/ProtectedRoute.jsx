@@ -59,6 +59,7 @@ function ProtectedRoute({ children }) {
 
   // 5. Si no es válido → redirigir al login
   if (!isValid) {
+    alert("Sesión inválida o expirada. Por favor, inicia sesión nuevamente.");
     return <Navigate to="/" replace />;
   }
 

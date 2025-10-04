@@ -1,3 +1,11 @@
+:root {
+    --primary-color: #1B5E20;
+    --secondary-color: #388E3C;
+    --light-color: #C8E6C9;
+    --dark-color: #1B3A1F;
+    --text-color: #333;
+    --light-text: #fff;
+}
 
 body {
   background-image: url("../img/crax.webp");

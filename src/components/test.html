@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario Forestal Nacional - Colombia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1B5E20;
+            --secondary-color: #388E3C;
+            --light-color: #C8E6C9;
+            --dark-color: #1B3A1F;
+            --text-color: #333;
+            --light-text: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+        }
+        
+        /* Main Container - Login and Welcome Side by Side */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        /* Login Form Styles */
+        .login-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        
+        .login-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .main-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .main-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Image Carousel Styles */
+        .image-carousel-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .image-carousel-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .carousel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            position: relative;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        
+        .carousel-nav button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .carousel-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .indicator.active {
+            background-color: var(--primary-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--light-text);
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--light-color);
+        }
+        
+        .footer-section p, .footer-section ul {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--light-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 1rem;
+            }
+            
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .carousel-slide img {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-tree"></i>
+                <h1>Inventario Forestal Nacional</h1>
+            </div>
+            <div class="header-info">
+                <p>República de Colombia</p>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-container">
+            <section class="login-section">
+                <h2>Inventario Forestal Nacional</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">🌳 Correo Electronico</label>
+                        <input type="text" id="username" name="username" placeholder="Ingrese su correo electronico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">🔑 Contraseña</label>
+                        <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                    </div>
+                    <button type="submit" class="btn">Ingresar al Sistema</button>
+                </form>
+            </section>
+            
+            <main class="main-content">
+                <h2>Bienvenido al Inventario Forestal Nacional de Colombia</h2>
+                <p>
+                    El Inventario Forestal Nacional es una iniciativa del gobierno colombiano para monitorear, 
+                    evaluar y conservar los recursos forestales del país. A través de este sistema, recopilamos 
+                    información detallada sobre la extensión, composición y estado de los bosques en todo el 
+                    territorio nacional, con el objetivo de promover su gestión sostenible y contribuir a la 
+                    lucha contra el cambio climático.
+                </p>
+                <p>
+                    Nuestra misión es generar conocimiento científico sobre los bosques colombianos para 
+                    apoyar la toma de decisiones en políticas ambientales, conservación de la biodiversidad 
+                    y desarrollo sostenible. Este inventario es una herramienta fundamental para cumplir con 
+                    los compromisos nacionales e internacionales en materia de conservación forestal y 
+                    mitigación del cambio climático.
+                </p>
+            </main>
+        </div>
+        <section class="image-carousel-section">
+            <div class="carousel-container">
+                <div class="carousel-slide active">
+                    <img src="https://picsum.photos/seed/forest1/800/450.jpg" alt="Bosque Andino">
+                    <div class="carousel-caption">
+                        <h3>Bosque Andino</h3>
+                        <p>Ecosistema de alta montaña característico de la cordillera de los Andes</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/seed/forest2/800/450.jpg" alt="Bosque Amazónico">
+                    <div class="carousel-caption">
+                        <h3>Bosque Amazónico</h3>
+                        <p>El pulmón del mundo con la mayor biodiversidad del planeta</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/seed/forest3/800/450.jpg" alt="Bosque de Manglar">
+                    <div class="carousel-caption">
+                        <h3>Bosque de Manglar</h3>
+                        <p>Ecosistema costero crucial para la protección del litoral</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="https://picsum.photos/seed/forest4/800/450.jpg" alt="Bosque Seco Tropical">
+                    <div class="carousel-caption">
+                        <h3>Bosque Seco Tropical</h3>
+                        <p>Ecosistema amenazado con alta endemismo de especies</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-nav">
+                    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="carousel-indicators">
+                <span class="indicator active" data-index="0"></span>
+                <span class="indicator" data-index="1"></span>
+                <span class="indicator" data-index="2"></span>
+                <span class="indicator" data-index="3"></span>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Información Relevante</h3>
+                    <p>Ministerio de Ambiente y Desarrollo Sostenible</p>
+                    <p>Dirección: Carrera 10 # 20-30, Bogotá D.C.</p>
+                    <p>Teléfono: +57 (1) 3400000</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#">Acerca de Nosotros</a></li>
+                        <li><a href="#">Informes Anuales</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos de Uso</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Email: info@inventarioforestal.gov.co</p>
+                    <p>Horario de atención: Lunes a Viernes, 8:00 am-5:00 pm</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 derechos reservados - Inventario Forestal Nacional de Colombia</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Formulario de inicio de sesión
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Aquí iría la lógica de autenticación
+            // Por ahora solo mostramos un mensaje de éxito
+            alert('Bienvenido/a, ' + username + '. Ha ingresado al sistema del Inventario Forestal Nacional.');
+            
+            // Limpiar el formulario
+            this.reset();
+        });
+        
+        // Carrusel de imágenes
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            let currentSlide = 0;
+            
+            // Función para mostrar una diapositiva específica
+            function showSlide(index) {
+                // Ocultar todas las diapositivas
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Desactivar todos los indicadores
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Mostrar la diapositiva actual
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                
+                // Actualizar el índice actual
+                currentSlide = index;
+            }
+            
+            // Event listeners para los botones de navegación
+            prevBtn.addEventListener('click', function() {
+                let newIndex = currentSlide - 1;
+                if (newIndex < 0) {
+                    newIndex = slides.length - 1;
+                }
+                showSlide(newIndex);
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                let newIndex = currentSlide + 1;
+                if (newIndex >= slides.length) {
+                    newIndex = 0;
+                }
+                showSlide(newIndex);
+            });
+            
+            // Event listeners para los indicadores
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    showSlide(index);
+                });
+            });
+            
+            // Opcional: Autoplay del carrusel
+            setInterval(function() {
+                let newIndex = currentSlide + 1;
+                if (newIndex >= slides.length) {
+                    newIndex = 0;
+                }
+                showSlide(newIndex);
+            }, 5000); // Cambiar de imagen cada 5 segundos
+        });
+    </script>
+</body>
+</html>
