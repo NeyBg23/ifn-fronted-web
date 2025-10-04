@@ -2,7 +2,6 @@
 import { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
-import image_empleado from "../img/ranger.png";
 
 /**
  * Login.jsx
@@ -66,73 +65,60 @@ function Login() {
   };
 
   return (
-
-    <div className="login">
-      <div className="informacion-relevante">
-          <h3>
-            <img className= "trabajadores_img" src={image_empleado} alt="trabajadores_img" />
-            <b>BIENVENIDO AL INVENTARIO FORESTAL NACIONAL</b>
-          </h3>
-          <hr />
-          <p>
-            El Inventario Forestal Nacional de Colombia es una herramienta estratégica que permite conocer el estado, distribución y características de los bosques del país. Su objetivo principal es generar información confiable y actualizada para la gestión sostenible de los recursos forestales y la formulación de políticas ambientales eficaces.
-          </p>
-          <iframe
-            width="760"
-            height="415"
-            src="https://www.youtube.com/embed/rT9RKbue0hE?autoplay=1&mute=1"
-            title="Inventario Forestal Nacional"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
-
-      </div>
-
-      <div className="login-container">
-        <div className="login-card">
-          {/* Cabecera */}
-          <div className="login-header">
-            <h1>Inventario Forestal Nacional</h1>
-            <p>Sistema de gestión forestal sostenible</p>
+    
+    <div className="todo">
+      {/* Este link es para poder traer un arbol como logo en el titulo del inventario*/}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+      <header>
+          <div className="container header-content">
+              <div className="logo">
+                  <i className="fas fa-tree"></i>
+                  <h1>Inventario Forestal Nacional</h1>
+              </div>
+              <div className="header-info">
+                  <p>República de Colombia</p>
+              </div>
           </div>
-
-          {/* Formulario */}
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label>🌳 Usuario:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="usuario@forestal.com"
-                required
-                disabled={loading}
-              />
+      </header>
+      <div className="login">
+        <div className="login-container">
+          <div className="login-card">
+            {/* Cabecera */}
+            <div className="login-header">
+              <h1>Inventario Forestal Nacional</h1>
+              <p>Sistema de gestión forestal sostenible</p>
             </div>
 
-            <div className="input-group">
-              <label>🔑 Contraseña:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                disabled={loading}
-              />
-            </div>
+            {/* Formulario */}
+            <form className="login-form" onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label>🌳 Usuario:</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="usuario@forestal.com"
+                  required
+                  disabled={loading}
+                />
+              </div>
 
-            <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? "🔄 Conectando..." : "🍃 Ingresar al Sistema"}
-            </button>
-          </form>
+              <div className="input-group">
+                <label>🔑 Contraseña:</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  disabled={loading}
+                />
+              </div>
 
-          {/* Footer */}
-          <div className="login-footer">
-            <p>Ministerio del Ambiente • Sistema Nacional Forestal</p>
-            <p>© 2024 Todos los derechos reservados</p>
+              <button type="submit" className="login-btn" disabled={loading}>
+                {loading ? "🔄 Conectando..." : "🍃 Ingresar al Sistema"}
+              </button>
+            </form>
           </div>
         </div>
       </div>

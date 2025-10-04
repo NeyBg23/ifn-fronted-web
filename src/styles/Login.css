@@ -7,16 +7,40 @@
     --light-text: #fff;
 }
 
-body {
-  background-image: url("../img/crax.webp");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.trabajadores_img {
-  width: 100px;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
+/* Header Styles */
+header {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo i {
+    font-size: 2rem;
+    margin-right: 10px;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+}
+        
 .login {
   background-color: #a4d4a4;
   display: flex;
@@ -25,15 +49,6 @@ body {
   height: 100vh;
   padding-right: 20px; /* Espacio desde el borde derecho */
   box-sizing: border-box;
-}
-
-.informacion-relevante {
-  margin-top: 0%;
-  color: #103b10;
-  position:inherit;
-}
-.informacion-relevante p {
-  max-width: 800px;
 }
 
 /* Estilos para el contenedor principal del login */
@@ -67,7 +82,7 @@ body {
 /* Tarjeta visual del login */
 .login-card {
   background: rgba(255, 255, 255, 0.95); /* Fondo blanco semi-transparente */
-  padding: 2.5rem; /* Espacio interno amplio */
+  padding: 5rem; /* Espacio interno amplio */
   border-radius: 15px; /* Bordes redondeados */
   box-shadow: 0 10px 30px rgba(45, 80, 22, 0.3); /* Sombra para profundidad */
   width: 100%; /* Ocupa todo el ancho disponible */
@@ -96,7 +111,7 @@ body {
 
 /* Grupo de inputs (usuario y contraseña) */
 .input-group {
-  margin-bottom: 1.5rem; /* Espacio debajo de cada grupo */
+  margin-bottom: 1.4rem; /* Espacio debajo de cada grupo */
 }
 
 .input-group label {
@@ -141,64 +156,6 @@ body {
   box-shadow: 0 5px 15px rgba(45, 80, 22, 0.4); /* Sombra más intensa */
 }
 
-/* Pie de página del login */
-.login-footer {
-  text-align: center; /* Centra el texto */
-  margin-top: 2rem; /* Espacio arriba del pie */
-  padding-top: 1rem; /* Espacio interno arriba */
-  border-top: 1px solid #8aac7d; /* Línea verde arriba */
-}
-
-.login-footer p {
-  color: #4a7c59; /* Color de texto verde */
-  font-size: 0.8rem; /* Texto pequeño */
-}
-
-
-
-
-
-/* Estilos para el modal de MFA */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.modal {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
-}
-
-.modal img {
-  margin: 1rem 0;
-  max-width: 200px;
-}
-
-.modal button {
-  background: #228B22;
-  color: white;
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.modal button:hover {
-  background: #196619;
-}
-
 @media (max-width: 768px) {
   .login {
     justify-content: center;
@@ -211,10 +168,5 @@ body {
     height: auto;
     aspect-ratio: auto;
     padding: 10px;
-  }
-
-
-  .informacion-relevante {
-    display: none; /* Oculta en móvil */
   }
 }
