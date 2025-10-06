@@ -32,10 +32,14 @@ function ProtectedRoute({ children }) {
       try {
         // 3. Validar token contra el backend autenVerifi
         const res = await fetch("https://brigada-informe-ifn.vercel.app/api/brigadas", {
+          method: "GET",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${parsedSession.access_token}`,
           },
+          credentials: "include", // opcional si tu backend lo requiere
         });
+
 
         if (!res.ok) {
           // Token inválido o expirado
