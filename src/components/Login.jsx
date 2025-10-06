@@ -1,96 +1,122 @@
-// src/pages/Login.jsx
-import { useState } from "react";
-import "../styles/Login.css";
-import { useNavigate } from "react-router-dom";
+// 🎒 Importamos las herramientas que usaremos
+import { useState } from "react"; // 🧠 Para manejar los datos que cambian (como email o password)
+import "../styles/Login.css"; // 🎨 Estilos de la página
+import { useNavigate } from "react-router-dom"; // 🧭 Para movernos entre páginas (ej: ir al panel admin)
 
 /**
- * Login.jsx
- * - En development usa el proxy: /api (configurado en vite.config.js)
- * - En producción usa la variable de entorno VITE_API_URL (defínela en Vercel)
+ * 📘 Este componente se encarga del LOGIN (inicio de sesión)
+ * 
+ * 🌍 En modo desarrollo (local):
+ *   - Se conecta con el backend que corre en tu PC (http://localhost:4000)
+ *   - Esto se hace usando el "proxy" configurado en vite.config.js
+ * 
+ * ☁️ En modo producción (Vercel):
+ *   - Se conecta al backend desplegado en la nube (VITE_API_URL)
+ *   - Esa URL se guarda como variable de entorno en Vercel
  */
 
 function Login() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 🔄 Permite movernos a otra ruta (ej: /admin)
 
-  // estados
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  // 🧱 Aquí guardamos los datos que el usuario escribe
+  const [email, setEmail] = useState(""); // correo del usuario
+  const [password, setPassword] = useState(""); // contraseña
+  const [loading, setLoading] = useState(false); // para mostrar "cargando..." mientras se conecta
 
-  // Determinar la URL base de la API según el entorno
+  /**
+   * 📦 Aquí decidimos a qué URL del backend conectar
+   * 
+   * Si estamos en desarrollo → usamos "/api"
+   * (el proxy en vite.config.js redirige a http://localhost:4000)
+   * 
+   * Si estamos en producción → usamos la variable VITE_API_URL
+   * (que debe estar configurada en Vercel)
+   */
   const API_URL =
     import.meta.env.MODE === "development"
-      ? "/api" // proxy local que redirige a http://localhost:4000
-      : import.meta.env.VITE_API_URL || "/api"; // Vercel: debe estar definida en Environment Variables
+      ? "/api" // para cuando trabajas localmente
+      : import.meta.env.VITE_API_URL || "/api"; // para cuando está en Vercel
 
+  /**
+   * 🧩 Esta función se ejecuta cuando el usuario presiona "Ingresar al Sistema"
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault(); // 🚫 Evita que el navegador recargue la página
+    setLoading(true); // ⏳ Cambiamos el estado a "cargando"
 
-    console.log("API_URL ->", API_URL);  // Verificar qué URL se está usando
-    console.log("Login endpoint ->", `${API_URL}/auth/login`);  // Verificar el endpoint completo
+    console.log("API_URL ->", API_URL); // 🕵️‍♀️ Verificamos la URL base del backend
+    console.log("Login endpoint ->", `${API_URL}/auth/login`); // 🕵️‍♀️ Endpoint final
 
     try {
-      // Llamada al backend (dev => /api/auth/login ; prod => https://mi-backend.vercel.app/auth/login)
-      const res = await fetch(`https://iam-auten-verifi-service-ifn-git-main-udis-ifn-projects.vercel.app/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      // 🚀 Mandamos los datos al backend
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: "POST", // usamos el método POST para enviar datos
+        headers: { "Content-Type": "application/json" }, // decimos que mandamos JSON
         body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          password,
+          email: email.trim().toLowerCase(), // quitamos espacios y pasamos a minúsculas
+          password, // enviamos la contraseña
         }),
       });
 
-      console.log("Response status:", res); // Verificar el estado de la respuesta
-      // parsear respuesta JSON (puede contener error o session)
-      const data = await res.json();
-      setLoading(false);
+      // 🔍 Esperamos la respuesta del backend
+      const data = await res.json(); // convertimos la respuesta a JSON
+      setLoading(false); // dejamos de mostrar "cargando..."
 
-      // Mostrar el mensaje de error que venga del backend si existe
+      // ⚠️ Si algo sale mal (usuario o contraseña incorrectos)
       if (!res.ok) return alert(data.error || "Credenciales inválidas ❌");
 
-      // Guardar sesión completa en localStorage (incluye access_token, refresh_token, user)
-      // localStorage es solo para la sesión del navegador (no expone claves del backend)
+      /**
+       * 💾 Si todo sale bien:
+       * guardamos la sesión en el navegador (localStorage)
+       * para que el usuario no tenga que volver a iniciar sesión
+       */
       localStorage.setItem("session", JSON.stringify(data.session));
 
-      // Opcional: guardar por separado el access_token si lo necesitas
-      // localStorage.setItem("access_token", data.session.access_token);
-
-      alert("¡Éxito! Bienvenido 🌳");
-      navigate("/admin");
+      alert("¡Éxito! Bienvenido 🌳"); // mensaje bonito 😄
+      navigate("/admin"); // 🚪 Vamos al panel administrativo
     } catch (error) {
+      // 🧨 Si el servidor no responde o hay error de red
       console.error("Error de conexión:", error);
       setLoading(false);
       alert("Error de conexión con el servidor ❌");
     }
   };
 
+  /**
+   * 🖥️ Aquí está la parte visual (lo que se ve en la pantalla)
+   */
   return (
-    
     <div className="todo">
-      {/* Este link es para poder traer un arbol como logo en el titulo del inventario*/}
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+      {/* 🌳 Ícono de árbol en el título */}
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      ></link>
+
+      {/* 🏛️ Encabezado del sistema */}
       <header>
-          <div className="container header-content">
-              <div className="logo">
-                  <i className="fas fa-tree"></i>
-                  <h1>Inventario Forestal Nacional</h1>
-              </div>
-              <div className="header-info">
-                  <p>República de Colombia</p>
-              </div>
+        <div className="container header-content">
+          <div className="logo">
+            <i className="fas fa-tree"></i>
+            <h1>Inventario Forestal Nacional</h1>
           </div>
+          <div className="header-info">
+            <p>República de Colombia</p>
+          </div>
+        </div>
       </header>
+
+      {/* 🪟 Tarjeta del login */}
       <div className="login">
         <div className="login-container">
           <div className="login-card">
-            {/* Cabecera */}
+            {/* 🧱 Encabezado de la tarjeta */}
             <div className="login-header">
               <h1>Inventario Forestal Nacional</h1>
               <p>Sistema de gestión forestal sostenible</p>
             </div>
 
-            {/* Formulario */}
+            {/* 📝 Formulario del login */}
             <form className="login-form" onSubmit={handleSubmit}>
               <div className="input-group">
                 <label>🌳 Usuario:</label>
@@ -116,6 +142,7 @@ function Login() {
                 />
               </div>
 
+              {/* 🔘 Botón de enviar */}
               <button type="submit" className="login-btn" disabled={loading}>
                 {loading ? "🔄 Conectando..." : "🍃 Ingresar al Sistema"}
               </button>
