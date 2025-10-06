@@ -1,116 +1,61 @@
-// 📂 src/pages/Brigadas.jsx
-// -------------------------------------------------------------
-// Este componente muestra todas las brigadas que vienen del backend.
-// Si el usuario tiene un token válido (autenticado),
-// podrá ver las brigadas como tarjetas bonitas 💳
-
-// 🧩 Importamos las herramientas necesarias
-import { useEffect, useState } from "react";
+import "../../styles/Home.css";
+import image from "../../img/banner.jpg";
 import { useNavigate } from "react-router-dom";
-import "../../styles/Home.css"; // Tu CSS general
-import banner from "../../img/banner.jpg"; // Imagen de fondo o cabecera
+import { useState } from "react";
 
 const Brigadas = () => {
-  // 🚀 useState guarda los datos que vienen del backend
-  const [brigadas, setBrigadas] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [ruta, setRuta] = useState("Brigadas");
+  const brigadas = Array.from({ length: 8 }, (_, i) => i + 1);
+  const navigate = useNavigate(); 
 
-  // 🧭 Cuando el componente se carga → llama al backend
-  useEffect(() => {
-    const obtenerBrigadas = async () => {
-      try {
-        // 🪪 Obtenemos el token del usuario (guardado al hacer login)
-        const session = JSON.parse(localStorage.getItem("session"));
-        const token = session?.access_token;
-
-        if (!token) {
-          alert("Debes iniciar sesión para ver las brigadas ❌");
-          navigate("/"); // Redirige al login
-          return;
-        }
-
-        // 🌐 Hacemos la petición al backend de brigadas
-        const respuesta = await fetch(
-          "https://brigada-informe-ifn.vercel.app/api/brigadas", // <-- tu backend desplegado
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Enviamos el token
-            },
-          }
-        );
-
-        // 📦 Convertimos la respuesta en JSON
-        const data = await respuesta.json();
-
-        if (!respuesta.ok) throw new Error(data.error || "Error al obtener brigadas");
-
-        // ✅ Guardamos las brigadas en el estado
-        setBrigadas(data.data || []);
-      } catch (err) {
-        console.error("❌ Error:", err);
-        setError("No se pudieron cargar las brigadas.");
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    obtenerBrigadas();
-  }, [navigate]);
-
-  // 🧱 HTML que se mostrará en pantalla
-  if (cargando) return <p>Cargando brigadas... ⏳</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  const handleNavigate = (dir) => {
+    navigate(`/${dir}`);
+  };
 
   return (
     <div className="brigadas-container">
-      <h1>🌲 Brigadas</h1>
-      <p>Aquí puedes ver todas las brigadas registradas.</p>
+      {ruta === "Brigadas" && (
 
-      <div className="crearBrigada">
-        <p>¿Quieres crear una nueva brigada?</p>
-        <button
-          className="btn btn-success"
-          onClick={() => navigate("/crear-brigada")}
-        >
-          Crear Brigada
-        </button>
-      </div>
-
-      {/* 🧩 Mostramos todas las brigadas en forma de tarjetas */}
-      <div className="cards-container-brigadas">
-        {brigadas.length === 0 ? (
-          <p>No hay brigadas registradas aún.</p>
-        ) : (
-          brigadas.map((brigada) => (
-            <div
-              key={brigada.id}
-              className="card brigada-card"
-              style={{ width: "20rem", color: "white" }}
-            >
-              <img src={banner} className="card-img-top" alt="imagen_brigada" />
+        <div className="cards-container-brigadas">
+          <h1>Brigadas</h1>
+          <p>Aquí puedes gestionar las brigadas.</p>
+          <div className="crearBrigada">
+            <p>SI DESEA CONFORMAR UNA NUEVA BRIGADA, DALE CLICK AL BOTÓN<br />EN LA PARTE INFERIOR DE ESTE TEXTO</p>
+            <button className="btn btn-success" onClick={() => setRuta("CrearBrigada")}>
+              Crear Brigada
+            </button>
+          </div>
+          {brigadas.map((num) => (
+            <div key={num} className="card" style={{ width: "20rem", color: "white" }}>
+              <img
+                src={image}
+                className="card-img-top"
+                alt="imagen_empleado"
+              />
               <div className="card-body colorBody">
-                <h5 className="card-title">
-                  <b>{brigada.nombre || "Sin nombre"}</b>
-                </h5>
+                <h5 className="card-title"><b>BRIGADA</b><br /> Torbellino {num}</h5>
                 <p className="card-text">
-                  <b>Jefe de Brigada:</b>{" "}
-                  {brigada.jefe_brigada || "No asignado"}
+                  <b>JEFE DE BRIGADA</b> Carlos Martin Pinto Grisales
                   <br />
-                  <b>Descripción:</b> {brigada.descripcion || "Sin descripción"}
+                  <b>PARTICIPANTES</b> 25 Miembros
                   <br />
-                  <b>Fecha de creación:</b>{" "}
-                  {new Date(brigada.fecha_creacion).toLocaleDateString("es-CO")}
+                  <b>¿EN EXPEDICIÓN?</b>
+                  <div id="estado-brigada">Están en expedición</div>
                 </p>
-                <button className="btn btn-primary">
-                  Ver detalles
-                </button>
+                <a href="#" className="btn btn-primary">Ver Brigada</a>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {ruta === "CrearBrigada" && (
+        <div className="eeee">
+          <h1>Crear Brigada</h1>
+          <p>Aquí puedes crear una nueva brigada.</p>
+          {/* Aquí va tu formulario */}
+        </div>
+      )}
     </div>
   );
 };
