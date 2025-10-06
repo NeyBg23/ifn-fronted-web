@@ -1,109 +1,31 @@
-
-body {
-    background: #ffff;
-    align-items: center;
-}
-
-.custom-navbar {
-  position: absolute;
-  background-color: #2c5f2d;
-}
 .cards-container-brigadas {
-  position: relative;
-}
-.card {
-  --bs-card-spacer-y: 0rem;
-  --bs-card-spacer-x: 0rem;
-  --bs-card-border-width: 1px;
-  border-radius: 50px;
-  display: inline-block;
-  min-width: 400px;
-  padding: 1.5em;
-  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.card-text{
-  color: black;
+.brigada-card {
+  background-color: #1f2937;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card-title{
-  margin-top: 10PX;
-  color: black;
+.brigada-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 100, 0.4);
 }
 
-.home-container {
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
-
-.content {
-  padding-top: 100px !important; /*El Important es para darle importancia a esta linea antes que el css de Bootstrap*/
-}
-
-.nav-link.active {
-  color: #17c42e !important;
-  font-weight: bold;
-}
-
-.nav-link {
-  color: white !important;
-  text-decoration: none;
-}
-
-.nav-link:hover {
-  color: #17c42e !important;
-}
-
-.navbar-brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.offcanvas.offcanvas-end {
-  right:auto;
-  transform: translateX(0);
-  top: auto;
-  left: -10px;
-}
-.offcanvas.offcanvas-end.custom-navbar {
-  background-color: #2c5f2d !important;
-  align-items: center;
-  width: 260px;
-}
-
-.navbar-spacer {
-  width: 18px;
-}
-.offcanvas-end .custom-navbar {
-  left: inherit;
+.colorBody {
+  background-color: #374151;
+  padding: 1rem;
+  border-radius: 0 0 1rem 1rem;
 }
 
 .crearBrigada {
-  border-radius: 50px;
-  width:fit-content;
-  margin: 50px;
-}
-
-.crearBrigada .btn-success {
-  padding: 20px;
-  font-size: 15px;
-
-}
-
-.pe-3 {
-  align-items: anchor-center;
-}
-
-.card-img-top {
-  border-radius: 40px;
-}
-
-.border-3 {
-  width: 235px;
-  border-color: #17c42e !important;
-}
-
-.offcanvas, .offcanvas-lg, .offcanvas-md, .offcanvas-sm, .offcanvas-xl, .offcanvas-xxl {
-  --bs--bs-offcanvas-padding-x: 2em;
-  --bs-offcanvas-padding-y: 2em;
+  margin-top: 2rem;
+  text-align: center;
 }
