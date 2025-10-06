@@ -60,7 +60,6 @@ function Login() {
 
       // 🔍 Esperamos la respuesta del backend
       const data = await res.json(); // convertimos la respuesta a JSON
-      console.log(data); // 🕵️‍♀️ Vemos qué nos responde el backend
       setLoading(false); // dejamos de mostrar "cargando..."
 
       // ⚠️ Si algo sale mal (usuario o contraseña incorrectos)
