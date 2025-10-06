@@ -40,6 +40,8 @@ function ProtectedRoute({ children }) {
           credentials: "include", // opcional si tu backend lo requiere
         });
 
+        const data = await res.json();
+        console.log("Respuesta validación token:", data);
 
         if (!res.ok) {
           // Token inválido o expirado
