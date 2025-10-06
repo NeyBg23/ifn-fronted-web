@@ -58,6 +58,8 @@ function Login() {
         }),
       });
 
+      alert(res);
+
       // 🔍 Esperamos la respuesta del backend
       const data = await res.json(); // convertimos la respuesta a JSON
       setLoading(false); // dejamos de mostrar "cargando..."
