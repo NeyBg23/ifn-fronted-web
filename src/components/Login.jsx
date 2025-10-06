@@ -58,7 +58,7 @@ function Login() {
         }),
       });
 
-      alert(res);
+      console.log(res);
 
       // 🔍 Esperamos la respuesta del backend
       const data = await res.json(); // convertimos la respuesta a JSON
