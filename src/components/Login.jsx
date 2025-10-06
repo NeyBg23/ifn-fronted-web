@@ -41,6 +41,7 @@ function Login() {
         }),
       });
 
+      console.log("Response status:", res); // Verificar el estado de la respuesta
       // parsear respuesta JSON (puede contener error o session)
       const data = await res.json();
       setLoading(false);
