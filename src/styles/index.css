@@ -14,7 +14,7 @@ body {
 
 /* Footer Styles */
 footer {
-    background-color: var(--dark-color);
+    background-color: #1B5E20;
     color: var(--light-text);
     padding: 2rem 0;
 }
