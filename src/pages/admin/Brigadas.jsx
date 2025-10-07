@@ -62,258 +62,128 @@ export default Brigadas;
  *    almacenado en localStorage (obtenido durante el login).
  */
 
-/**
- * 🌳 Brigadas.jsx
- * ------------------------------------------------------------
- * Página principal para gestionar Brigadas y Empleados (Brigadistas)
- * - Lista todos los usuarios registrados en la base.
- * - Permite crear nuevos empleados.
- * - Permite ver o crear brigadas (agrupaciones de empleados).
- * 
- * 📦 Se comunica con el microservicio `brigada-service-ifn`
- *    a través del endpoint definido en VITE_BRIGADA_SERVICE_URL.
- * 
- * 🔐 Las peticiones están protegidas: se envía el token JWT
- *    almacenado en localStorage (obtenido durante el login).
- */
-
 import { useState, useEffect } from "react";
-import "../../styles/Brigadas.css";  // 🎨 Estilos visuales para la interfaz
+import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
 
 const Brigadas = () => {
+  const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
+  const [usuarios, setUsuarios] = useState([]);  // 🧸 Lista de empleados de la base
+  const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
+  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
 
-  // 🧭 Estado de navegación interna (qué vista mostrar: lista o formulario)
-  const [ruta, setRuta] = useState("Brigadas");
-
-  // 🧱 Estados para almacenar datos desde la base (vía backend)
-  const [usuarios, setUsuarios] = useState([]);   // Lista de empleados/brigadistas
-  const [brigadas, setBrigadas] = useState([]);   // Lista de brigadas
-
-  // 🌍 URL base del backend de Brigadas (se puede configurar en el .env)
-  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
-
-  // 🧙‍♀️ useEffect: se ejecuta una vez al cargar la página
+  // 🧸 Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
   useEffect(() => {
-    // Función asincrónica para traer datos desde el backend
     const fetchData = async () => {
-      const session = JSON.parse(localStorage.getItem("session")); // Token del login
-      if (!session) {
-        alert("¡Necesitas iniciar sesión para acceder a esta página! 🔑");
-        return;
-      }
+      const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
+      if (!session) return alert("¡Necesitas login! 🔑");
 
-      try {
-        // 👥 Solicitud para obtener la lista de empleados (usuarios)
-        const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
+      // Pide empleados
+      const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }  // 🧸 Envía la llave para que backend deje pasar
+      });
+      
+      const dataUsuarios = await resUsuarios.json();
+      setUsuarios(dataUsuarios.data || []);  // 🧸 Guarda en la lista
 
-        // ⚠️ Si el servidor responde con HTML (error), evitar crash del frontend
-        if (!resUsuarios.ok) throw new Error("No se pudo obtener usuarios");
-        const dataUsuarios = await resUsuarios.json();
-        setUsuarios(dataUsuarios.data || []);  // Guarda resultado en el estado
-
-        // 🛡️ Solicitud para obtener la lista de brigadas
-        const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-        if (!resBrigadas.ok) throw new Error("No se pudo obtener brigadas");
-        const dataBrigadas = await resBrigadas.json();
-        setBrigadas(dataBrigadas.data || []);
-      } catch (error) {
-        console.error("❌ Error al obtener datos:", error.message);
-        alert("Error al conectar con el servidor 😔");
-      }
+      // Pide brigadas
+      const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+      const dataBrigadas = await resBrigadas.json();
+      setBrigadas(dataBrigadas.data || []);
     };
+    fetchData();  // 🧸 Llama a la función
+  }, []);  // 🧸 Solo corre una vez al entrar
 
-    fetchData();  // Ejecuta la función al cargar
-  }, []); // 🔁 Solo se ejecuta una vez
-
-  // 🧾 Estado y funciones del formulario para crear nuevo empleado
+  // 🧸 Formulario para nuevo empleado (como tu imagen)
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
-    nombre_completo: "",
-    cargo: "",
-    region: "",
-    telefono: "",
-    correo: "",
-    fecha_ingreso: "",
-    descripcion: "",
+    nombre_completo: "", cargo: "", region: "", telefono: "", correo: "", fecha_ingreso: "", descripcion: ""
   });
 
-  // ✏️ Manejador para actualizar los campos del formulario
   const handleChangeEmpleado = (e) => {
-    setNuevoEmpleado({
-      ...nuevoEmpleado,
-      [e.target.name]: e.target.value,  // Actualiza campo correspondiente
-    });
+    setNuevoEmpleado({ ...nuevoEmpleado, [e.target.name]: e.target.value });  // 🧸 Guarda lo que escribes
   };
 
-  // 💾 Enviar nuevo empleado al backend
   const handleCrearEmpleado = async (e) => {
-    e.preventDefault(); // Evita recargar la página
+    e.preventDefault();  // 🧸 Evita recargar la página
     const session = JSON.parse(localStorage.getItem("session"));
-    if (!session) return alert("Debes iniciar sesión primero 🔑");
-
-    try {
-      const res = await fetch(`${API_URL}/api/usuarios`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(nuevoEmpleado),
-      });
-
-      if (res.ok) {
-        alert("✅ Empleado creado correctamente");
-        setRuta("Brigadas"); // Vuelve a la lista principal
-        // Opcional: volver a cargar los datos
-        // fetchData();
-      } else {
-        throw new Error("Error al crear el empleado");
-      }
-    } catch (error) {
-      console.error("❌ Error al crear empleado:", error.message);
-      alert("Error en el servidor al crear empleado 😔");
+    const res = await fetch(`${API_URL}/api/usuarios`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify(nuevoEmpleado)  // 🧸 Envía los datos al backend
+    });
+    if (res.ok) {
+      alert("¡Empleado creado! 🌟");
+      setRuta("Brigadas");  // 🧸 Vuelve a la lista
+      // Recarga datos para ver el nuevo
+      // Puedes llamar fetchData() de nuevo aquí
+    } else {
+      alert("¡Ups! Algo salió mal 😔");
     }
   };
 
-  // 🧱 Render principal
+  // 🧸 Similar para crear brigada (selecciona empleados de la lista)
+  // ... (agrega código similar para brigadas, con <select> para elegir jefe y brigadistas)
+
   return (
-    <div className="brigadas-container">
-      
-      {/* 🌳 VISTA 1: Lista general de brigadas y empleados */}
+    <div className="brigadas-container">  {/* 🧸 Contenedor principal, con CSS para fondo verde */}
       {ruta === "Brigadas" && (
         <div className="lista-brigadas">
           <h1>Brigadas del Bosque 🌳</h1>
-          <p>Aquí puedes ver todas las brigadas y empleados registrados.</p>
-
-          {/* Botones de navegación interna */}
-          <button className="btn-crear" onClick={() => setRuta("CrearEmpleado")}>
-            Crear Nuevo Empleado 👷
-          </button>
-          <button className="btn-crear" onClick={() => setRuta("CrearBrigada")}>
-            Crear Nueva Brigada 🛡️
-          </button>
-
-          {/* 👥 Lista de empleados como tarjetas */}
+          <p>Aquí ves las brigadas y empleados guardados en la base de datos.</p>
+          <button className="btn-crear" onClick={() => setRuta("CrearEmpleado")}>Crear Nuevo Empleado 👷</button>
+          <button className="btn-crear" onClick={() => setRuta("CrearBrigada")}>Crear Nueva Brigada 🛡️</button>
+          
+          {/* 🧸 Lista de empleados como tarjetas (refleja la base) */}
           <div className="cards-grid">
-            {usuarios.length === 0 && <p>No hay empleados registrados aún.</p>}
             {usuarios.map((user) => (
-              <div key={user.id} className="card-empleado">
-                <img
-                  src={user.foto_url || "default-foto.jpg"}
-                  alt="Foto"
-                  className="card-img"
-                />
+              <div key={user.id} className="card-empleado">  {/* 🧸 Cada uno es una tarjeta */}
+                <img src={user.foto_url || "default-foto.jpg"} alt="Foto" className="card-img" />
                 <h3>{user.nombre_completo}</h3>
-                <p><strong>Cargo:</strong> {user.cargo}</p>
-                <p><strong>Región:</strong> {user.region}</p>
+                <p>Cargo: {user.cargo}</p>
+                <p>Región: {user.region}</p>
+                {/* Más detalles */}
               </div>
             ))}
           </div>
-
-          {/* 🧩 (opcional) Render de brigadas en otra sección */}
-          <div className="cards-grid brigadas-grid">
-            {brigadas.map((b) => (
-              <div key={b.id} className="card-brigada">
-                <h3>{b.nombre}</h3>
-                <p>{b.descripcion}</p>
-              </div>
-            ))}
-          </div>
+          
+          {/* Similar para brigadas */}
         </div>
       )}
 
-      {/* 🧾 VISTA 2: Formulario para crear nuevo empleado */}
       {ruta === "CrearEmpleado" && (
-        <form className="form-empleado" onSubmit={handleCrearEmpleado}>
+        <form className="form-empleado" onSubmit={handleCrearEmpleado}>  {/* 🧸 Formulario como en tu imagen */}
           <h2>Registrar Nuevo Empleado 📝</h2>
-
+          
           <label>Nombre Completo:</label>
-          <input
-            type="text"
-            name="nombre_completo"
-            value={nuevoEmpleado.nombre_completo}
-            onChange={handleChangeEmpleado}
-            placeholder="Ej: Juan Perez"
-            required
-          />
-
+          <input type="text" name="nombre_completo" value={nuevoEmpleado.nombre_completo} onChange={handleChangeEmpleado} placeholder="Ej: Juan Perez" required />
+          
           <label>Cargo:</label>
-          <input
-            type="text"
-            name="cargo"
-            value={nuevoEmpleado.cargo}
-            onChange={handleChangeEmpleado}
-            placeholder="Ej: Ingeniero Forestal"
-          />
-
+          <input type="text" name="cargo" value={nuevoEmpleado.cargo} onChange={handleChangeEmpleado} placeholder="Ej: Ingeniero Forestal" />
+          
           <label>Región:</label>
-          <input
-            type="text"
-            name="region"
-            value={nuevoEmpleado.region}
-            onChange={handleChangeEmpleado}
-            placeholder="Ej: Amazonas"
-          />
-
+          <input type="text" name="region" value={nuevoEmpleado.region} onChange={handleChangeEmpleado} placeholder="Ej: Amazonas" />
+          
           <label>Teléfono:</label>
-          <input
-            type="text"
-            name="telefono"
-            value={nuevoEmpleado.telefono}
-            onChange={handleChangeEmpleado}
-            placeholder="Ej: +57 312 456 7890"
-          />
-
+          <input type="text" name="telefono" value={nuevoEmpleado.telefono} onChange={handleChangeEmpleado} placeholder="Ej: +57 312 456 7890" />
+          
           <label>Correo:</label>
-          <input
-            type="email"
-            name="correo"
-            value={nuevoEmpleado.correo}
-            onChange={handleChangeEmpleado}
-            placeholder="Ej: juan.perez@ifn.gov.co"
-            required
-          />
-
+          <input type="email" name="correo" value={nuevoEmpleado.correo} onChange={handleChangeEmpleado} placeholder="Ej: juan.perez@ifn.gov.co" required />
+          
           <label>Fecha de Ingreso:</label>
-          <input
-            type="date"
-            name="fecha_ingreso"
-            value={nuevoEmpleado.fecha_ingreso}
-            onChange={handleChangeEmpleado}
-          />
-
-          {/* Archivos (por implementar en backend con Supabase Storage) */}
+          <input type="date" name="fecha_ingreso" value={nuevoEmpleado.fecha_ingreso} onChange={handleChangeEmpleado} />
+          
           <label>Subir Imagen:</label>
-          <input type="file" accept="image/*" />
-
+          <input type="file" accept="image/*" />  {/* 🧸 Para subir foto, envía al backend después */}
+          
           <label>Hoja de Vida (PDF):</label>
-          <input type="file" accept=".pdf" />
-
-          <button type="submit" className="btn-guardar">
-            Guardar Empleado 💾
-          </button>
-
-          <button
-            type="button"
-            className="btn-cancelar"
-            onClick={() => setRuta("Brigadas")}
-          >
-            Cancelar 🚪
-          </button>
+          <input type="file" accept=".pdf" />  {/* 🧸 Similar para PDF */}
+          
+          <button type="submit" className="btn-guardar">Guardar Empleado 💾</button>
         </form>
       )}
 
-      {/* 🛠️ VISTA 3: Formulario para crear nueva brigada (por implementar) */}
-      {ruta === "CrearBrigada" && (
-        <div className="form-brigada">
-          <h2>Crear Nueva Brigada 🛡️</h2>
-          <p>⚙️ En construcción...</p>
-          <button onClick={() => setRuta("Brigadas")}>Volver</button>
-        </div>
-      )}
+      {/* 🧸 Agrega similar para "CrearBrigada" con selects */}
     </div>
   );
 };
