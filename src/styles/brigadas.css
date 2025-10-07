@@ -13,7 +13,7 @@
 
 h1, h2 {
   color: #1B5E20;  /* Verde oscuro para títulos */
-}
+}  
 
 .btn-crear {
   background-color: #388E3C;  /* Verde botón */
@@ -24,7 +24,9 @@ h1, h2 {
   margin: 10px;
   cursor: pointer;  /* Mano al pasar */
 }
+ 
 
+/* Efecto hover para el botón */
 .btn-crear:hover {
   background-color: #2d5016;  /* Más oscuro al hover */
 }
