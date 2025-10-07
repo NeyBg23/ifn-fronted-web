@@ -71,8 +71,6 @@ const Brigadas = () => {
   const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
 
-  console.log("API_URL:", API_URL);  // 🧸 Verifica que la URL esté bien
-
   // 🧸 Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
   useEffect(() => {
     const fetchData = async () => {
@@ -80,7 +78,7 @@ const Brigadas = () => {
       if (!session) return alert("¡Necesitas login! 🔑");
 
       // Pide empleados
-      const resUsuarios = await fetch(`${API_URL}/usuarios`, {
+      const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
         headers: { Authorization: `Bearer ${session.access_token}` }  // 🧸 Envía la llave para que backend deje pasar
       });
       
@@ -88,7 +86,7 @@ const Brigadas = () => {
       setUsuarios(dataUsuarios.data || []);  // 🧸 Guarda en la lista
 
       // Pide brigadas
-      const resBrigadas = await fetch(`${API_URL}/brigadas`, {
+      const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
       const dataBrigadas = await resBrigadas.json();
@@ -109,7 +107,7 @@ const Brigadas = () => {
   const handleCrearEmpleado = async (e) => {
     e.preventDefault();  // 🧸 Evita recargar la página
     const session = JSON.parse(localStorage.getItem("session"));
-    const res = await fetch(`${API_URL}/usuarios`, {
+    const res = await fetch(`${API_URL}/api/usuarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
       body: JSON.stringify(nuevoEmpleado)  // 🧸 Envía los datos al backend
