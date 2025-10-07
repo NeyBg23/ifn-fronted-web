@@ -77,11 +77,19 @@ const Brigadas = () => {
       const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
 
+      console.log(session.access_token);
+
       // Pide empleados
+
       const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }  // 🧸 Envía la llave para que backend deje pasar
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        credentials: "include", // opcional si tu backend lo requiere
       });
-      
+
       const dataUsuarios = await resUsuarios.json();
       setUsuarios(dataUsuarios.data || []);  // 🧸 Guarda en la lista
 
