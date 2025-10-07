@@ -1,0 +1,87 @@
+/* src/styles/Brigadas.css */
+/* 🧸 Explicación: CSS es como pintar el castillo. Usamos colores verdes para el bosque, y clases para cada parte. */
+
+.brigadas-container {
+  background-color: #c5ebac;  /* 🧸 Fondo verde claro, como un bosque */
+  padding: 20px;  /* Espacio alrededor */
+  min-height: 100vh;  /* Ocupa toda la pantalla */
+}
+
+.lista-brigadas {
+  text-align: center;  /* Centra todo */
+}
+
+h1, h2 {
+  color: #1B5E20;  /* Verde oscuro para títulos */
+}
+
+.btn-crear {
+  background-color: #388E3C;  /* Verde botón */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;  /* Bordes redondos */
+  margin: 10px;
+  cursor: pointer;  /* Mano al pasar */
+}
+
+.btn-crear:hover {
+  background-color: #2d5016;  /* Más oscuro al hover */
+}
+
+.cards-grid {
+  display: grid;  /* Como una cuadrícula de cartas */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* Ajusta al tamaño */
+  gap: 20px;  /* Espacio entre cartas */
+}
+
+.card-empleado {
+  background: white;
+  border: 2px solid #4a7c59;  /* Borde verde */
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);  /* Sombra para profundidad */
+}
+
+.card-img {
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+}
+
+.form-empleado {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  max-width: 400px;  /* Ancho como en tu imagen */
+  margin: 0 auto;  /* Centrado */
+}
+
+.form-empleado label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #2d5016;
+}
+/*asda*/
+.form-empleado input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #8aac7d;  /* Borde verde claro */
+  border-radius: 5px;
+}
+
+.btn-guardar {
+  background: linear-gradient(135deg, #2d5016, #4a7c59);  /* Degradado verde */
+  color: white;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.btn-guardar:hover {
+  transform: scale(1.05);  /* Crece un poquito al hover */
+}
