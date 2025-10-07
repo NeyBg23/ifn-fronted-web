@@ -77,10 +77,7 @@ const Brigadas = () => {
       const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
 
-      console.log(session.access_token);
-
       // Pide empleados
-
       const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
         method: "GET",
         headers: {
