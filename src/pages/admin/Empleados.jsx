@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Upload, X, FileText, User, Mail, Phone, MapPin, CreditCard, FileUp } from "lucide-react";
 import "../../styles/Brigadas.css";  // 🧸 Reusa tus estilos
+import supabase from "../../db/supabase";
 
 const Empleados = () => {
   const navigate = useNavigate();
@@ -101,23 +102,32 @@ const Empleados = () => {
 
     // Si hay archivo, primero convertirlo a base64 y guardarlo en Supabase Storage
     let hojaVidaUrl = null;
+
     if (hojaVida) {
       try {
-        // Convertir archivo a base64 para enviarlo junto con los datos
-        const reader = new FileReader();
-        const base64Promise = new Promise((resolve, reject) => {
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(hojaVida);
-        });
-        const base64 = await base64Promise;
+        // Subir archivo al bucket 'hojas_de_vida' en Supabase
+        const filePath = `empleados/${Date.now()}_${hojaVida.name}`;
 
-        // Por ahora guardamos el nombre del archivo, luego puedes implementar la subida a Supabase Storage
-        hojaVidaUrl = hojaVida.name;
+        const { data, error } = await supabase.storage
+          .from("hojas_de_vida")
+          .upload(filePath, hojaVida);
+
+        if (error) {
+          console.error("Error al subir hoja de vida:", error);
+        } else {
+          // Obtener URL pública del archivo
+          const { data: publicUrlData } = supabase.storage
+            .from("hojas_de_vida")
+            .getPublicUrl(filePath);
+
+          hojaVidaUrl = publicUrlData.publicUrl;
+          console.log("Archivo subido con éxito:", hojaVidaUrl);
+        }
       } catch (error) {
         console.error("Error procesando archivo:", error);
       }
     }
+
 
     // Enviar solo JSON como espera el backend
     const res = await fetch(`${API_URL}/api/empleados`, {
@@ -128,7 +138,7 @@ const Empleados = () => {
       },
       body: JSON.stringify({
         ...nuevoEmpleado,
-        hoja_vida_nombre: hojaVidaUrl
+        hoja_vida_url: hojaVidaUrl,
       }),
     });
 
