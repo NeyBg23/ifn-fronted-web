@@ -32,8 +32,8 @@ body {
 }
 
 .home-container {
+  background-color: #c5ebac;
   min-height: 100vh;
-  background-color: #f8f9fa;
 }
 
 .content {

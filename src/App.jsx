@@ -9,6 +9,7 @@ import Conglomerados from "./pages/admin/Conglomerados";
 import Empleados from "./pages/admin/Empleados";
 import Perfil from "./pages/admin/Perfil";
 import HomeUser from "./pages/user/Home";
+import BrigadaDetalle from "./pages/admin/BrigadaDetalle";
 
 import "./styles/App.css";
 
@@ -28,6 +29,15 @@ function App() {
             </ProtectedRoute>
           }
         >
+          <Route
+            path="/admin/brigadas/:idbrigada"
+            element={
+              <ProtectedRoute>
+                <BrigadaDetalle />
+              </ProtectedRoute>
+            }
+          />
+
           <Route index element={<HomeAdmin />} /> {/* Ruta por defecto /admin */}
           <Route path="brigadas" element={<Brigadas />} /> {/* /admin/brigadas */}
           <Route path="conglomerados" element={<Conglomerados />} /> {/* /admin/conglomerados */}

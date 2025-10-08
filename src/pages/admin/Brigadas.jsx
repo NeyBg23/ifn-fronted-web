@@ -6,11 +6,12 @@
  * - Permite crear nuevos empleados.
  * - Permite ver o crear brigadas (agrupaciones de empleados).
  */
-
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
 
 const Brigadas = () => {
+  const navigate = useNavigate();
   const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
   const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
   const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
@@ -96,12 +97,17 @@ const Brigadas = () => {
             {brigadasFiltradas.map((brigada) => (
               <div key={brigada.id} className="card-brigada">
                 <h3>{brigada.nombre}</h3>
-                <p>Responsable: {brigada.jefe_brigada}</p>
+                <p>Responsable: {brigada.jefe_brigada || "No asignado"}</p>
                 <p>Región: {brigada.region}</p>
                 <p>Miembros: 5</p>
+                <p>Estado: <span className={`status-${brigada.estado.toLowerCase()}`}>
+                  {brigada.estado}
+                </span></p>
+                <br /> {/* Espacio antes del botón */}
                 <button
                   type="button"
                   className="btn btn-outline-success"
+                  onClick={() => navigate(`/admin/brigadas/${brigada.id}`)}
                 >
                   Ver Brigada
                 </button>
