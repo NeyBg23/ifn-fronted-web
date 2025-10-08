@@ -1,12 +1,17 @@
-# React + Vite
+# IFN Frontend Web
+Frontend para el Inventario Forestal Nacional (IFN) de Colombia.
+- Solicitado por UDI.
+- Stack: React + Vite.
+- Funciones: Gestión de brigadas/conglomerados, generación de informes.
+- Despliegue: Vercel.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Instalación
+npm install
+npm run dev
 
-Currently, two official plugins are available:
+## Estructura
+- src/components: UI para brigadas.
+- src/services: API calls (e.g., brigadas.js con Axios).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Despliegue
+Conecta a Vercel via GitHub.
