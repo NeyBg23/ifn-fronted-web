@@ -1,52 +1,3 @@
-// src/pages/Brigadas.jsx
-/*
-import React, { useEffect, useState } from "react";
-import { getBrigadas } from "../services/api";
-
-function Brigadas() {
-  const [brigadas, setBrigadas] = useState([]);
-
-  useEffect(() => {
-    const fetchBrigadas = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
-      const token = session?.access_token;
-
-      try {
-        const data = await getBrigadas(token);
-        setBrigadas(data);
-      } catch (err) {
-        console.error("Error al obtener brigadas:", err);
-      }
-    };
-
-    fetchBrigadas();
-  }, []);
-
-  return (
-    <div className="home-container">
-      <h2>📋 Lista de Brigadas</h2>
-      {brigadas.length === 0 ? (
-        <p>No hay brigadas registradas.</p>
-      ) : (
-        <ul>
-          {brigadas.map((b) => (
-            <li key={b.id}>
-              {b.nombre} — {b.ubicacion}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-export default Brigadas;
-*/
-// src/pages/admin/Brigadas.jsx
-// 🧸 Explicación: Esta es la habitación del admin. Hay botones para crear empleados y brigadas, como en un juego de construcción.
-
-// src/pages/admin/Brigadas.jsx
-// 🧸 Explicación: Esta es la página del admin. Como un mapa del tesoro: muestra listas y formularios. Usamos useState para guardar lo que escribes, y useEffect para cargar datos de la base.
 /**
  * 🌳 Brigadas.jsx
  * ------------------------------------------------------------
@@ -67,7 +18,6 @@ import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (cre
 
 const Brigadas = () => {
   const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
-  const [usuarios, setUsuarios] = useState([]);  // 🧸 Lista de empleados de la base
   const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
 
@@ -76,19 +26,6 @@ const Brigadas = () => {
     const fetchData = async () => {
       const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
-
-      // Pide empleados
-      const resUsuarios = await fetch(`${API_URL}/api/usuarios`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        credentials: "include", // opcional si tu backend lo requiere
-      });
-
-      const dataUsuarios = await resUsuarios.json();
-      setUsuarios(dataUsuarios.data || []);  // 🧸 Guarda en la lista
 
       // Pide brigadas
       const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
@@ -99,33 +36,6 @@ const Brigadas = () => {
     };
     fetchData();  // 🧸 Llama a la función
   }, []);  // 🧸 Solo corre una vez al entrar
-
-  // 🧸 Formulario para nuevo empleado (como tu imagen)
-  const [nuevoEmpleado, setNuevoEmpleado] = useState({
-    nombre_completo: "", cargo: "", region: "", telefono: "", correo: "", fecha_ingreso: "", descripcion: ""
-  });
-
-  const handleChangeEmpleado = (e) => {
-    setNuevoEmpleado({ ...nuevoEmpleado, [e.target.name]: e.target.value });  // 🧸 Guarda lo que escribes
-  };
-
-  const handleCrearEmpleado = async (e) => {
-    e.preventDefault();  // 🧸 Evita recargar la página
-    const session = JSON.parse(localStorage.getItem("session"));
-    const res = await fetch(`${API_URL}/api/usuarios`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-      body: JSON.stringify(nuevoEmpleado)  // 🧸 Envía los datos al backend
-    });
-    if (res.ok) {
-      alert("¡Empleado creado! 🌟");
-      setRuta("Brigadas");  // 🧸 Vuelve a la lista
-      // Recarga datos para ver el nuevo
-      // Puedes llamar fetchData() de nuevo aquí
-    } else {
-      alert("¡Ups! Algo salió mal 😔");
-    }
-  };
 
   // 🧸 Similar para crear brigada (selecciona empleados de la lista)
   // ... (agrega código similar para brigadas, con <select> para elegir jefe y brigadistas)
@@ -143,14 +53,12 @@ const Brigadas = () => {
             {brigadas.map((brigada) => (
               <div key={brigada.id} className="card-brigada">  {/* 🧸 Cada uno es una tarjeta */}
                 <h3>{brigada.nombre}</h3>
-                <p>Jefe: {brigada.jefe}</p>
-                <p>Miembros: {brigada.miembros.join(", ")}</p>
+                <p>Jefe: {brigada.jefe_brigada}</p>
+                <p>Miembros: 5</p>
                 {/* Más detalles */}
               </div>
             ))}
           </div>
-          
-          {/* Similar para brigadas */}
         </div>
       )}
 
