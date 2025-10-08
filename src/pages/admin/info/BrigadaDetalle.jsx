@@ -1,4 +1,3 @@
-// 📄 BrigadaDetalle.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -28,9 +27,7 @@ const BrigadaDetalle = () => {
   return (
     <div className="container mt-4">
 
-    <button type="button" className="btn btn-outline-danger" onClick={() => navigate(-1)}>{/* Volver */}
-        ⬅️ Volver
-    </button>
+      <button type="button" className="btn btn-outline-danger" onClick={() => navigate(-1)}>{/* Volver */} ⬅️ Volver</button>
 
       <h2>Brigada: {brigada.data.nombre}</h2>
       <p><strong>Responsable:</strong> {brigada.data.jefe_brigada || "No asignado"}</p>

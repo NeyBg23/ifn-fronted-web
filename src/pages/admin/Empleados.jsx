@@ -128,11 +128,11 @@ const Empleados = () => {
 
                 <h3>{empleado.nombre_completo}</h3>
                 <p><strong>Correo: </strong>{empleado.correo}</p>
-                <p><strong>Cédula: </strong>{empleado.cedula || "No disponible"}</p>
+                <p><strong>Cédula: </strong>{empleado.cedula || "No fue asignada"}</p>
                 <p><strong>Región: </strong>{empleado.region}</p>
                 <p><strong>Descripción: </strong>{empleado.descripcion}</p>
-                <p><strong>Teléfono: </strong>{empleado.telefono || "No disponible"}</p>
-                <p><strong>Fecha Ingreso: </strong>{empleado.fecha_ingreso || "No disponible"}</p>
+                <p><strong>Teléfono: </strong>{empleado.telefono || "No fue asignado"}</p>
+                <p><strong>Fecha Ingreso: </strong>{empleado.fecha_ingreso || "No fue asignada"}</p>
 
                 <br /> {/* Espacio antes del botón */}
 
