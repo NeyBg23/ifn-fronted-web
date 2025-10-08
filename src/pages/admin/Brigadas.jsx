@@ -135,18 +135,16 @@ const Brigadas = () => {
       {ruta === "Brigadas" && (
         <div className="lista-brigadas">
           <h1>Brigadas del Bosque 🌳</h1>
-          <p>Aquí ves las brigadas y empleados guardados en la base de datos.</p>
-          <button className="btn-crear" onClick={() => setRuta("CrearEmpleado")}>Crear Nuevo Empleado 👷</button>
+          <p>Aquí puedes ver las brigadas existentes.</p>
           <button className="btn-crear" onClick={() => setRuta("CrearBrigada")}>Crear Nueva Brigada 🛡️</button>
           
           {/* 🧸 Lista de empleados como tarjetas (refleja la base) */}
           <div className="cards-grid">
-            {usuarios.map((user) => (
-              <div key={user.id} className="card-empleado">  {/* 🧸 Cada uno es una tarjeta */}
-                <img src={user.foto_url || "default-foto.jpg"} alt="Foto" className="card-img" />
-                <h3>{user.nombre_completo}</h3>
-                <p>Cargo: {user.cargo}</p>
-                <p>Región: {user.region}</p>
+            {brigadas.map((brigada) => (
+              <div key={brigada.id} className="card-brigada">  {/* 🧸 Cada uno es una tarjeta */}
+                <h3>{brigada.nombre}</h3>
+                <p>Jefe: {brigada.jefe}</p>
+                <p>Miembros: {brigada.miembros.join(", ")}</p>
                 {/* Más detalles */}
               </div>
             ))}
@@ -156,39 +154,6 @@ const Brigadas = () => {
         </div>
       )}
 
-      {ruta === "CrearEmpleado" && (
-        <form className="form-empleado" onSubmit={handleCrearEmpleado}>  {/* 🧸 Formulario como en tu imagen */}
-          <h2>Registrar Nuevo Empleado 📝</h2>
-          
-          <label>Nombre Completo:</label>
-          <input type="text" name="nombre_completo" value={nuevoEmpleado.nombre_completo} onChange={handleChangeEmpleado} placeholder="Ej: Juan Perez" required />
-          
-          <label>Cargo:</label>
-          <input type="text" name="cargo" value={nuevoEmpleado.cargo} onChange={handleChangeEmpleado} placeholder="Ej: Ingeniero Forestal" />
-          
-          <label>Región:</label>
-          <input type="text" name="region" value={nuevoEmpleado.region} onChange={handleChangeEmpleado} placeholder="Ej: Amazonas" />
-          
-          <label>Teléfono:</label>
-          <input type="text" name="telefono" value={nuevoEmpleado.telefono} onChange={handleChangeEmpleado} placeholder="Ej: +57 312 456 7890" />
-          
-          <label>Correo:</label>
-          <input type="email" name="correo" value={nuevoEmpleado.correo} onChange={handleChangeEmpleado} placeholder="Ej: juan.perez@ifn.gov.co" required />
-          
-          <label>Fecha de Ingreso:</label>
-          <input type="date" name="fecha_ingreso" value={nuevoEmpleado.fecha_ingreso} onChange={handleChangeEmpleado} />
-          
-          <label>Subir Imagen:</label>
-          <input type="file" accept="image/*" />  {/* 🧸 Para subir foto, envía al backend después */}
-          
-          <label>Hoja de Vida (PDF):</label>
-          <input type="file" accept=".pdf" />  {/* 🧸 Similar para PDF */}
-          
-          <button type="submit" className="btn-guardar">Guardar Empleado 💾</button>
-        </form>
-      )}
-
-      {/* 🧸 Agrega similar para "CrearBrigada" con selects */}
     </div>
   );
 };

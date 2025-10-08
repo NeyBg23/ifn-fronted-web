@@ -32,10 +32,7 @@ function Login() {
    * Si estamos en producción → usamos la variable VITE_API_URL
    * (que debe estar configurada en Vercel)
    */
-  const API_URL =
-    import.meta.env.MODE === "development"
-      ? "/api" // para cuando trabajas localmente
-      : import.meta.env.VITE_API_URL || "/api"; // para cuando está en Vercel
+  const API_URL = import.meta.env.VITE_AUTH_SERVICE_URL || "http://localhost:5000"; // 🧙‍♂️ Modo mágico: elige la URL correcta
 
   /**
    * 🧩 Esta función se ejecuta cuando el usuario presiona "Ingresar al Sistema"
@@ -57,6 +54,9 @@ function Login() {
           password, // enviamos la contraseña
         }),
       });
+
+      alert("Petición enviada, esperando respuesta..."); // mensaje provisional
+      console.log("Respuesta recibida:", res); // 🕵️‍♀️ Vemos la respuesta del servidor
 
       // 🔍 Esperamos la respuesta del backend
       const data = await res.json(); // convertimos la respuesta a JSON
