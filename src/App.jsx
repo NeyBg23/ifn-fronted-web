@@ -1,40 +1,52 @@
-// 1️ IMPORTAR LAS HERRAMIENTAS NECESARIAS
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-// Importamos las páginas y componentes
-import Login from "./components/Login";   // Página de login (acceso)
-import HomeAdmin from "./pages/admin/Home";          // Página principal Admin (protegida)
-import HomeUser from "./pages/user/Home";          // Página principal Admin (protegida)
-import ProtectedRoute from "./components/ProtectedRoute"; // Envuelve rutas privadas
+import AdminLayout from "./pages/admin/AdminLayout";
+import HomeAdmin from "./pages/admin/Home";
+import Brigadas from "./pages/admin/Brigadas";
+import Conglomerados from "./pages/admin/Conglomerados";
+import Empleados from "./pages/admin/Empleados";
+import Perfil from "./pages/admin/Perfil";
+import HomeUser from "./pages/user/Home";
 
-// Estilos globales
 import "./styles/App.css";
 
-// 2️ DEFINIR EL COMPONENTE PRINCIPAL
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />   
-          <Route path="/admin" element={
-            <ProtectedRoute> 
-              <HomeAdmin />
+    <Router>
+      <Routes>
+        {/* Público */}
+        <Route path="/" element={<Login />} />
+
+        {/* Admin - layout común con navbar */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout /> {/* Layout con navbar */}
             </ProtectedRoute>
-            } 
-          />
-          <Route path="/user" element={
-            <ProtectedRoute> 
+          }
+        >
+          <Route index element={<HomeAdmin />} /> {/* Ruta por defecto /admin */}
+          <Route path="brigadas" element={<Brigadas />} /> {/* /admin/brigadas */}
+          <Route path="conglomerados" element={<Conglomerados />} /> {/* /admin/conglomerados */}
+          <Route path="empleados" element={<Empleados />} /> {/* /admin/empleados */}
+          <Route path="perfil" element={<Perfil />} /> {/* /admin/perfil */}
+        </Route>
+
+        {/* User */}
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute>
               <HomeUser />
             </ProtectedRoute>
-            } 
-          />
-        </Routes>
-      </Router>
-    </div>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
-
-// 3️ EXPORTAR EL COMPONENTE PARA USARLO EN OTROS LADOS
 export default App;
