@@ -37,8 +37,7 @@ const Brigadas = () => {
     fetchData();  // 🧸 Llama a la función
   }, []);  // 🧸 Solo corre una vez al entrar
 
-  // 🧸 Similar para crear brigada (selecciona empleados de la lista)
-  // ... (agrega código similar para brigadas, con <select> para elegir jefe y brigadistas)
+
 
   return (
     <div className="brigadas-container">  {/* 🧸 Contenedor principal, con CSS para fondo verde */}
@@ -46,16 +45,37 @@ const Brigadas = () => {
         <div className="lista-brigadas">
           <h1>Brigadas del Bosque 🌳</h1>
           <p>Aquí puedes ver las brigadas existentes.</p>
+
+          <div className="card p-4 mb-4">
+              <h5 className="mb-3">🔎 Filtrar Brigadas</h5>
+              <div className="row g-3">
+                <div className="col-md-4">
+                  <input type="text" id="filtroNombre" className="form-control" placeholder="Buscar por nombre..."/>
+                </div>
+                <div className="col-md-4 mb-2">
+                    <select id="filtroRegion" className="form-select">
+                    <option value="">Todas las regiones</option>
+                    <option value="Amazonía">Amazonía</option>
+                    <option value="Pacífico">Pacífico</option>
+                    <option value="Andina">Andina</option>
+                    <option value="Caribe">Caribe</option>
+                    </select>
+                </div>
+              </div>
+            </div>
+          <p>Aquí puedes crear una nueva brigada.</p>
           <button className="btn-crear" onClick={() => setRuta("CrearBrigada")}>Crear Nueva Brigada 🛡️</button>
           
-          {/* 🧸 Lista de empleados como tarjetas (refleja la base) */}
+          {/* 🧸 Lista de brigadas como tarjetas (refleja la base) */}
           <div className="cards-grid">
             {brigadas.map((brigada) => (
               <div key={brigada.id} className="card-brigada">  {/* 🧸 Cada uno es una tarjeta */}
                 <h3>{brigada.nombre}</h3>
-                <p>Jefe: {brigada.jefe_brigada}</p>
+                <p>Responsable: {brigada.jefe_brigada}</p>
+                <p>Región: Andina</p>
                 <p>Miembros: 5</p>
                 {/* Más detalles */}
+                <button type="button" className="btn btn-outline-success">Ver Brigada</button>
               </div>
             ))}
           </div>

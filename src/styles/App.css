@@ -2,7 +2,9 @@
   margin: 0 auto;
   text-align: center;
 }
-
+.content {
+  background-color: #c5ebac;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

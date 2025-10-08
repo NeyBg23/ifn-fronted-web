@@ -2,16 +2,11 @@
 /* 🧸 Explicación: CSS es como pintar el castillo. Usamos colores verdes para el bosque, y clases para cada parte. */
 
 .brigadas-container {
-  background-color: #c5ebac;  /* 🧸 Fondo verde claro, como un bosque */
   padding: 20px;  /* Espacio alrededor */
   min-height: 100vh;  /* Ocupa toda la pantalla */
 }
 
-.lista-brigadas {
-  text-align: center;  /* Centra todo */
-}
-
-h1, h2 {
+h1, h2, h3 {
   color: #1B5E20;  /* Verde oscuro para títulos */
 }
 
@@ -21,55 +16,40 @@ h1, h2 {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;  /* Bordes redondos */
-  margin: 10px;
+  margin: 10px; /* Espacio alrededor */
   cursor: pointer;  /* Mano al pasar */
 }
 
 .btn-crear:hover {
   background-color: #2d5016;  /* Más oscuro al hover */
 }
+ 
+.card { /* Tarjeta individual */
+  background-color: #e8f8e6 !important;
+  border: 1px solid #0c5c20 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover, .card-brigada:hover { /* Efecto al pasar el ratón */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
 
 .cards-grid {
-  display: grid;  /* Como una cuadrícula de cartas */
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* Ajusta al tamaño */
-  gap: 20px;  /* Espacio entre cartas */
+  display: flex;  /* Como una cuadrícula de cartas */
+  margin-top: 2%; /* Espacio arriba */
+  justify-content: center; /* Centrado */
+  gap: 20px;  /* Espacio entre tarjetas */
 }
 
-.card-empleado {
-  background: white;
-  border: 2px solid #4a7c59;  /* Borde verde */
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.1);  /* Sombra para profundidad */
-}
-
-.card-img {
-  width: 100%;
-  height: 150px;
-  border-radius: 10px;
-}
-
-.form-empleado {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  max-width: 400px;  /* Ancho como en tu imagen */
-  margin: 0 auto;  /* Centrado */
-}
-
-.form-empleado label {
-  display: block;
-  margin: 10px 0 5px;
-  font-weight: bold;
-  color: #2d5016;
-}
-/*asda*/
-.form-empleado input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #8aac7d;  /* Borde verde claro */
-  border-radius: 5px;
+.card-brigada {
+  background: #e8f8e6;  /* Fondo blanco para cada tarjeta */
+  padding: 30px; /* Espacio dentro */
+  border-radius: 30px;  /* Bordes redondeados */
+  box-shadow: 0 30px 50px rgba(0,0,0,0.1);  /* Sombra suave */
+  text-align: center;
+  width: 20%; /* Ancho fijo para uniformidad */
 }
 
 .btn-guardar {
