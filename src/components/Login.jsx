@@ -55,9 +55,6 @@ function Login() {
         }),
       });
 
-      alert("Petición enviada, esperando respuesta..."); // mensaje provisional
-      console.log("Respuesta recibida:", res); // 🕵️‍♀️ Vemos la respuesta del servidor
-
       // 🔍 Esperamos la respuesta del backend
       const data = await res.json(); // convertimos la respuesta a JSON
       setLoading(false); // dejamos de mostrar "cargando..."
