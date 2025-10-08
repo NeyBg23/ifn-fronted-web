@@ -18,6 +18,10 @@ h1, h2, h3 {
   background-color: #d1e7dd;
   color: #0f5132;
 }
+.status-en-espera {
+  background-color: #cfe2ff;
+  color: #084298;
+}
 
 .btn-crear {
   background-color: #388E3C;  /* Verde botón */
