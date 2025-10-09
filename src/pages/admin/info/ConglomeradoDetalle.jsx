@@ -5,7 +5,7 @@ const ConglomeradoDetalle = () => {
     const { idconglomerado } = useParams(); // 🧭 obtiene el parámetro de la URL
     const navigate = useNavigate();
     const [conglomerado, setConglomerado] = useState(null);
-
+// test
     useEffect(() => {
         const fetchConglomerado = async () => {
             const session = JSON.parse(localStorage.getItem("session"));
