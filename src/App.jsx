@@ -12,6 +12,7 @@ import HomeUser from "./pages/user/Home";
 
 import BrigadaDetalle from "./pages/admin/info/BrigadaDetalle"; 
 import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
+import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
 
 import "./styles/App.css";
 
@@ -44,6 +45,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <EmpleadoDetalle />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/conglomerados/:idconglomerado"
+            element={
+              <ProtectedRoute>
+                <ConglomeradoDetalle />
               </ProtectedRoute>
             }
           />
