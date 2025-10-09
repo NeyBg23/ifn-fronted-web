@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -22,25 +21,6 @@ const EmpleadoDetalle = () => {
 
         const data = await res.json();
         setEmpleado(data?.data || null);
-
-        // ✅ Si el empleado tiene hoja de vida, generamos el signed URL
-        if (data?.data?.hoja_vida_url) {
-          const nombreArchivo = encodeURIComponent(
-            data.data.hoja_vida_url.split("/").pop()
-          );
-
-          const resSigned = await fetch(
-            `${API_URL}/api/hoja-vida/${nombreArchivo}`,
-            {
-              headers: { Authorization: `Bearer ${session?.access_token}` },
-            }
-          );
-
-          const signedData = await resSigned.json();
-          if (signedData?.signedUrl) {
-            setSignedUrl(signedData.signedUrl);
-          }
-        }
       } catch (error) {
         console.error("❌ Error cargando empleado:", error);
       } finally {
@@ -74,7 +54,7 @@ const EmpleadoDetalle = () => {
 
       {signedUrl ? (
         <a
-          href={signedUrl}
+          href="https://medium.com/@diego.coder/introducción-a-typescript-7add491e256"
           className="btn btn-primary mt-3"
           target="_blank"
           rel="noopener noreferrer"
