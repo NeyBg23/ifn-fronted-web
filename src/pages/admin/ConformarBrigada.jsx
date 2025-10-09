@@ -8,7 +8,8 @@ const ConformarBrigada = () => {
   const [descripcion, setDescripcion] = useState("");
   const [region, setRegion] = useState("");
   const [filtroNombre, setFiltroNombre] = useState("");
-  const [filtroEspecialidad, setFiltroEspecialidad] = useState("");
+  const [filtroRegion, setFiltroRegion] = useState("");
+  const [filtroCedula, setFiltroCedula] = useState("");
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
@@ -54,12 +55,10 @@ const ConformarBrigada = () => {
   }, []);
 
   const empleadosFiltrados = empleados.filter((emp) => {
-    const coincideNombre = `${emp.nombre} ${emp.apellido}`
-      .toLowerCase()
-      .includes(filtroNombre.toLowerCase());
-    const coincideEspecialidad =
-      filtroEspecialidad === "" || emp.especialidad === filtroEspecialidad;
-    return coincideNombre && coincideEspecialidad;
+    const coincideNombre = `${emp.nombre_completo}`.toLowerCase().includes(filtroNombre.toLowerCase());
+    const coincideCedula = `${emp.cedula}`.toLowerCase().includes(filtroCedula.toLowerCase());
+    const coincideRegion = filtroRegion === "" || emp.region === filtroRegion;
+    return coincideNombre && coincideRegion && coincideCedula;
   });
 
   const toggleRol = (empleadoId, rol) => {
@@ -188,7 +187,7 @@ const ConformarBrigada = () => {
               >
                 <option value="">Seleccionar región</option>
                 <option value="Amazonía">Amazonía</option>
-                <option value="Pacífico">Pacífico</option>
+                <option value="Pacífico">Caribe</option>
                 <option value="Andina">Andina</option>
                 <option value="Caribe">Caribe</option>
                 <option value="Orinoquía">Orinoquía</option>
@@ -247,34 +246,46 @@ const ConformarBrigada = () => {
         </div>
       </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title mb-3">🔎 Filtrar Empleados</h5>
-          <div className="row g-3">
-            <div className="col-md-6">
-              <input
+
+
+
+      <div className="card p-4 mb-4">
+        <h5 className="mb-3">🔎 Filtrar Empleados</h5>
+        <div className="row g-3">
+        <div className="col-md-4">
+            <input
                 type="text"
                 className="form-control"
                 placeholder="Buscar por nombre..."
                 value={filtroNombre}
                 onChange={(e) => setFiltroNombre(e.target.value)}
-              />
-            </div>
-            <div className="col-md-6">
-              <select
-                className="form-select"
-                value={filtroEspecialidad}
-                onChange={(e) => setFiltroEspecialidad(e.target.value)}
-              >
-                <option value="">Todas las especialidades</option>
-                <option value="Forestal">Forestal</option>
-                <option value="Biología">Biología</option>
-                <option value="Topografía">Topografía</option>
-                <option value="Logística">Logística</option>
-              </select>
-            </div>
-          </div>
+            />
         </div>
+        <div className="col-md-4">
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Buscar por cedula..."
+                value={filtroCedula}
+                onChange={(e) => setFiltroCedula(e.target.value)}
+            />
+        </div>
+        <div className="col-md-4">
+            <select
+            className="form-select"
+            value={filtroRegion}
+            onChange={(e) => setFiltroRegion(e.target.value)}
+            >
+            <option value="">Seleccionar región</option>
+            <option value="Amazonía">Amazonía</option>
+            <option value="Pacífico">Caribe</option>
+            <option value="Andina">Andina</option>
+            <option value="Caribe">Caribe</option>
+            <option value="Orinoquía">Orinoquía</option>
+            </select>
+        </div>
+        </div>
+
       </div>
 
       <h5 className="mb-3">Seleccionar Empleados</h5>
