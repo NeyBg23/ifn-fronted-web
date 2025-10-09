@@ -5,12 +5,14 @@ const EmpleadoDetalle = () => {
   const { idempleado } = useParams();
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
+  const [signedUrl, setSignedUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEmpleado = async () => {
       const session = JSON.parse(localStorage.getItem("session"));
-      const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
+      const API_URL =
+        import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
       try {
         const res = await fetch(`${API_URL}/api/empleados/${idempleado}`, {
@@ -19,6 +21,25 @@ const EmpleadoDetalle = () => {
 
         const data = await res.json();
         setEmpleado(data?.data || null);
+
+        // ✅ Si el empleado tiene hoja de vida, generamos el signed URL
+        if (data?.data?.hoja_vida_url) {
+          const nombreArchivo = encodeURIComponent(
+            data.data.hoja_vida_url.split("/").pop()
+          );
+
+          const resSigned = await fetch(
+            `${API_URL}/api/hoja-vida/${nombreArchivo}`,
+            {
+              headers: { Authorization: `Bearer ${session?.access_token}` },
+            }
+          );
+
+          const signedData = await resSigned.json();
+          if (signedData?.signedUrl) {
+            setSignedUrl(signedData.signedUrl);
+          }
+        }
       } catch (error) {
         console.error("❌ Error cargando empleado:", error);
       } finally {
@@ -49,6 +70,21 @@ const EmpleadoDetalle = () => {
       <p><strong>Teléfono:</strong> {empleado.telefono || "No asignado"}</p>
       <p><strong>Fecha Ingreso:</strong> {empleado.fecha_ingreso || "No asignada"}</p>
       <p><strong>Cédula:</strong> {empleado.cedula || "No asignada"}</p>
+
+      {signedUrl ? (
+        <a
+          href={signedUrl}
+          className="btn btn-primary mt-3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📄 Ver Hoja de Vida
+        </a>
+      ) : empleado.hoja_vida_url ? (
+        <p className="text-muted mt-3">Generando enlace seguro...</p>
+      ) : (
+        <p className="text-muted mt-3">No tiene hoja de vida cargada.</p>
+      )}
     </div>
   );
 };
