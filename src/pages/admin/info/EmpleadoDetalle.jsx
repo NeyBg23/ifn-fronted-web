@@ -5,14 +5,12 @@ const EmpleadoDetalle = () => {
   const { idempleado } = useParams();
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
-  const [signedUrl, setSignedUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEmpleado = async () => {
       const session = JSON.parse(localStorage.getItem("session"));
-      const API_URL =
-        import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
+      const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
       try {
         const res = await fetch(`${API_URL}/api/empleados/${idempleado}`, {
@@ -51,21 +49,6 @@ const EmpleadoDetalle = () => {
       <p><strong>Teléfono:</strong> {empleado.telefono || "No asignado"}</p>
       <p><strong>Fecha Ingreso:</strong> {empleado.fecha_ingreso || "No asignada"}</p>
       <p><strong>Cédula:</strong> {empleado.cedula || "No asignada"}</p>
-
-      {signedUrl ? (
-        <a
-          href="https://medium.com/@diego.coder/introducción-a-typescript-7add491e256"
-          className="btn btn-primary mt-3"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          📄 Ver Hoja de Vida
-        </a>
-      ) : empleado.hoja_vida_url ? (
-        <p className="text-muted mt-3">Generando enlace seguro...</p>
-      ) : (
-        <p className="text-muted mt-3">No tiene hoja de vida cargada.</p>
-      )}
     </div>
   );
 };
