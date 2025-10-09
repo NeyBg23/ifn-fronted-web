@@ -7,7 +7,6 @@ const Conglomerados = () => {
   const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
   const [conglomerados, setConglomerado] = useState([]);  // 🧸 Lista de conglomerados
   const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
-  const [filtroRegion, setFiltroRegion] = useState(""); // 🧸 Estado para el filtro de región
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
 
