@@ -66,7 +66,7 @@ const EmpleadoDetalle = () => {
       </button>
 
       <h2>Empleado: {empleado.nombre_completo}</h2>
-      <p><strong>Correo:</strong> {empleado.correo || "No asignado"}</p>
+      <p><strong>Correo:eeeeeee</strong> {empleado.correo || "No asignado"}</p>
       <p><strong>Región:</strong> {empleado.region}</p>
       <p><strong>Descripción:</strong> {empleado.descripcion || "No asignada"}</p>
       <p><strong>Teléfono:</strong> {empleado.telefono || "No asignado"}</p>
