@@ -76,7 +76,7 @@ const EmpleadoDetalle = () => {
       {signedUrl ? (
         <a
           href={signedUrl}
-          className="btn btn-primary mt-3"
+          className="btn btn-success mt-3"
           target="_blank"
           rel="noopener noreferrer"
         >
