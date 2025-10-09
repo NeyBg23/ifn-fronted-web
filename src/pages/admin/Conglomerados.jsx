@@ -4,7 +4,6 @@ import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (cre
 
 const Conglomerados = () => {
   const navigate = useNavigate();
-  const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
   const [conglomerados, setConglomerado] = useState([]);  // 🧸 Lista de conglomerados
   const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
   const [filtroRegion, setFiltroRegion] = useState(""); // 🧸 Estado para el filtro de región
@@ -51,16 +50,14 @@ const Conglomerados = () => {
               <div className="col-md-4">
                 <input
                   type="text"
-                  id="filtroNombre"
                   className="form-control"
                   placeholder="Buscar por nombre..."
                   value={filtroNombre}
                   onChange={(e) => setFiltroNombre(e.target.value)}
                 />
               </div>
-              <div className="col-md-4 mb-2">
+              <div className="col-md-4">
                 <select
-                  id="filtroRegion"
                   className="form-select"
                   value={filtroRegion}
                   onChange={(e) => setFiltroRegion(e.target.value)}

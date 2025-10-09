@@ -247,45 +247,42 @@ const ConformarBrigada = () => {
       </div>
 
 
-
-
       <div className="card p-4 mb-4">
         <h5 className="mb-3">🔎 Filtrar Empleados</h5>
         <div className="row g-3">
-        <div className="col-md-4">
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Buscar por nombre..."
-                value={filtroNombre}
-                onChange={(e) => setFiltroNombre(e.target.value)}
-            />
+            <div className="col-md-4">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Buscar por nombre..."
+                    value={filtroNombre}
+                    onChange={(e) => setFiltroNombre(e.target.value)}
+                />
+            </div>
+            <div className="col-md-4">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Buscar por cedula..."
+                    value={filtroCedula}
+                    onChange={(e) => setFiltroCedula(e.target.value)}
+                />
+            </div>
+            <div className="col-md-4">
+                <select
+                className="form-select"
+                value={filtroRegion}
+                onChange={(e) => setFiltroRegion(e.target.value)}
+                >
+                <option value="">Seleccionar región</option>
+                <option value="Amazonía">Amazonía</option>
+                <option value="Pacífico">Caribe</option>
+                <option value="Andina">Andina</option>
+                <option value="Caribe">Caribe</option>
+                <option value="Orinoquía">Orinoquía</option>
+                </select>
+            </div>
         </div>
-        <div className="col-md-4">
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Buscar por cedula..."
-                value={filtroCedula}
-                onChange={(e) => setFiltroCedula(e.target.value)}
-            />
-        </div>
-        <div className="col-md-4">
-            <select
-            className="form-select"
-            value={filtroRegion}
-            onChange={(e) => setFiltroRegion(e.target.value)}
-            >
-            <option value="">Seleccionar región</option>
-            <option value="Amazonía">Amazonía</option>
-            <option value="Pacífico">Caribe</option>
-            <option value="Andina">Andina</option>
-            <option value="Caribe">Caribe</option>
-            <option value="Orinoquía">Orinoquía</option>
-            </select>
-        </div>
-        </div>
-
       </div>
 
       <h5 className="mb-3">Seleccionar Empleados</h5>
