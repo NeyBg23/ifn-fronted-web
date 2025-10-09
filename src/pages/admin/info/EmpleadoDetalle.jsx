@@ -21,7 +21,6 @@ const EmpleadoDetalle = () => {
 
         const data = await res.json();
 
-        console.log(data);
         setEmpleado(data?.data || null);
 
         // ✅ Si el empleado tiene hoja de vida, generamos el signed URL
@@ -38,6 +37,7 @@ const EmpleadoDetalle = () => {
           );
 
           const signedData = await resSigned.json();
+          console.log(signedData);
           if (signedData?.signedUrl) {
             setSignedUrl(signedData.signedUrl);
           }
