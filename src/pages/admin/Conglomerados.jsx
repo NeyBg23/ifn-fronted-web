@@ -7,6 +7,7 @@ const Conglomerados = () => {
   const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
   const [conglomerados, setConglomerado] = useState([]);  // 🧸 Lista de conglomerados
   const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
+  const [filtroRegion, setFiltroRegion] = useState(""); // 🧸 Estado para el filtro de región
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
 
@@ -31,20 +32,21 @@ const Conglomerados = () => {
     const coincideNombre = conglomerado.nombre
       ?.toLowerCase()
       .includes(filtroNombre.toLowerCase());
+    const coincideRegion =
+      filtroRegion === "" || conglomerado.region === filtroRegion;
 
-    return coincideNombre;
+    return coincideNombre && coincideRegion;
   });
 
   return (
     <div className="brigadas-container">  {/* 🧸 Contenedor principal, con CSS para fondo verde */}
-      {ruta === "Brigadas" && (
         <div className="lista-brigadas">
           <h1>Conglomerados 🌳</h1>
           <p>Aquí puedes ver los Conglomerados existentes.</p>
 
           {/* 🧩 Filtro funcional */}
           <div className="card p-4 mb-4">
-            <h5 className="mb-3">🔎 Filtrar Conglomerados</h5>
+            <h5 className="mb-3">🔎 Filtrar Brigadas</h5>
             <div className="row g-3">
               <div className="col-md-4">
                 <input
@@ -56,6 +58,20 @@ const Conglomerados = () => {
                   onChange={(e) => setFiltroNombre(e.target.value)}
                 />
               </div>
+              <div className="col-md-4 mb-2">
+                <select
+                  id="filtroRegion"
+                  className="form-select"
+                  value={filtroRegion}
+                  onChange={(e) => setFiltroRegion(e.target.value)}
+                >
+                  <option value="">Todas las regiones</option>
+                  <option value="Amazonía">Amazonía</option>
+                  <option value="Pacífico">Pacífico</option>
+                  <option value="Andina">Andina</option>
+                  <option value="Caribe">Caribe</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -66,6 +82,7 @@ const Conglomerados = () => {
               <div key={conglomerado.id} className="card-brigada">
                 <h3>{conglomerado.nombre}</h3>
                 <p>Descripción: {conglomerado.descripcion || "No asignado"}</p>
+                <p>Región: {conglomerado.region}</p>
                 <p>Ubicación: {conglomerado.ubicacion}</p>
                 <p>Fecha Creación: {conglomerado.fecha_creacion}</p>
                 <br /> {/* Espacio antes del botón */}
@@ -85,7 +102,6 @@ const Conglomerados = () => {
             )}
           </div>
         </div>
-      )}
     </div>
   );
 };

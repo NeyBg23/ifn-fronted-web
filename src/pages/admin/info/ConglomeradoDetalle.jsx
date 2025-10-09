@@ -32,6 +32,7 @@ const ConglomeradoDetalle = () => {
 
             <h2>Conglomerado: {conglomerado.data.nombre}</h2>
             <p><strong>Ubicación:</strong> {conglomerado.data.ubicacion}</p>
+            <p><strong>Región:</strong> {conglomerado.data.region}</p>
             <p><strong>Descripción:</strong> {conglomerado.data.descripcion}</p>
             <p><strong>Fecha Creación:</strong> {conglomerado.data.fecha_creacion}</p>
         </div>

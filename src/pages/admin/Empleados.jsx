@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { Upload, X, FileText, User, Mail, Phone, MapPin, CreditCard, FileUp } from "lucide-react";
 import "../../styles/Brigadas.css";  // 🧸 Reusa tus estilos
 import supabase from "../../db/supabase";
+import empleado_imagen from "../../img/empleado.png";
 
 const Empleados = () => {
   const navigate = useNavigate();
@@ -167,7 +168,7 @@ const Empleados = () => {
   return (
     <div className="brigadas-container">
       <div className="lista-brigadas">
-        <h1>Empleados</h1>
+        <h1>Empleados <img src={empleado_imagen} alt="Emoji Empleado" style={{ width: 60}} /></h1>
         <p>Aquí puedes ver los empleados existentes.</p>
 
         {/* 🔎 FILTRO */}
