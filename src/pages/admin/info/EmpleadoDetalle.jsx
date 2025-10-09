@@ -1,4 +1,3 @@
-'use client'; // Para no tener conflicto con async
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
