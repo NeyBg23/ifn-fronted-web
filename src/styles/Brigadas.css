@@ -92,7 +92,7 @@ h6.text-primary {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   flex: 1 1 300px;       /* ✅ Ocupa mínimo 300px, pero se expande si hay espacio */
-  max-width: 350px;      /* ✅ Evita que crezcan demasiado */
+  max-width: 250px;      /* ✅ Evita que crezcan demasiado */
   padding: 20px;
 }
 

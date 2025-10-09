@@ -87,7 +87,7 @@ const Brigadas = () => {
           <p>Aquí puedes crear una nueva brigada.</p>
           <button
             className="btn-crear"
-            onClick={() => setRuta("CrearBrigada")}
+            onClick={() => navigate(`/admin/brigadas/crear-nueva`)}
           >
             Crear Nueva Brigada 🛡️
           </button>

@@ -8,7 +8,13 @@
 h1, h2, h3, h4 {
   font-weight: 790 !important;
 }
-
+.mb-2 {
+  width: auto;
+  gap: 30px;
+}
+.mb-4 {
+  gap: 40px;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -37,10 +43,45 @@ h1, h2, h3, h4 {
   }
 }
 
-.card {
-  padding: 2em;
-}
+
 
 .read-the-docs {
   color: #888;
+}
+
+/* Contenedor de las cards de empleados */
+.empleados-container {
+  display:contents;
+  flex-wrap: wrap;          /* Permite que bajen a otra fila */
+  justify-content: center;  /* Centra las filas */
+  gap: 10px !important;                /* Espacio entre tarjetas */
+}
+
+/* Cada card individual */
+.card {
+  flex: 1 1 300px;          /* Mínimo 300px, pero se adapta al ancho disponible */
+  max-width: 350px;         /* Evita que se estiren demasiado */
+  background-color: #e9fcd6;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Efecto hover opcional */
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajustes responsive */
+@media (max-width: 1100px) {
+  .card {
+    flex: 1 1 45%; /* 2 por fila */
+  }
+}
+
+@media (max-width: 700px) {
+  .card {
+    flex: 1 1 90%; /* 1 por fila */
+  }
 }

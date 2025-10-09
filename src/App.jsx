@@ -13,6 +13,7 @@ import HomeUser from "./pages/user/Home";
 import BrigadaDetalle from "./pages/admin/info/BrigadaDetalle"; 
 import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
+import ConformarBrigada from "./pages/admin/ConformarBrigada";
 
 import "./styles/App.css";
 
@@ -40,6 +41,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/admin/brigadas/crear-nueva"
+            element={
+              <ProtectedRoute>
+                <ConformarBrigada />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/admin/empleados/:idempleado"
             element={

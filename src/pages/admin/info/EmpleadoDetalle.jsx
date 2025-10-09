@@ -37,7 +37,6 @@ const EmpleadoDetalle = () => {
           );
 
           const signedData = await resSigned.json();
-          console.log(signedData);
           if (signedData?.signedUrl) {
             setSignedUrl(signedData.signedUrl);
           }
