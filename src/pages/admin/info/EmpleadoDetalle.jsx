@@ -31,7 +31,7 @@ const EmpleadoDetalle = () => {
           );
 
           const resSigned = await fetch(
-            `${API_URL}/api/hoja-vida/${encodeURIComponent(nombreArchivo)}`,
+            `${API_URL}/api/hoja-vida/${nombreArchivo}`,
             {
               headers: { Authorization: `Bearer ${session?.access_token}` },
             }
