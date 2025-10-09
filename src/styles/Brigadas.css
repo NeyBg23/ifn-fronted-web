@@ -82,15 +82,20 @@ h6.text-primary {
 .btn-crear:hover {
   background-color: #2d5016;  /* Más oscuro al hover */
 }
- 
-.card { /* Tarjeta individual */
-  background-color: #e8f8e6 !important; /* Fondo blanco para cada tarjeta */
-  border: 1px solid #0c5c20 !important; /* Borde verde */
-  border-radius: 10px !important; 
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transición suave */
-  width: 700px; /* Ancho fijo para uniformidad */
+.card.p-4.mb-4 {
+  max-width: 800px;
 }
+.card {
+  background-color: #e8f8e6 !important;
+  border: 1px solid #0c5c20 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex: 1 1 300px;       /* ✅ Ocupa mínimo 300px, pero se expande si hay espacio */
+  max-width: 350px;      /* ✅ Evita que crezcan demasiado */
+  padding: 20px;
+}
+
 
 .card:hover, .card-brigada:hover { /* Efecto al pasar el ratón */
   transform: translateY(-5px); /* Eleva la tarjeta */
@@ -98,11 +103,14 @@ h6.text-primary {
 }
 
 .cards-grid {
-  display: flex;  /* Como una cuadrícula de cartas */
-  margin-top: 2%; /* Espacio arriba */
-  justify-content: center; /* Centrado */
-  gap: 20px;  /* Espacio entre tarjetas */
+  display: flex;
+  flex-wrap: wrap;              /* ✅ Permite que las tarjetas bajen de línea */
+  justify-content: center;      /* Centra las tarjetas */
+  align-items: flex-start;      /* Alinea arriba si hay varias filas */
+  gap: 20px;                    /* Espacio entre tarjetas */
+  margin-top: 2%;
 }
+
 p {
   margin-bottom: 0.2em;
 }
