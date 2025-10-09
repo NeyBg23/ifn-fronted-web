@@ -1,7 +1,9 @@
+'use client'; // Para no tener conflicto con async
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const EmpleadoDetalle = async () => {
+const EmpleadoDetalle = () => {
   const { idempleado } = useParams();
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
@@ -9,7 +11,6 @@ const EmpleadoDetalle = async () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    
     const fetchEmpleado = async () => {
       const session = JSON.parse(localStorage.getItem("session"));
       const API_URL =
@@ -25,7 +26,9 @@ const EmpleadoDetalle = async () => {
 
         // ✅ Si el empleado tiene hoja de vida, generamos el signed URL
         if (data?.data?.hoja_vida_url) {
-          const nombreArchivo = encodeURIComponent(data.data.hoja_vida_url.split("/").pop());
+          const nombreArchivo = encodeURIComponent(
+            data.data.hoja_vida_url.split("/").pop()
+          );
 
           const resSigned = await fetch(
             `${API_URL}/api/hoja-vida/${encodeURIComponent(nombreArchivo)}`,
