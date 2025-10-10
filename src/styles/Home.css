@@ -57,7 +57,7 @@ body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  white-space: 0;
+  white-space: normal;
 }
 .offcanvas.offcanvas-end {
   right:auto;
