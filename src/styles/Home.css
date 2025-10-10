@@ -17,7 +17,6 @@ body {
   --bs-card-border-width: 1px;
   border-radius: 50px;
   display: inline-block;
-  min-width: 400px;
   padding: 1.5em;
   margin: 10px;
 }
