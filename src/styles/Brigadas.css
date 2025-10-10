@@ -121,7 +121,7 @@ p {
   border-radius: 30px;  /* Bordes redondeados */
   box-shadow: 0 30px 50px rgba(0,0,0,0.1);  /* Sombra suave */
   text-align: center;
-  width: 20%; /* Ancho fijo para uniformidad */
+  width: auto; /* Ancho fijo para uniformidad */
 }
 
 .btn-guardar {
