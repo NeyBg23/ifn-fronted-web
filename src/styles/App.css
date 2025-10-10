@@ -60,7 +60,7 @@ h1, h2, h3, h4 {
 /* Cada card individual */
 .card {
   flex: 1 1 300px;          /* Mínimo 300px, pero se adapta al ancho disponible */
-  max-width: 350px;         /* Evita que se estiren demasiado */
+  max-width: 550px;         /* Evita que se estiren demasiado */
   background-color: #e9fcd6;
   border-radius: 10px;
   text-align: center;
