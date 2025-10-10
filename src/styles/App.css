@@ -73,6 +73,13 @@ h1, h2, h3, h4 {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+@media (min-width: 768px) {
+    .col-md-4 {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
 /* Ajustes responsive */
 @media (max-width: 1100px) {
   .card {
