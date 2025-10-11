@@ -62,10 +62,13 @@ const ConformarBrigada = () => {
   });
 
   const toggleRol = (empleadoId, rol) => {
+    // Lo que hice fue primero encontrar a un empleado que cumpla esas condiciones
+    // para saber si ya tiene el rol que le intente dar click
     const existe = asignaciones.find(
       (a) => a.empleadoId === empleadoId && a.rol === rol
     );
-
+    // Y aquí lo que hice fue filtrar a ese empleado y quitarle el rol que intento
+    // volverle a dar como forma de quitarle ese rol
     if (existe) {
       setAsignaciones(
         asignaciones.filter(
@@ -73,7 +76,26 @@ const ConformarBrigada = () => {
         )
       );
     } else {
-      setAsignaciones([...asignaciones, { empleadoId, rol }]);
+      // Lo que hice fue filtrar al empleado que selecciono
+      // Si el que selecciono ya tenia un rol lo va a cambiar por el nuevo rol
+      // si no pues no pasa nada
+      let verificarUnSoloRol = asignaciones.find(
+        (a) => { 
+          if (a.empleadoId === empleadoId) { 
+            a.rol = rol
+            return true;
+          };
+        });
+
+      // Lo que hice fue validar en caso de que verificarUnSoloRol no hizo ese proceso
+      // si no lo hizo significa que le acaba de asignar un rol y por lo tanto
+      // debe añadirlo en asignaciones
+
+      // y en el else, lo que hice fue cambiar directamente ya asignaciones 
+      // haciendo el cambio directo solo en ese empleado
+
+      if (!verificarUnSoloRol) setAsignaciones([...asignaciones, { empleadoId, rol }])
+      else setAsignaciones([...asignaciones]);
     }
   };
 
