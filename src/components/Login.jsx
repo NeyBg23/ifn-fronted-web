@@ -2,7 +2,6 @@
 import { useState } from "react"; // 🧠 Para manejar los datos que cambian (como email o password)
 import "../styles/Login.css"; // 🎨 Estilos de la página
 import { useNavigate } from "react-router-dom"; // 🧭 Para movernos entre páginas (ej: ir al panel admin)
-
 /**
  * 📘 Este componente se encarga del LOGIN (inicio de sesión)
  * 
