@@ -32,7 +32,8 @@ const Empleados = () => {
     region: "",
     telefono: "",
     direccion: "",
-    descripcion: ""
+    descripcion: "",
+    access_token: ""
   });
 
   // 📄 Estado para la hoja de vida
@@ -136,6 +137,8 @@ const Empleados = () => {
       }
     }
 
+    nuevoEmpleado.access_token = JSON.parse(localStorage.getItem("session")).access_token;
+
     // Enviar solo JSON como espera el backend
     const res = await fetch(`${API_URL}/api/empleados`, {
       method: "POST",
@@ -163,7 +166,8 @@ const Empleados = () => {
         region: "",
         telefono: "",
         direccion: "",
-        descripcion: ""
+        descripcion: "",
+        access_token: ""
       });
       handleRemoveFile();
       // Cierra el modal manualmente
