@@ -174,6 +174,7 @@ const Empleados = () => {
       const modal = bootstrap.Modal.getInstance(document.getElementById("modalNuevoEmpleado"));
       modal.hide();
     } else {
+      console.log(data);
       alert("❌ Error al crear empleado: " + (data.error || "Intenta nuevamente"));
     }
   };
