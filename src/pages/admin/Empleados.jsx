@@ -137,7 +137,7 @@ const Empleados = () => {
       }
     }
 
-    nuevoEmpleado.dataToken = (JSON.parse(localStorage.getItem("session")));
+    nuevoEmpleado.dataToken = session;
 
     // Enviar solo JSON como espera el backend
     const res = await fetch(`${API_URL}/api/empleados`, {
