@@ -137,7 +137,7 @@ const Empleados = () => {
       }
     }
 
-    nuevoEmpleado.access_token = JSON.parse(localStorage.getItem("session")).access_token;
+    nuevoEmpleado.access_token = (JSON.parse(localStorage.getItem("session"))).access_token;
 
     // Enviar solo JSON como espera el backend
     const res = await fetch(`${API_URL}/api/empleados`, {
