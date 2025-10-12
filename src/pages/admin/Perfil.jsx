@@ -23,8 +23,6 @@ const Perfil = () => {
           headers: { Authorization: `Bearer ${session.access_token}` }
         });
 
-        console.log(res);
-
         if (res.ok) {
           const data = await res.json();
           setUsuario(data.data);
@@ -111,22 +109,6 @@ const Perfil = () => {
     <div className="container py-4">
       <div className="row justify-content-center">
         <div className="col-lg-8">
-          <div className="d-flex align-items-center mb-4">
-            <div
-              className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
-              style={{ width: "80px", height: "80px", fontSize: "2rem", fontWeight: "bold" }}
-            >
-              {usuario.nombre_completo?.charAt(0) || "U"}
-            </div>
-            <div>
-              <h1 className="mb-1">{usuario.nombre_completo || "Usuario"}</h1>
-              <p className="text-muted mb-0">
-                <Shield size={16} className="me-1" />
-                {usuario.rol || "Sin rol"}
-              </p>
-            </div>
-          </div>
-
           {mensaje && (
             <div className={`alert ${mensaje.includes("Error") ? "alert-danger" : "alert-success"} alert-dismissible fade show`}>
               {mensaje}
@@ -225,9 +207,7 @@ const Perfil = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="card mb-4">
+            <div className="card mb-4">
             <div className="card-header bg-success text-white">
               <h5 className="mb-0">Información Editable</h5>
               <small>Puedes actualizar estos campos</small>
@@ -283,7 +263,9 @@ const Perfil = () => {
                 </div>
               </div>
             </div>
+            </div>
           </div>
+
 
           <div className="d-flex justify-content-end gap-2">
             <button

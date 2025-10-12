@@ -8,7 +8,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Upload, X, FileText, User, Mail, Phone, MapPin, CreditCard, FileUp } from "lucide-react";
+import { Upload, X, FileText, User, Mail, Phone, MapPin, CreditCard, FileUp, Text } from "lucide-react";
 import "../../styles/Brigadas.css";  // 🧸 Reusa tus estilos
 import supabase from "../../db/supabase";
 import empleado_imagen from "../../img/empleado.png";
@@ -20,14 +20,18 @@ const Empleados = () => {
   const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCorreo, setFiltroCorreo] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
+  const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false); // Con esto control la visilibidad de la alerta
 
   // 🧩 Estados para el nuevo empleado
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: "",
+    contraseña: "",
+    confirmarContraseña: "",
     correo: "",
     cedula: "",
     region: "",
     telefono: "",
+    direccion: "",
     descripcion: ""
   });
 
@@ -101,6 +105,9 @@ const Empleados = () => {
     const session = JSON.parse(localStorage.getItem("session"));
     if (!session) return alert("¡Necesitas login! 🔑");
 
+    if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) 
+      return setMostrarErrorContraseña(true);
+
     // Si hay archivo, primero convertirlo a base64 y guardarlo en Supabase Storage
     let hojaVidaUrl = null;
 
@@ -129,7 +136,6 @@ const Empleados = () => {
       }
     }
 
-
     // Enviar solo JSON como espera el backend
     const res = await fetch(`${API_URL}/api/empleados`, {
       method: "POST",
@@ -150,10 +156,13 @@ const Empleados = () => {
       setEmpleados([...empleados, data.empleado || data.data]);
       setNuevoEmpleado({
         nombre_completo: "",
+        contraseña: "",
+        confirmarContraseña: "",
         correo: "",
         cedula: "",
         region: "",
         telefono: "",
+        direccion: "",
         descripcion: ""
       });
       handleRemoveFile();
@@ -222,7 +231,7 @@ const Empleados = () => {
         <p>Aquí puedes crear un nuevo empleado.</p>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-success"
           data-bs-toggle="modal"
           data-bs-target="#modalNuevoEmpleado"
         >
@@ -240,7 +249,7 @@ const Empleados = () => {
             <div className="modal-content border-0 shadow-lg">
               <div className="modal-header bg-gradient-primary text-white border-0">
                 <h5 className="modal-title d-flex align-items-center gap-2" id="modalNuevoEmpleadoLabel">
-                  <User size={24} />
+                  <User size={27} />
                   Crear Nuevo Empleado
                 </h5>
                 <button
@@ -250,7 +259,6 @@ const Empleados = () => {
                   aria-label="Cerrar"
                 ></button>
               </div>
-
               <div className="modal-body p-4">
                 <form onSubmit={handleCrearEmpleado} id="formNuevoEmpleado">
                   {/* Información Personal */}
@@ -263,7 +271,7 @@ const Empleados = () => {
                       <div className="col-md-6">
                         <label className="form-label fw-semibold">
                           <User size={16} className="me-1" />
-                          Nombre completo *
+                          Nombre completo
                         </label>
                         <input
                           type="text"
@@ -291,6 +299,53 @@ const Empleados = () => {
                       </div>
                     </div>
                   </div>
+                  {/* Contraseña a añadir */}
+                  <div className="mb-4">
+                    <h6 className="text-primary mb-3 pb-2 border-bottom">
+                      <User size={18} className="me-2" />
+                      Contraseña para acceder a la página
+                    </h6>
+
+                    {/* Aquí aplico la coindición */}
+                    {mostrarErrorContraseña && (
+                      <div className="alert alert-danger" role="alert">
+                        Las contraseñas no coinciden
+                      </div>
+                    )}
+
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <label className="form-label fw-semibold">
+                          <Mail size={16} className="me-1" />
+                          Contraseña
+                        </label>
+                        <input
+                          type="text"
+                          name="contraseña"
+                          className="form-control form-control-lg"
+                          placeholder="*************"
+                          value={nuevoEmpleado.contraseña}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label fw-semibold">
+                          <Mail size={16} className="me-1" />
+                          Confirmar Contraseña
+                        </label>
+                        <input
+                          type="text"
+                          name="confirmarContraseña"
+                          className="form-control form-control-lg"
+                          placeholder="*************"
+                          value={nuevoEmpleado.confirmarContraseña}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Información de Contacto */}
                   <div className="mb-4">
@@ -302,7 +357,7 @@ const Empleados = () => {
                       <div className="col-md-6">
                         <label className="form-label fw-semibold">
                           <Mail size={16} className="me-1" />
-                          Correo Electrónico *
+                          Correo Electrónico
                         </label>
                         <input
                           type="email"
@@ -326,6 +381,22 @@ const Empleados = () => {
                           placeholder="Ej: 3001234567"
                           value={nuevoEmpleado.telefono}
                           onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="form-label fw-semibold">
+                          <Text size={16} className="me-1" />
+                          Dirección
+                        </label>
+                        <input
+                          type="text"
+                          name="direccion"
+                          className="form-control form-control-lg"
+                          placeholder="Ej: Calle 104 # 31 a 58 Barrio Caldas"
+                          value={nuevoEmpleado.direccion}
+                          onChange={handleChange}
+                          required
                         />
                       </div>
                     </div>
@@ -341,7 +412,7 @@ const Empleados = () => {
                       <div className="col-12">
                         <label className="form-label fw-semibold">
                           <MapPin size={16} className="me-1" />
-                          Región *
+                          Región
                         </label>
                         <select
                           name="region"
