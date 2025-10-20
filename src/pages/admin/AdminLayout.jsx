@@ -16,25 +16,30 @@ const AdminLayout = () => {
           >
             Inventario Forestal Nacional
           </a>
+
+          {/* 🔹 Botón toggle idéntico al de Bootstrap */}
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasDarkNavbar"
-            aria-controls="offcanvasDarkNavbar"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
             aria-label="Toggle navigation"
           >
-            <h5>Menu</h5>
             <span className="navbar-toggler-icon"></span>
           </button>
 
+          {/* 🔹 Offcanvas corregido (estructura oficial) */}
           <div
-            className="offcanvas offcanvas-end custom-navbar text-bg-dark"
-            tabIndex={-1}
-            id="offcanvasDarkNavbar"
-            aria-labelledby="offcanvasDarkNavbarLabel"
+            className="offcanvas offcanvas-end custom-navbar"
+            tabIndex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
           >
-            <div className="offcanvas-header custom-navbar">
+            <div className="offcanvas-header">
+              <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
+                Menú de Administración
+              </h5>
               <button
                 type="button"
                 className="btn-close btn-close-white"
@@ -42,11 +47,12 @@ const AdminLayout = () => {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="offcanvas-body custom-navbar">
+
+            <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-white"
                     onClick={() => navigate("/admin")}
                     data-bs-dismiss="offcanvas"
                   >
@@ -55,7 +61,7 @@ const AdminLayout = () => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-white"
                     onClick={() => navigate("/admin/brigadas")}
                     data-bs-dismiss="offcanvas"
                   >
@@ -64,7 +70,7 @@ const AdminLayout = () => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-white"
                     onClick={() => navigate("/admin/conglomerados")}
                     data-bs-dismiss="offcanvas"
                   >
@@ -73,7 +79,7 @@ const AdminLayout = () => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-white"
                     onClick={() => navigate("/admin/empleados")}
                     data-bs-dismiss="offcanvas"
                   >
@@ -82,7 +88,7 @@ const AdminLayout = () => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-white"
                     onClick={() => navigate("/admin/perfil")}
                     data-bs-dismiss="offcanvas"
                   >
@@ -94,7 +100,7 @@ const AdminLayout = () => {
 
                 <li className="nav-item">
                   <button
-                    className="nav-link btn btn-link text-start"
+                    className="nav-link btn btn-link text-start text-danger"
                     onClick={() => {
                       localStorage.removeItem("session");
                       alert("Se ha cerrado sesión correctamente.");
@@ -111,9 +117,9 @@ const AdminLayout = () => {
         </div>
       </nav>
 
-      {/* 👇 Aquí React Router renderiza la subpágina */}
+      {/* 👇 Contenido principal */}
       <main className="content p-4 mt-5">
-        <Outlet /> {/* Renderiza la página hija aquí */}
+        <Outlet />
       </main>
     </div>
   );

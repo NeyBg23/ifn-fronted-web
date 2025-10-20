@@ -5,12 +5,10 @@ body {
 }
 
 .custom-navbar {
-  position: absolute;
-  background-color: #2c5f2d;
+  color: #ffff;
+  background-color: #2c5f2d !important;
 }
-.cards-container-brigadas {
-  position: relative;
-}
+
 .card {
   --bs-card-spacer-y: 0rem;
   --bs-card-spacer-x: 0rem;
@@ -21,11 +19,11 @@ body {
   margin: 10px;
 }
 
-.card-text{
+.card-text {
   color: black;
 }
 
-.card-title{
+.card-title {
   margin-top: 10PX;
   color: black;
 }
@@ -39,18 +37,9 @@ body {
   padding-top: 100px !important; /*El Important es para darle importancia a esta linea antes que el css de Bootstrap*/
 }
 
-.nav-link.active {
-  color: #17c42e !important;
-  font-weight: bold;
-}
-
 .nav-link {
   color: white !important;
   text-decoration: none;
-}
-
-.nav-link:hover {
-  color: #17c42e !important;
 }
 
 .navbar-brand {
@@ -59,23 +48,12 @@ body {
   transform: translateX(-50%);
   white-space: normal;
 }
+
 .offcanvas.offcanvas-end {
   right:auto;
   transform: translateX(0);
   top: auto;
   left: -10px;
-}
-.offcanvas.offcanvas-end.custom-navbar {
-  background-color: #2c5f2d !important;
-  align-items: center;
-  width: 260px;
-}
-
-.navbar-spacer {
-  width: 18px;
-}
-.offcanvas-end .custom-navbar {
-  left: inherit;
 }
 
 .crearBrigada {
@@ -87,7 +65,6 @@ body {
 .crearBrigada .btn-success {
   padding: 20px;
   font-size: 15px;
-
 }
 
 .pe-3 {
@@ -102,8 +79,10 @@ body {
   width: 235px;
   border-color: #17c42e !important;
 }
-
-.offcanvas, .offcanvas-lg, .offcanvas-md, .offcanvas-sm, .offcanvas-xl, .offcanvas-xxl {
-  --bs--bs-offcanvas-padding-x: 2em;
-  --bs-offcanvas-padding-y: 2em;
+.offcanvas {
+  height: 100vh !important;
+}
+.offcanvas-body .nav-link {
+  font-size: 1.1rem;
+  transition: background 0.2s ease;
 }
