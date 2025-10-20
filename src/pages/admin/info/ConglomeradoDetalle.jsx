@@ -120,7 +120,7 @@ const ConglomeradoDetalle = () => {
         <div className="container-fluid px-4 py-4">
             <button 
                 type="button" 
-                className="btn btn-outline-success mb-4"
+                className="btn btn-outline-danger mb-4"
                 onClick={() => navigate(-1)}
             >
                 ← Volver
