@@ -182,62 +182,68 @@ export default function Empleados() {
           Empleados{" "}
           <img src={empleado_imagen} alt="Empleado" style={{ width: 60 }} />
         </h1>
-        <p>Aquí puedes ver los empleados existentes.</p>
+        <p className="text-center text-muted mb-4">
+          Aquí puedes ver los empleados existentes.
+        </p>
 
-        {/* 🔎 Filtros */}
-        <div className="card p-4 mb-4">
-          <h5 className="mb-3">🔎 Filtrar Empleados</h5>
-          <div className="row g-3">
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Nombre..."
-                value={filtroNombre}
-                onChange={e => setFiltroNombre(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Correo..."
-                value={filtroCorreo}
-                onChange={e => setFiltroCorreo(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Cédula..."
-                value={filtroCedula}
-                onChange={e => setFiltroCedula(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <select
-                className="form-select"
-                value={filtroRegion}
-                onChange={e => setFiltroRegion(e.target.value)}
-              >
-                <option value="">Todas regiones</option>
-                <option value="Amazonía">Amazonía</option>
-                <option value="Pacífico">Pacífico</option>
-                <option value="Andina">Andina</option>
-                <option value="Caribe">Caribe</option>
-              </select>
-
+        {/* Filtros responsivos */}
+        <div className="container mb-4">
+          <div className="card p-4">
+            <h5 className="mb-3 text-center">🔎 Filtrar Empleados</h5>
+            <div className="row g-3">
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Nombre..."
+                  value={filtroNombre}
+                  onChange={e => setFiltroNombre(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Correo..."
+                  value={filtroCorreo}
+                  onChange={e => setFiltroCorreo(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Cédula..."
+                  value={filtroCedula}
+                  onChange={e => setFiltroCedula(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <select
+                  className="form-select"
+                  value={filtroRegion}
+                  onChange={e => setFiltroRegion(e.target.value)}
+                >
+                  <option value="">Todas regiones</option>
+                  <option value="Amazonía">Amazonía</option>
+                  <option value="Pacífico">Pacífico</option>
+                  <option value="Andina">Andina</option>
+                  <option value="Caribe">Caribe</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-        {/* ➕ Botón nuevo empleado */}
-        <button
-          className="btn btn-success mb-4"
-          data-bs-toggle="modal"
-          data-bs-target="#modalNuevoEmpleado"
-        >
-          Crear Nuevo Empleado 🛡️
-        </button>
 
-        {/* 🧩 Modal Crear Empleado */}
+        {/* Botón nuevo empleado */}
+        <div className="text-center mb-4">
+          <button
+            className="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#modalNuevoEmpleado"
+          >
+            Crear Nuevo Empleado 🛡️
+          </button>
+        </div>
+
+        {/* Modal Crear Empleado */}
         <div
           className="modal fade"
           id="modalNuevoEmpleado"
@@ -246,8 +252,6 @@ export default function Empleados() {
         >
           <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div className="modal-content border-0 shadow-lg">
-
-              {/* Header */}
               <div className="modal-header bg-gradient-primary text-white border-0">
                 <h5
                   className="modal-title d-flex align-items-center gap-2"
@@ -261,80 +265,66 @@ export default function Empleados() {
                   data-bs-dismiss="modal"
                 />
               </div>
-
-              {/* Body */}
               <div className="modal-body p-4">
                 <form onSubmit={handleCrearEmpleado} id="formNuevoEmpleado">
-
-                  {/* Nombre completo */}
-                  <div className="row g-3 mb-3">
-                    <div className="col-12">
+                  {/* Información Personal */}
+                  <div className="row g-4">
+                    <div className="col-6">
                       <label className="form-label fw-semibold">
-                        Nombre completo
+                        <User size={16} className="me-1" /> Nombre completo
                       </label>
                       <input
                         type="text"
                         name="nombre_completo"
-                        className="form-control"
-                        placeholder="Ej: Juan Pérez García"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.nombre_completo}
                         onChange={handleChange}
                         required
                       />
                     </div>
-                  </div>
-
-                  {/* Cédula */}
-                  <div className="row g-3 mb-3">
                     <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">Cédula</label>
+                      <label className="form-label fw-semibold">
+                        <CreditCard size={16} className="me-1" /> Cédula
+                      </label>
                       <input
                         type="text"
                         name="cedula"
-                        className="form-control"
-                        placeholder="Ej: 1234567890"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.cedula}
                         onChange={handleChange}
                         required   // ← Aquí
                       />
                     </div>
-
-                    {/* Correo */}
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">Correo electrónico</label>
-                      <input
-                        type="email"
-                        name="correo"
-                        className="form-control"
-                        placeholder="correo@ejemplo.com"
-                        value={nuevoEmpleado.correo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
                   </div>
 
-                  {/* Contraseña y Confirmar contraseña */}
-                  <div className="row g-3 mb-3">
+                  {/* Acceso */}
+                  <div className="row g-4">
+                    {mostrarErrorContraseña && (
+                      <div className="alert alert-danger" role="alert">
+                        Las contraseñas no coinciden
+                      </div>
+                    )}
                     <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">Contraseña</label>
+                      <label className="form-label fw-semibold">
+                        <Mail size={16} className="me-1" /> Contraseña
+                      </label>
                       <input
                         type="password"
                         name="contraseña"
-                        className="form-control"
-                        placeholder="********"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.contraseña}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">Confirmar contraseña</label>
+                      <label className="form-label fw-semibold">
+                        <Mail size={16} className="me-1" /> Confirmar contraseña
+                      </label>
                       <input
                         type="password"
                         name="confirmarContraseña"
-                        className="form-control"
-                        placeholder="********"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.confirmarContraseña}
                         onChange={handleChange}
                         required
@@ -342,26 +332,25 @@ export default function Empleados() {
                     </div>
                   </div>
 
-                  {/* Cargo, Fecha ingreso, Rol */}
-                  <div className="row g-3 mb-3">
+                  {/* Cargo, Fecha y Rol */}
+                  <div className="row g-3 mb-4">
                     <div className="col-12 col-md-4">
                       <label className="form-label fw-semibold">Cargo</label>
                       <input
                         type="text"
                         name="cargo"
-                        className="form-control"
-                        placeholder="Ej: Técnico Auxiliar"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.cargo}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div className="col-12 col-md-4">
-                      <label className="form-label fw-semibold">Fecha de ingreso</label>
+                      <label className="form-label fw-semibold">Fecha ingreso</label>
                       <input
                         type="date"
                         name="fecha_ingreso"
-                        className="form-control"
+                        className="form-control form-control-lg"
                         value={nuevoEmpleado.fecha_ingreso}
                         onChange={handleChange}
                         required
@@ -371,7 +360,7 @@ export default function Empleados() {
                       <label className="form-label fw-semibold">Rol</label>
                       <select
                         name="rol"
-                        className="form-select"
+                        className="form-select form-select-lg"
                         value={nuevoEmpleado.rol}
                         onChange={handleChange}
                       >
@@ -382,12 +371,13 @@ export default function Empleados() {
                   </div>
 
                   {/* Descripción */}
-                  <div className="mb-3">
-                    <label className="form-label fw-semibold">Descripción</label>
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">
+                      <FileText size={16} className="me-1" /> Descripción
+                    </label>
                     <textarea
                       name="descripcion"
                       className="form-control"
-                      placeholder="Descripción de experiencia o notas"
                       rows="3"
                       value={nuevoEmpleado.descripcion}
                       onChange={handleChange}
@@ -395,10 +385,12 @@ export default function Empleados() {
                   </div>
 
                   {/* Hoja de Vida */}
-                  <div className="mb-3">
-                    <label className="form-label fw-semibold">Hoja de Vida</label>
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">
+                      <Upload size={16} className="me-1" /> Hoja de Vida
+                    </label>
                     {!hojaVida ? (
-                      <div className="border-dashed p-4 text-center bg-light position-relative">
+                      <div className="border-dashed p-4 text-center bg-light">
                         <input
                           type="file"
                           id="hojaVidaInput"
@@ -408,7 +400,7 @@ export default function Empleados() {
                         />
                         <Upload size={40} className="text-secondary mb-2" />
                         <p>Haz clic o arrastra aquí</p>
-                        <small>PDF, DOC o DOCX (máx. 5MB)</small>
+                        <small>PDF, DOC, DOCX (máx 5MB)</small>
                       </div>
                     ) : (
                       <div className="d-flex align-items-center justify-content-between p-3 bg-light">
@@ -425,8 +417,6 @@ export default function Empleados() {
                   </div>
                 </form>
               </div>
-
-              {/* Footer del modal */}
               <div className="modal-footer bg-light border-0">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                   Cancelar
@@ -438,7 +428,6 @@ export default function Empleados() {
             </div>
           </div>
         </div>
-
 
         {/* Grid de tarjetas responsivo */}
         <div className="cards-grid mt-4">
