@@ -184,48 +184,56 @@ const Empleados = () => {
         <p>Aquí puedes ver los empleados existentes.</p>
 
         {/* 🔎 Filtros */}
-        <div className="card p-4 mb-4">
-          <h5 className="mb-3">🔎 Filtrar Empleados</h5>
-          <div className="row g-3">
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Nombre..."
-                value={filtroNombre}
-                onChange={e => setFiltroNombre(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Correo..."
-                value={filtroCorreo}
-                onChange={e => setFiltroCorreo(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <input
-                className="form-control"
-                placeholder="Cédula..."
-                value={filtroCedula}
-                onChange={e => setFiltroCedula(e.target.value)}
-              />
-            </div>
-            <div className="col-md-3">
-              <select
-                className="form-select"
-                value={filtroRegion}
-                onChange={e => setFiltroRegion(e.target.value)}
-              >
-                <option value="">Todas regiones</option>
-                <option value="Amazonía">Amazonía</option>
-                <option value="Pacífico">Pacífico</option>
-                <option value="Andina">Andina</option>
-                <option value="Caribe">Caribe</option>
-              </select>
+        <div className="container mb-4">
+          {/* Card que envuelve los filtros */}
+          <div className="card p-4">
+            {/* Título centrado */}
+            <h5 className="mb-3 text-center">🔎 Filtrar Empleados</h5>
+
+            {/* Grid de Bootstrap con gap entre columnas */}
+            <div className="row g-3">
+              {/* Cada filtro ocupa 12 columnas en móvil, 6 en tablet y 3 en escritorio */}
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Nombre..."
+                  value={filtroNombre}
+                  onChange={e => setFiltroNombre(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Correo..."
+                  value={filtroCorreo}
+                  onChange={e => setFiltroCorreo(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <input
+                  className="form-control"
+                  placeholder="Cédula..."
+                  value={filtroCedula}
+                  onChange={e => setFiltroCedula(e.target.value)}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-lg-3">
+                <select
+                  className="form-select"
+                  value={filtroRegion}
+                  onChange={e => setFiltroRegion(e.target.value)}
+                >
+                  <option value="">Todas regiones</option>
+                  <option value="Amazonía">Amazonía</option>
+                  <option value="Pacífico">Pacífico</option>
+                  <option value="Andina">Andina</option>
+                  <option value="Caribe">Caribe</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
+
 
         {/* ➕ Botón nuevo empleado */}
         <button

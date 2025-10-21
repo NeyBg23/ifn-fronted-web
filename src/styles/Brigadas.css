@@ -2,8 +2,12 @@
 /* 🧸 Explicación: CSS es como pintar el castillo. Usamos colores verdes para el bosque, y clases para cada parte. */
 
 .brigadas-container {
-  padding: 20px;  /* Espacio alrededor */
-  min-height: 100vh;  /* Ocupa toda la pantalla */
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 120px); /* ajusta según header/footer */
+  background: transparent;
 }
 
 h1, h2, h3 {
@@ -136,4 +140,116 @@ p {
 
 .btn-guardar:hover {
   transform: scale(1.05);  /* Crece un poquito al hover */
+}
+
+/* Contenedor principal centrado y responsivo */
+.brigadas-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 120px); /* ajusta según header/footer */
+  background: transparent;
+}
+
+/* Panel interior que contiene el listado */
+.lista-brigadas {
+  width: 100%;
+  max-width: 1100px; /* ancho máximo centralizado */
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Título centrado con imagen */
+.lista-brigadas > h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+}
+
+/* Descripción centrada */
+.lista-brigadas > p {
+  text-align: center;
+  color: #666;
+  margin-bottom: 18px;
+}
+
+/* Grid de tarjetas responsivo */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* Estilo de cada tarjeta */
+.card-brigada {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(20, 60, 20, 0.06);
+  border: 1px solid rgba(74,124,89,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.card-brigada:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(20, 60, 20, 0.10);
+}
+
+.card-brigada h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  color: #214a20;
+}
+
+.card-brigada p {
+  margin: 4px 0;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+/* Botón dentro de la tarjeta (alineado al final) */
+.card-brigada .btn {
+  align-self: stretch;
+  margin-top: 12px;
+}
+
+/* Zona de filtros y botones en dispositivos pequeños */
+@media (max-width: 768px) {
+  .lista-brigadas {
+    padding: 12px;
+  }
+
+  .lista-brigadas > h1 {
+    font-size: 1.25rem;
+  }
+
+  .cards-grid {
+    gap: 12px;
+  }
+
+  .card-brigada {
+    padding: 12px;
+  }
+
+  /* Asegura que el modal tenga buen padding en móviles (bootstrap maneja la mayor parte) */
+  .modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+}
+
+/* Ajustes para pantallas muy grandes */
+@media (min-width: 1400px) {
+  .lista-brigadas {
+    max-width: 1300px;
+  }
 }
