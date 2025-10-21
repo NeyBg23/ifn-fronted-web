@@ -182,66 +182,60 @@ export default function Empleados() {
           Empleados{" "}
           <img src={empleado_imagen} alt="Empleado" style={{ width: 60 }} />
         </h1>
-        <p className="text-center text-muted mb-4">
-          Aquí puedes ver los empleados existentes.
-        </p>
-        {/* Filtros responsivos */}
-        <div className="container mb-4">
-          <div className="card p-4">
-            <h5 className="mb-3 text-center">🔎 Filtrar Empleados</h5>
-            <div className="row g-3">
-              <div className="col-12 col-md-6 col-lg-3">
-                <input
-                  className="form-control"
-                  placeholder="Nombre..."
-                  value={filtroNombre}
-                  onChange={e => setFiltroNombre(e.target.value)}
-                />
-              </div>
-              <div className="col-12 col-md-6 col-lg-3">
-                <input
-                  className="form-control"
-                  placeholder="Correo..."
-                  value={filtroCorreo}
-                  onChange={e => setFiltroCorreo(e.target.value)}
-                />
-              </div>
-              <div className="col-12 col-md-6 col-lg-3">
-                <input
-                  className="form-control"
-                  placeholder="Cédula..."
-                  value={filtroCedula}
-                  onChange={e => setFiltroCedula(e.target.value)}
-                />
-              </div>
-              <div className="col-12 col-md-6 col-lg-3">
-                <select
-                  className="form-select"
-                  value={filtroRegion}
-                  onChange={e => setFiltroRegion(e.target.value)}
-                >
-                  <option value="">Todas regiones</option>
-                  <option value="Amazonía">Amazonía</option>
-                  <option value="Pacífico">Pacífico</option>
-                  <option value="Andina">Andina</option>
-                  <option value="Caribe">Caribe</option>
-                </select>
-              </div>
+        <p>Aquí puedes ver los empleados existentes.</p>
+
+        {/* 🔎 Filtros */}
+        <div className="card p-4 mb-4">
+          <h5 className="mb-3">🔎 Filtrar Empleados</h5>
+          <div className="row g-3">
+            <div className="col-md-3">
+              <input
+                className="form-control"
+                placeholder="Nombre..."
+                value={filtroNombre}
+                onChange={e => setFiltroNombre(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <input
+                className="form-control"
+                placeholder="Correo..."
+                value={filtroCorreo}
+                onChange={e => setFiltroCorreo(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <input
+                className="form-control"
+                placeholder="Cédula..."
+                value={filtroCedula}
+                onChange={e => setFiltroCedula(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <select
+                className="form-select"
+                value={filtroRegion}
+                onChange={e => setFiltroRegion(e.target.value)}
+              >
+                <option value="">Todas regiones</option>
+                <option value="Amazonía">Amazonía</option>
+                <option value="Pacífico">Pacífico</option>
+                <option value="Andina">Andina</option>
+                <option value="Caribe">Caribe</option>
+              </select>
+
             </div>
           </div>
         </div>
-
-        {/* Botón nuevo empleado */}
-        <div className="text-center mb-4">
-          <button
-            className="btn btn-success"
-            data-bs-toggle="modal"
-            data-bs-target="#modalNuevoEmpleado"
-          >
-            Crear Nuevo Empleado 🛡️
-          </button>
-        </div>
-
+        {/* ➕ Botón nuevo empleado */}
+        <button
+          className="btn btn-success mb-4"
+          data-bs-toggle="modal"
+          data-bs-target="#modalNuevoEmpleado"
+        >
+          Crear Nuevo Empleado 🛡️
+        </button>
 
         {/* 🧩 Modal Crear Empleado */}
         <div

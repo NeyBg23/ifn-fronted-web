@@ -2,13 +2,8 @@
 /* 🧸 Explicación: CSS es como pintar el castillo. Usamos colores verdes para el bosque, y clases para cada parte. */
 
 .brigadas-container {
-  min-width: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 24px;
-  box-sizing: border-box;
-  min-height: calc(100vh - 120px); /* ajusta según header/footer */
-  background: transparent;
+  padding: 20px;  /* Espacio alrededor */
+  min-height: 100vh;  /* Ocupa toda la pantalla */
 }
 
 h1, h2, h3 {
