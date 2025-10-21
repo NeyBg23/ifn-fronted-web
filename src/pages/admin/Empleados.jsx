@@ -292,6 +292,7 @@ export default function Empleados() {
                         className="form-control form-control-lg"
                         value={nuevoEmpleado.cedula}
                         onChange={handleChange}
+                        required   // ← Aquí
                       />
                     </div>
                   </div>
