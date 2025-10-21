@@ -2,6 +2,7 @@
 /* 🧸 Explicación: CSS es como pintar el castillo. Usamos colores verdes para el bosque, y clases para cada parte. */
 
 .brigadas-container {
+  min-width: 100vh;
   display: flex;
   justify-content: center;
   padding: 24px;
