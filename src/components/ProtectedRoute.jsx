@@ -56,8 +56,13 @@ function ProtectedRoute({ children }) {
   }, []);
 
   // 4. Mientras valida → mostrar un mensaje de carga
-  if (isValid === null) {
-    return <div>🔄 Validando sesión...</div>;
+    if (isValid === null) {
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center vh-100">
+        <Spinner animation="border" role="status" />
+        <span className="mt-2">Cargando datos…</span>
+      </div>
+    );
   }
 
   // 5. Si no es válido → redirigir al login

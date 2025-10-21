@@ -17,6 +17,9 @@ import {
 import "../../styles/Brigadas.css";   // Reusar estilos existentes
 import supabase from "../../db/supabase";
 import empleado_imagen from "../../img/empleado.png";
+import { Navigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";  
+
 
 const Empleados = () => {
   const navigate = useNavigate();
@@ -471,39 +474,5 @@ const Empleados = () => {
   );
 };
 
-// 📂 src/components/ProtectedRoute.jsx
+export default Empleados;
 
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
-
-export default function ProtectedRoute({ children }) {
-  const [isValid, setIsValid] = useState(null);
-
-  useEffect(() => {
-    // Simula validación de token o llama a tu API
-    const session = JSON.parse(localStorage.getItem("session"));
-    if (!session) {
-      setIsValid(false);
-    } else {
-      // Aquí podrías verificar expiración o validez real
-      setIsValid(true);
-    }
-  }, []);
-
-  if (isValid === false) {
-    // 5. Si es inválido → redirige al login
-    return <Navigate to="/login" replace />;
-  } else if (isValid === null) {
-    // 4. Mientras valida → muestra spinner y texto
-    return (
-      <div className="d-flex flex-column align-items-center justify-content-center vh-100">
-        <Spinner animation="border" role="status" />
-        <span className="mt-2">Cargando datos … Espere mano...</span>
-      </div>
-    );
-  }
-
-  // 6. Si es válido → renderiza la ruta protegida
-  return children;
-}
