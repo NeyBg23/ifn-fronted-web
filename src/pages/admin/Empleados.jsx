@@ -295,6 +295,7 @@ export default function Empleados() {
                         placeholder="Ej: 1234567890"
                         value={nuevoEmpleado.cedula}
                         onChange={handleChange}
+                        required   // ← Aquí
                       />
                     </div>
 
