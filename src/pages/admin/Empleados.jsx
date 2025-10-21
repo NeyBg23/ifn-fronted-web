@@ -14,25 +14,22 @@ import {
   Upload, X, FileText, User, Mail, Phone, MapPin,
   CreditCard, FileUp, Text
 } from "lucide-react";
-import "../../styles/Brigadas.css";   // Reusar estilos existentes
+import "../../styles/Brigadas.css";
 import supabase from "../../db/supabase";
 import empleado_imagen from "../../img/empleado.png";
-import { Navigate } from "react-router-dom";
-import { Spinner } from "react-bootstrap";  
 
-
-const Empleados = () => {
+export default function Empleados() {
   const navigate = useNavigate();
 
-  // ✅ Estado para lista de empleados y filtros
+  // Estado para lista de empleados y filtros
   const [empleados, setEmpleados] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
-  const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCorreo, setFiltroCorreo] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
+  const [filtroRegion, setFiltroRegion] = useState("");
   const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false);
 
-  // 🧩 Estado para nuevo empleado, incluyendo todos los campos backend
+  // Estado para nuevo empleado (todos los campos)
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: "",
     contraseña: "",
@@ -43,62 +40,61 @@ const Empleados = () => {
     telefono: "",
     direccion: "",
     descripcion: "",
-    cargo: "",             // Nuevo campo
-    fecha_ingreso: "",     // Nuevo campo
-    rol: "brigadista"      // Nuevo campo
+    cargo: "",
+    fecha_ingreso: "",
+    rol: "brigadista"
   });
 
-  // 📄 Estado para manejar archivo de hoja de vida
+  // Estado para manejo de archivo
   const [hojaVida, setHojaVida] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  // 📡 Base URL del API
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
-  // 🔄 Carga empleados al montar
+  // Carga inicial de empleados
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       const session = JSON.parse(localStorage.getItem("session"));
       if (!session) return alert("¡Necesitas login! 🔑");
-
       const res = await fetch(`${API_URL}/api/empleados`, {
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
       const data = await res.json();
       setEmpleados(data.data || []);
-    };
-    fetchData();
+    })();
   }, []);
 
-  // 🧹 Filtrado de empleados
+  // Filtra empleados según inputs
   const empleadosFiltrados = empleados.filter(emp => {
-    const nombreOk = emp.nombre_completo.toLowerCase().includes(filtroNombre.toLowerCase());
-    const correoOk = emp.correo.toLowerCase().includes(filtroCorreo.toLowerCase());
-    const cedulaOk = emp.cedula?.toLowerCase().includes(filtroCedula.toLowerCase());
-    const regionOk = !filtroRegion || emp.region === filtroRegion;
-    return nombreOk && correoOk && cedulaOk && regionOk;
+    const n = emp.nombre_completo.toLowerCase().includes(filtroNombre.toLowerCase());
+    const c = emp.correo.toLowerCase().includes(filtroCorreo.toLowerCase());
+    const ced = emp.cedula?.toLowerCase().includes(filtroCedula.toLowerCase());
+    const r = !filtroRegion || emp.region === filtroRegion;
+    return n && c && ced && r;
   });
 
-  // 🔄 Maneja cambio en inputs del modal
+  // Manejo de cambios en formulario
   const handleChange = e => {
     const { name, value } = e.target;
     setNuevoEmpleado(prev => ({ ...prev, [name]: value }));
   };
 
-  // 📄 Maneja selección de archivo
+  // Manejo de archivo
   const handleFileChange = e => {
     const file = e.target.files[0];
-    if (file) {
-      const allowed = ['application/pdf', 'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (!allowed.includes(file.type)) return alert("Solo PDF, DOC o DOCX");
-      if (file.size > 5 * 1024 * 1024) return alert("Máx 5MB");
-      setHojaVida(file);
-      setPreviewUrl(file.name);
-    }
+    if (!file) return;
+    const allowed = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ];
+    if (!allowed.includes(file.type)) return alert("Solo PDF, DOC o DOCX");
+    if (file.size > 5 * 1024 * 1024) return alert("Máx 5MB");
+    setHojaVida(file);
+    setPreviewUrl(file.name);
   };
 
-  // 🗑️ Elimina archivo seleccionado
+  // Elimina archivo seleccionado
   const handleRemoveFile = () => {
     setHojaVida(null);
     setPreviewUrl(null);
@@ -106,22 +102,21 @@ const Empleados = () => {
     if (inp) inp.value = "";
   };
 
-  // 🚀 Envía creación de empleado al backend
+  // Envía creación de empleado
   const handleCrearEmpleado = async e => {
     e.preventDefault();
     setMostrarErrorContraseña(false);
     const session = JSON.parse(localStorage.getItem("session"));
     if (!session) return alert("¡Necesitas login! 🔑");
-
     if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
       return setMostrarErrorContraseña(true);
     }
 
-    // 📤 Subir hoja de vida si existe
+    // Subir CV si existe
     let hoja_vida_url = null;
     if (hojaVida) {
       const path = `empleados/${Date.now()}_${hojaVida.name}`;
-      const { data: upData, error: upErr } = await supabase.storage
+      const { error: upErr } = await supabase.storage
         .from("hojas_de_vida")
         .upload(path, hojaVida);
       if (!upErr) {
@@ -132,7 +127,6 @@ const Empleados = () => {
       }
     }
 
-    // 🧰 Prepara payload sin campos innecesarios
     const payload = {
       nombre_completo: nuevoEmpleado.nombre_completo,
       correo: nuevoEmpleado.correo,
@@ -156,16 +150,22 @@ const Empleados = () => {
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-
     if (res.ok) {
       alert("✅ Empleado creado correctamente");
       setEmpleados(prev => [...prev, data.usuario]);
-      // Limpia estado y cierra modal
       setNuevoEmpleado({
-        nombre_completo: "", contraseña: "", confirmarContraseña: "",
-        correo: "", cedula: "", region: "", telefono: "",
-        direccion: "", descripcion: "", cargo: "",
-        fecha_ingreso: "", rol: "brigadista"
+        nombre_completo: "",
+        contraseña: "",
+        confirmarContraseña: "",
+        correo: "",
+        cedula: "",
+        region: "",
+        telefono: "",
+        direccion: "",
+        descripcion: "",
+        cargo: "",
+        fecha_ingreso: "",
+        rol: "brigadista"
       });
       handleRemoveFile();
       bootstrap.Modal.getInstance(document.getElementById("modalNuevoEmpleado")).hide();
@@ -177,22 +177,20 @@ const Empleados = () => {
   return (
     <div className="brigadas-container">
       <div className="lista-brigadas">
-        <h1>
+        {/* Título */}
+        <h1 className="text-center mb-2">
           Empleados{" "}
           <img src={empleado_imagen} alt="Empleado" style={{ width: 60 }} />
         </h1>
-        <p>Aquí puedes ver los empleados existentes.</p>
+        <p className="text-center text-muted mb-4">
+          Aquí puedes ver los empleados existentes.
+        </p>
 
-        {/* 🔎 Filtros */}
+        {/* Filtros responsivos */}
         <div className="container mb-4">
-          {/* Card que envuelve los filtros */}
           <div className="card p-4">
-            {/* Título centrado */}
             <h5 className="mb-3 text-center">🔎 Filtrar Empleados</h5>
-
-            {/* Grid de Bootstrap con gap entre columnas */}
             <div className="row g-3">
-              {/* Cada filtro ocupa 12 columnas en móvil, 6 en tablet y 3 en escritorio */}
               <div className="col-12 col-md-6 col-lg-3">
                 <input
                   className="form-control"
@@ -234,17 +232,18 @@ const Empleados = () => {
           </div>
         </div>
 
+        {/* Botón nuevo empleado */}
+        <div className="text-center mb-4">
+          <button
+            className="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#modalNuevoEmpleado"
+          >
+            Crear Nuevo Empleado 🛡️
+          </button>
+        </div>
 
-        {/* ➕ Botón nuevo empleado */}
-        <button
-          className="btn btn-success mb-4"
-          data-bs-toggle="modal"
-          data-bs-target="#modalNuevoEmpleado"
-        >
-          Crear Nuevo Empleado 🛡️
-        </button>
-
-        {/* 🧩 Modal Crear Empleado */}
+        {/* Modal Crear Empleado */}
         <div
           className="modal fade"
           id="modalNuevoEmpleado"
@@ -264,14 +263,13 @@ const Empleados = () => {
                   type="button"
                   className="btn-close btn-close-white"
                   data-bs-dismiss="modal"
-                  aria-label="Cerrar"
                 />
               </div>
               <div className="modal-body p-4">
                 <form onSubmit={handleCrearEmpleado} id="formNuevoEmpleado">
                   {/* Información Personal */}
                   <div className="row g-3 mb-4">
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold">
                         <User size={16} className="me-1" /> Nombre completo
                       </label>
@@ -284,7 +282,7 @@ const Empleados = () => {
                         required
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold">
                         <CreditCard size={16} className="me-1" /> Cédula
                       </label>
@@ -293,30 +291,6 @@ const Empleados = () => {
                         name="cedula"
                         className="form-control form-control-lg"
                         value={nuevoEmpleado.cedula}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label fw-semibold">
-                        <Phone size={16} className="me-1" /> Teléfono
-                      </label>
-                      <input
-                        type="text"
-                        name="telefono"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.telefono}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label fw-semibold">
-                        <Text size={16} className="me-1" /> Dirección
-                      </label>
-                      <input
-                        type="text"
-                        name="direccion"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.direccion}
                         onChange={handleChange}
                       />
                     </div>
@@ -329,7 +303,7 @@ const Empleados = () => {
                         Las contraseñas no coinciden
                       </div>
                     )}
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold">
                         <Mail size={16} className="me-1" /> Contraseña
                       </label>
@@ -342,7 +316,7 @@ const Empleados = () => {
                         required
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6">
                       <label className="form-label fw-semibold">
                         <Mail size={16} className="me-1" /> Confirmar contraseña
                       </label>
@@ -359,7 +333,7 @@ const Empleados = () => {
 
                   {/* Cargo, Fecha y Rol */}
                   <div className="row g-3 mb-4">
-                    <div className="col-md-4">
+                    <div className="col-12 col-md-4">
                       <label className="form-label fw-semibold">Cargo</label>
                       <input
                         type="text"
@@ -370,7 +344,7 @@ const Empleados = () => {
                         required
                       />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-md-4">
                       <label className="form-label fw-semibold">Fecha ingreso</label>
                       <input
                         type="date"
@@ -381,7 +355,7 @@ const Empleados = () => {
                         required
                       />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-12 col-md-4">
                       <label className="form-label fw-semibold">Rol</label>
                       <select
                         name="rol"
@@ -395,7 +369,7 @@ const Empleados = () => {
                     </div>
                   </div>
 
-                  {/* Información Adicional */}
+                  {/* Descripción */}
                   <div className="mb-4">
                     <label className="form-label fw-semibold">
                       <FileText size={16} className="me-1" /> Descripción
@@ -432,7 +406,7 @@ const Empleados = () => {
                         <FileText size={24} className="text-primary" />
                         <div>
                           <p className="mb-0 fw-semibold">{previewUrl}</p>
-                          <small>{(hojaVida.size/1024/1024).toFixed(2)} MB</small>
+                          <small>{(hojaVida.size / 1024 / 1024).toFixed(2)} MB</small>
                         </div>
                         <button className="btn btn-sm btn-outline-danger" onClick={handleRemoveFile}>
                           <X size={18} />
@@ -454,7 +428,7 @@ const Empleados = () => {
           </div>
         </div>
 
-        {/* 🧸 Lista de empleados */}
+        {/* Grid de tarjetas responsivo */}
         <div className="cards-grid mt-4">
           {empleadosFiltrados.map(emp => (
             <div key={emp.id} className="card-brigada">
@@ -466,7 +440,7 @@ const Empleados = () => {
               <p><strong>Fecha ingreso:</strong> {emp.fecha_ingreso || "No asignada"}</p>
               <p><strong>Descripción:</strong> {emp.descripcion}</p>
               <button
-                className="btn btn-outline-success mt-2"
+                className="btn btn-outline-success mt-3 align-self-stretch"
                 onClick={() => navigate(`/admin/empleados/${emp.id}`)}
               >
                 Ver Empleado
@@ -474,13 +448,10 @@ const Empleados = () => {
             </div>
           ))}
           {empleadosFiltrados.length === 0 && (
-            <p className="text-muted">No se encontraron empleados 😅</p>
+            <p className="text-center text-muted">No se encontraron empleados 😅</p>
           )}
         </div>
       </div>
     </div>
   );
-};
-
-export default Empleados;
-
+}
