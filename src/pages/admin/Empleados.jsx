@@ -185,7 +185,6 @@ export default function Empleados() {
         <p className="text-center text-muted mb-4">
           Aquí puedes ver los empleados existentes.
         </p>
-
         {/* Filtros responsivos */}
         <div className="container mb-4">
           <div className="card p-4">
@@ -242,6 +241,7 @@ export default function Empleados() {
             Crear Nuevo Empleado 🛡️
           </button>
         </div>
+
 
         {/* 🧩 Modal Crear Empleado */}
         <div
