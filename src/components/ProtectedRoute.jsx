@@ -65,3 +65,6 @@ function checkPermiso(rol, permiso) {
 
   return permisosPorRol[rol]?.includes(permiso) || false;
 }
+
+// Exportar como componente por defecto
+export default ProtectedRoute;
