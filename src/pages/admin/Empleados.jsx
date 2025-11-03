@@ -131,6 +131,7 @@ export default function Empleados() {
       nombre_completo: nuevoEmpleado.nombre_completo,
       correo: nuevoEmpleado.correo,
       cedula: nuevoEmpleado.cedula,
+      contraseña: nuevoEmpleado.contraseña,
       region: nuevoEmpleado.region,
       telefono: nuevoEmpleado.telefono,
       direccion: nuevoEmpleado.direccion,
