@@ -1,79 +1,67 @@
 // src/components/ProtectedRoute.jsx
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 /**
- * ProtectedRoute:
- * Protege rutas privadas validando tanto en el frontend (localStorage)
- * como en el backend (autenVerifi con /api/auth/perfil).
+ * ProtectedRoute protege rutas basado en autenticación y roles.
  * 
- * 📌 Flujo:
- * 1. Revisa si hay sesión en localStorage.
- * 2. Si no hay → redirige al login.
- * 3. Si hay sesión → hace un fetch a /api/auth/perfil para validar el token.
- * 4. Si el token es válido → renderiza children.
- * 5. Si no → borra la sesión y redirige al login.
+ * Props:
+ * - component: Componente React que se quiere proteger
+ * - requiredRole: (string opcional) rol requerido para acceder
+ * - requiredPermissions: (array opcional) permisos requeridos para acceder
  */
+export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
+  const { usuario, rol, loading } = useAuth();
 
-function ProtectedRoute({ children }) {
-  const [isValid, setIsValid] = useState(null); // null = cargando, true = válido, false = inválido
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const session = localStorage.getItem("session");
-      
-      // 1. Si no hay sesión en localStorage → inválido
-      if (!session) return setIsValid(false);
-      const parsedSession = JSON.parse(session);
+  if (!usuario) {
+    // No autenticado, redirigir a login
+    return <Navigate to="/login" replace />;
+  }
 
-      // 2. Si no existe access_token → inválido
-      if (!parsedSession?.access_token) return setIsValid(false);
+  if (requiredRole && rol !== requiredRole) {
+    // Rol no autorizado, redirigir a no autorizado
+    return <Navigate to="/no-autorizado" replace />;
+  }
 
-      try {
-        // 3. Validar token contra el backend autenVerifi
-        const res = await fetch("https://brigada-informe-ifn.vercel.app/api/brigadas", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${parsedSession.access_token}`,
-          },
-          credentials: "include", // opcional si tu backend lo requiere
-        });
-
-        if (!res.ok) {
-          // Token inválido o expirado
-          localStorage.removeItem("session"); // limpiar sesión corrupta
-          setIsValid(false);
-        } else setIsValid(true); // Token valido
-
-      } catch (error) {
-        console.error("Error validando token:", error);
-        setIsValid(false);
-      }
-    };
-
-    checkSession();
-  }, []);
-
-  // 4. Mientras valida → mostrar un mensaje de carga
-    if (isValid === null) {
-    return (
-      <div className="d-flex flex-column align-items-center justify-content-center vh-100">
-        <Spinner animation="border" role="status" />
-        <span className="mt-2">Cargando datos…</span>
-      </div>
+  if (requiredPermissions.length > 0) {
+    const tieneTodosPermisos = requiredPermissions.every((perm) =>
+      checkPermiso(rol, perm)
     );
+    if (!tieneTodosPermisos) {
+      return <Navigate to="/no-autorizado" replace />;
+    }
   }
 
-  // 5. Si no es válido → redirigir al login
-  if (!isValid) {
-    alert("Sesión inválida o expirada. Por favor, inicia sesión nuevamente.");
-    return <Navigate to="/" replace />;
-  }
-
-  // 6. Si es válido → renderizar el contenido protegido
-  return children;
+  return <Component />;
 }
 
-export default ProtectedRoute;
+// Función para verificar si un rol tiene un permiso específico
+function checkPermiso(rol, permiso) {
+  const permisosPorRol = {
+    admin: [
+      'crear_empleados',
+      'ver_empleados',
+      'crear_brigadas',
+      'asignar_roles',
+      'validar_brigadas',
+      'ver_checklist',
+      'asignar_conglomerados',
+    ],
+    coordinador_brigadas: [
+      'asignar_roles',
+      'validar_brigadas',
+      'ver_checklist',
+      'ver_miembros_brigada',
+    ],
+    coordinador_regional: ['asignar_conglomerados', 'validar_brigadas', 'ver_brigadas'],
+    brigadista: ['ver_perfil', 'ver_mi_brigada', 'enviar_datos_campo'],
+    visualizador: ['ver_reportes'],
+  };
+
+  return permisosPorRol[rol]?.includes(permiso) || false;
+}
