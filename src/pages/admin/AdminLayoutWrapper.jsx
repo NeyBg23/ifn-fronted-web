@@ -2,7 +2,7 @@
 // Wrapper que protege todo el layout admin
 
 import { Outlet } from "react-router-dom";
-import AdminLayout from "./AdminLayout";
+import AdminLayout from "./AdminLayoutWrapper.jsx";
 
 function AdminLayoutWrapper() {
   return (
