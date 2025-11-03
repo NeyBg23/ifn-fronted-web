@@ -3,7 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
 import NoAutorizado from "./pages/NoAutorizado";
 
-import AdminLayout from "./pages/admin/AdminLayout";
+import AdminLayoutWrapper from "./pages/admin/AdminLayoutWrapper";
 import HomeAdmin from "./pages/admin/Home";
 import Brigadas from "./pages/admin/Brigadas";
 import Conglomerados from "./pages/admin/Conglomerados";
@@ -21,13 +21,16 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/no-autorizado" element={<NoAutorizado />} />
 
-        <Route path="/admin" element={
-          <ProtectedRoute component={AdminLayout} />
+        {/* Rutas protegidas ADMIN */}
+        <Route path="/admin/*" element={
+          <ProtectedRoute component={AdminLayoutWrapper} requiredRole="admin" />
         }>
+          {/* Estas rutas dentro están protegidas */}
           <Route index element={<HomeAdmin />} />
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
@@ -44,6 +47,7 @@ function App() {
           <ProtectedRoute component={HomeUser} />
         } />
 
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
