@@ -1,4 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// 📄 src/App.jsx
+// Componente principal de la aplicación
+// Define todas las rutas y protecciones de acceso
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from './components/ProtectedRoute';
 import Login from "./components/Login";
 
@@ -14,8 +18,6 @@ import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
 import ConformarBrigada from "./pages/admin/ConformarBrigada";
 
-
-
 // Páginas Usuario normal (brigadista)
 import HomeUser from "./pages/user/Home";
 
@@ -25,66 +27,55 @@ function App() {
   return (
     <Router>
       <Routes>
-
-        {/* Ruta pública, login no necesita autenticación */}
+        {/* ============================================
+            RUTAS PÚBLICAS (sin autenticación)
+            ============================================ */}
+        
+        {/* Ruta raíz "/" redirige a login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Ruta de login (pública) */}
         <Route path="/login" element={<Login />} />
 
-        {/* Rutas protegidas para ADMIN y otros roles dentro del Layout administrador */}
+        {/* ============================================
+            RUTAS PROTEGIDAS - ADMIN
+            ============================================ */}
+        
+        {/* Layout principal del admin con navbar y sidebar */}
         <Route
           path="/admin"
           element={
-            // Protegemos con ProtectedRoute (requiere sesión válida)
             <ProtectedRoute>
-              <AdminLayout /> {/* Layout común con navbar para todas las rutas /admin */}
+              <AdminLayout />
             </ProtectedRoute>
           }
         >
-          {/* Dentro del layout protegemos cada subruta también con ProtectedRoute */}
-          <Route
-            path="/admin/brigadas/:idbrigada"
-            element={
-              <ProtectedRoute>
-                <BrigadaDetalle />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/brigadas/crear-nueva"
-            element={
-              <ProtectedRoute>
-                <ConformarBrigada />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/empleados/:idempleado"
-            element={
-              <ProtectedRoute>
-                <EmpleadoDetalle />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/conglomerados/:idconglomerado"
-            element={
-              <ProtectedRoute>
-                <ConglomeradoDetalle />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Otras rutas administrativas */}
+          {/* Subrutas dentro del layout admin */}
+          
+          {/* Home del admin */}
           <Route index element={<HomeAdmin />} /> {/* /admin */}
+          
+          {/* Gestión de Brigadas */}
           <Route path="brigadas" element={<Brigadas />} /> {/* /admin/brigadas */}
+          <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} /> {/* /admin/brigadas/:id */}
+          <Route path="brigadas/crear-nueva" element={<ConformarBrigada />} /> {/* /admin/brigadas/crear-nueva */}
+          
+          {/* Gestión de Conglomerados */}
           <Route path="conglomerados" element={<Conglomerados />} /> {/* /admin/conglomerados */}
+          <Route path="conglomerados/:idconglomerado" element={<ConglomeradoDetalle />} /> {/* /admin/conglomerados/:id */}
+          
+          {/* Gestión de Empleados */}
           <Route path="empleados" element={<Empleados />} /> {/* /admin/empleados */}
+          <Route path="empleados/:idempleado" element={<EmpleadoDetalle />} /> {/* /admin/empleados/:id */}
+          
+          {/* Perfil del usuario */}
           <Route path="perfil" element={<Perfil />} /> {/* /admin/perfil */}
         </Route>
 
-        {/* Rutas para usuario normal (brigadista) */}
+        {/* ============================================
+            RUTAS PROTEGIDAS - USUARIO NORMAL (Brigadista)
+            ============================================ */}
+        
         <Route
           path="/user"
           element={
@@ -93,6 +84,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* ============================================
+            RUTA FALLBACK (404)
+            ============================================ */}
+        
+        {/* Si no coincide ninguna ruta, redirige a login */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
