@@ -27,7 +27,7 @@ function App() {
       <Routes>
 
         {/* Ruta pública, login no necesita autenticación */}
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Rutas protegidas para ADMIN y otros roles dentro del Layout administrador */}
         <Route
