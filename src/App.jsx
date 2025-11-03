@@ -3,7 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
 import NoAutorizado from "./pages/NoAutorizado";
 
-import AdminLayoutWrapper from "./pages/admin/AdminLayoutWrapper";
+import AdminLayoutWrapper from "./pages/admin/AdminLayoutWrapper.jsx";
 import HomeAdmin from "./pages/admin/Home";
 import Brigadas from "./pages/admin/Brigadas";
 import Conglomerados from "./pages/admin/Conglomerados";
