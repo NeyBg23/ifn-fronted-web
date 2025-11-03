@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
 
-// Páginas Admin
 import AdminLayout from "./pages/admin/AdminLayout";
 import HomeAdmin from "./pages/admin/Home";
 import Brigadas from "./pages/admin/Brigadas";
@@ -14,24 +13,18 @@ import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
 import ConformarBrigada from "./pages/admin/ConformarBrigada";
 
-// Páginas Usuario normal
 import HomeUser from "./pages/user/Home";
-
 import "./styles/App.css";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Rutas protegidas ADMIN */}
         <Route path="/admin" element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
+          <ProtectedRoute component={AdminLayout} />
         }>
           <Route index element={<HomeAdmin />} />
           <Route path="brigadas" element={<Brigadas />} />
@@ -44,14 +37,10 @@ function App() {
           <Route path="perfil" element={<Perfil />} />
         </Route>
 
-        {/* Rutas protegidas USER */}
         <Route path="/user" element={
-          <ProtectedRoute>
-            <HomeUser />
-          </ProtectedRoute>
+          <ProtectedRoute component={HomeUser} />
         } />
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
