@@ -1,4 +1,4 @@
-// 📄 src/hooks/useAuth.js
+// 📄 src/hooks/useAuth.jsx
 // Hook de Autenticación con Control de Roles
 // Gestiona usuario, token y estado de autenticación global
 
@@ -8,8 +8,8 @@ import axios from 'axios';
 // Crear contexto
 const AuthContext = createContext();
 
-// URL del API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+// URL del servicio de autenticación (desde variables de entorno Vite)
+const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:4000';
 
 // ============================================
 // PROVIDER - Envuelve toda la app
@@ -37,8 +37,9 @@ export function AuthProvider({ children }) {
   const cargarUsuarioAutenticado = async (tokenActual) => {
     try {
       setLoading(true);
+      // Llamar al endpoint /api/auth/perfil del servicio de autenticación
       const response = await axios.get(
-        `${API_BASE_URL}/usuarios/me`,
+        `${AUTH_SERVICE_URL}/api/auth/perfil`,
         {
           headers: {
             'Authorization': `Bearer ${tokenActual}`,
@@ -47,14 +48,14 @@ export function AuthProvider({ children }) {
         }
       );
 
-      const datosUsuario = response.data.usuario;
+      const datosUsuario = response.data.user || response.data.usuario;
       setUsuario(datosUsuario);
-      setRol(datosUsuario.rol || 'brigadista');
+      setRol(datosUsuario.role || datosUsuario.rol || 'brigadista');
       setError(null);
 
       console.log('✅ Usuario autenticado:', {
-        nombre: datosUsuario.nombre_completo,
-        rol: datosUsuario.rol
+        nombre: datosUsuario.email || datosUsuario.nombre_completo,
+        rol: datosUsuario.role || datosUsuario.rol
       });
     } catch (err) {
       console.error('❌ Error cargando usuario autenticado:', err);
@@ -75,9 +76,11 @@ export function AuthProvider({ children }) {
       setLoading(true);
       setError(null);
 
-      // Llamar endpoint de login (en el microservicio de AUTH)
+      console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/api/auth/login`);
+
+      // Llamar endpoint de login (en el microservicio de AUTH con Supabase)
       const response = await axios.post(
-        `${process.env.REACT_APP_AUTH_URL || 'http://localhost:3001/api'}/auth/login`,
+        `${AUTH_SERVICE_URL}/api/auth/login`,
         {
           correo,
           password
@@ -86,7 +89,7 @@ export function AuthProvider({ children }) {
 
       const { token: nuevoToken } = response.data;
 
-      // Guardar token
+      // Guardar token en localStorage
       localStorage.setItem('token', nuevoToken);
       setToken(nuevoToken);
 
@@ -121,7 +124,7 @@ export function AuthProvider({ children }) {
       setError(null);
 
       const response = await axios.post(
-        `${process.env.REACT_APP_AUTH_URL || 'http://localhost:3001/api'}/auth/registro`,
+        `${AUTH_SERVICE_URL}/api/auth/registro`,
         {
           nombre_completo: nombre,
           correo,
