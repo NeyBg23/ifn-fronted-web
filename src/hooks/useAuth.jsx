@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
       const response = await axios.post(
         `${AUTH_SERVICE_URL}/auth/login`,
         {
-          correo,
+          email: correo,
           password
         }
       );
