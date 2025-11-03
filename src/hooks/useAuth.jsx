@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
       setLoading(true);
       // Llamar al endpoint /api/auth/perfil del servicio de autenticación
       const response = await axios.get(
-        `${AUTH_SERVICE_URL}/api/auth/perfil`,
+        `${AUTH_SERVICE_URL}/auth/perfil`,
         {
           headers: {
             'Authorization': `Bearer ${tokenActual}`,
@@ -76,11 +76,11 @@ export function AuthProvider({ children }) {
       setLoading(true);
       setError(null);
 
-      console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/api/auth/login`);
+      console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
 
       // Llamar endpoint de login (en el microservicio de AUTH con Supabase)
       const response = await axios.post(
-        `${AUTH_SERVICE_URL}/api/auth/login`,
+        `${AUTH_SERVICE_URL}/auth/login`,
         {
           correo,
           password
@@ -124,7 +124,7 @@ export function AuthProvider({ children }) {
       setError(null);
 
       const response = await axios.post(
-        `${AUTH_SERVICE_URL}/api/auth/registro`,
+        `${AUTH_SERVICE_URL}/auth/registro`,
         {
           nombre_completo: nombre,
           correo,
