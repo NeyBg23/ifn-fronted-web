@@ -42,14 +42,10 @@ function App() {
             ============================================ */}
         
         {/* Layout principal del admin con navbar y sidebar */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/admin" element={
+          <ProtectedRoute component={AdminLayout} />
+        } />
+
           {/* Subrutas dentro del layout admin */}
           
           {/* Home del admin */}
@@ -76,14 +72,9 @@ function App() {
             RUTAS PROTEGIDAS - USUARIO NORMAL (Brigadista)
             ============================================ */}
         
-        <Route
-          path="/user"
-          element={
-            <ProtectedRoute>
-              <HomeUser />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/user" element={
+          <ProtectedRoute component={HomeUser} />
+        } />
 
         {/* ============================================
             RUTA FALLBACK (404)
