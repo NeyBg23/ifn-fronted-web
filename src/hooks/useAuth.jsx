@@ -70,42 +70,47 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 3. Función para LOGIN
-  const login = async (correo, password) => {
-    try {
-      setLoading(true);
-      setError(null);
+// 3. Función para LOGIN
+const login = async (correo, password) => {
+  try {
+    setLoading(true);
+    setError(null);
 
-      console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
+    console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
 
-      // Llamar endpoint de login (en el microservicio de AUTH con Supabase)
-      const response = await axios.post(
-        `${AUTH_SERVICE_URL}/auth/login`,
-        {
-          email: correo,
-          password
-        }
-      );
+    // Llamar endpoint de login
+    const response = await axios.post(
+      `${AUTH_SERVICE_URL}/auth/login`,
+      {
+        email: correo,
+        password
+      }
+    );
 
-      const { token: nuevoToken } = response.data;
+    const { token: nuevoToken, user } = response.data;  // ← El usuario viene aquí
 
-      // Guardar token en localStorage
-      localStorage.setItem('token', nuevoToken);
-      setToken(nuevoToken);
-
-      // Cargar datos del usuario
-      await cargarUsuarioAutenticado(nuevoToken);
-
-      return { success: true, message: 'Login exitoso' };
-    } catch (err) {
-      const mensaje = err.response?.data?.error || 'Error en login';
-      setError(mensaje);
-      console.error('❌ Error en login:', err);
-      return { success: false, message: mensaje };
-    } finally {
-      setLoading(false);
+    // Guardar token
+    localStorage.setItem('token', nuevoToken);
+    setToken(nuevoToken);
+    
+    // Usar el usuario de la respuesta de login, no llamar a perfil
+    if (user) {
+      setUsuario(user);
+      setRol(user.role || user.rol || 'brigadista');
     }
-  };
+
+    return { success: true, message: 'Login exitoso' };
+  } catch (err) {
+    const mensaje = err.response?.data?.error || 'Error en login';
+    setError(mensaje);
+    console.error('❌ Error en login:', err);
+    return { success: false, message: mensaje };
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   // 4. Función para LOGOUT
   const logout = () => {
