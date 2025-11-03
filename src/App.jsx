@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
+import NoAutorizado from "./pages/NoAutorizado";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import HomeAdmin from "./pages/admin/Home";
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/no-autorizado" element={<NoAutorizado />} />
 
         <Route path="/admin" element={
           <ProtectedRoute component={AdminLayout} />
@@ -37,6 +39,7 @@ function App() {
           <Route path="perfil" element={<Perfil />} />
         </Route>
 
+        {/* Rutas protegidas USER - sin rol específico (cualquier usuario autenticado) */}
         <Route path="/user" element={
           <ProtectedRoute component={HomeUser} />
         } />

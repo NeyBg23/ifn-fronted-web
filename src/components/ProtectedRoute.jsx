@@ -10,22 +10,42 @@ import { useAuth } from '../hooks/useAuth.jsx';
  * - component: Componente React que se quiere proteger
  * - requiredRole: (string opcional) rol requerido para acceder
  * - requiredPermissions: (array opcional) permisos requeridos para acceder
+ * * Props:
+ * - component: Componente a renderizar si está autenticado
+ * - requiredRole: (opcional) rol requerido para acceder
+ *   Ejemplo: requiredRole="admin"
  */
 export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
   const { usuario, rol, loading } = useAuth();
 
+  // Mientras se verifica la autenticación, mostrar cargando
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        frontSize: '18px'
+      }}>
+        Cargando...
+      </div>
+    );
   }
 
+  // Si no está autenticado, redirigir a login
   if (!usuario) {
+    console.log('🚫 Acceso denegado. Usuario no autenticado.');
     // No autenticado, redirigir a login
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredRole && rol !== requiredRole) {
-    // Rol no autorizado, redirigir a no autorizado
-    return <Navigate to="/no-autorizado" replace />;
+  // Validar rol si es requerido
+  if (requiredRole) {
+    if (rol !== requiredRole) {
+      console.warn(`⚠️ Rol requerido: ${requiredRole}, rol actual: ${rol}`);
+      return <Navigate to="/no-autorizado" replace />;
+    }
   }
 
   if (requiredPermissions.length > 0) {
