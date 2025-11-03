@@ -20,8 +20,8 @@ import "./styles/App.css";
 function App() {
   return (
     <Router>
+      <ScrollToTop /> {/** Esto es para que cada vez que entren a una página, los mande a la parte superior de ella y no se quede abajo, por culpa de la config predeterminada de React */}
       <Routes>
-
         {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
