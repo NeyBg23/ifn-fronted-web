@@ -14,6 +14,8 @@ import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
 import ConformarBrigada from "./pages/admin/ConformarBrigada";
 
+
+
 // Páginas Usuario normal (brigadista)
 import HomeUser from "./pages/user/Home";
 
