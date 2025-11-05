@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:4000';
+const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
 
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
@@ -24,74 +25,73 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
-    try {
-      setLoading(true);
-      setError(null);
+const login = async (email, password) => {
+  try {
+    setLoading(true);
+    setError(null);
 
-      // 1️⃣ Login en Auth Service
-      console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
+    // 1️⃣ Login en Auth Service
+    console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
 
-      const response = await axios.post(
-        `${AUTH_SERVICE_URL}/auth/login`,
-        { email, password }
-      );
+    const response = await axios.post(
+      `${AUTH_SERVICE_URL}/auth/login`,
+      { email, password }
+    );
 
-      console.log('📊 Respuesta del Auth Service:', response.data); // 🔍 VER ESTRUCTURA
+    console.log('📊 Respuesta del Auth Service:', response.data);
 
+    // 2️⃣ Obtener correctamente el token y usuario
+    const nuevoToken = response.data.session.access_token;
+    const userAuth = response.data.user;
 
-      // ✅ OBTENER CORRECTAMENTE EL TOKEN
-      // El Auth Service retorna { access_token, user } o { token, user }
-      const nuevoToken = response.data.session.access_token;
-      const userAuth = response.data.user;
-
-      if (!nuevoToken) {
-        throw new Error('No se recibió token del Auth Service');
-      }
-
-      console.log('🔑 Token obtenido:', nuevoToken);
-      console.log('👤 Usuario Auth:', userAuth)
-
-
-      // 2️⃣ Consultar rol desde backend de Brigadas (si es necesario)
-      // Aquí asumimos que el rol viene en el objeto user retornado por el Auth Service
-      const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
-      
-      const brigResponse = await axios.get(
-        `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
-        {
-          headers: {
-            Authorization: `Bearer ${nuevoToken}`
-          }
-        });
-
-      console.log('📋 Datos de Brigada:', brigResponse.data);
-
-
-      const usuarioBrigada = brigResponse.data; // Asumimos que la respuesta tiene los datos del usuario incluyendo el rol
-
-
-      // Guardar en localStorage
-      localStorage.setItem('token', nuevoToken);
-      localStorage.setItem('usuario', JSON.stringify(user));
-
-      setToken(nuevoToken);
-      setUsuario(usuarioBrigada);
-      setRol(usuarioBrigada.role || 'brigadista');  // Asignar rol desde datos de Brigada
-
-      console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
-
-      // Retornar éxito
-      return { success: true, message: 'Login exitoso' };
-    } catch (err) {
-      const mensaje = err.response?.data?.error || 'Error en login';
-      setError(mensaje);
-      console.error('❌ Error en login:', err);
-      return { success: false, message: mensaje };
-    } finally {
-      setLoading(false);
+    if (!nuevoToken) {
+      throw new Error('No se recibió token del Auth Service');
     }
-  };
+
+    console.log('🔑 Token obtenido:', nuevoToken);
+    console.log('👤 Usuario Auth:', userAuth);
+
+    // 3️⃣ Consultar usuario y rol en Brigada
+    const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
+
+    const brigResponse = await axios.get(
+      `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
+      {
+        headers: {
+          Authorization: `Bearer ${nuevoToken}`
+        }
+      }
+    );
+
+    console.log('📋 Datos de Brigada:', brigResponse.data);
+
+    // 4️⃣ Extraer usuario brigada correctamente
+    const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
+
+    // 5️⃣ Guardar token y usuario en local storage
+    localStorage.setItem('token', nuevoToken);
+    localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
+
+    // 6️⃣ Actualizar estados en React
+    setToken(nuevoToken);
+    setUsuario(usuarioBrigada);
+
+    // ⚠️ Usar la clave correcta de rol (en DB es 'rol')
+    setRol(usuarioBrigada.rol || 'brigadista');
+
+    console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
+
+    return { success: true, message: 'Login exitoso' };
+  } catch (err) {
+    const mensaje = err.response?.data?.error || 'Error en login';
+    setError(mensaje);
+    console.error('❌ Error en login:', err);
+    return { success: false, message: mensaje };
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   const logout = () => {
     localStorage.removeItem('token');
