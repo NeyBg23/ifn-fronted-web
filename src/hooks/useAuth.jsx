@@ -57,11 +57,13 @@ export function AuthProvider({ children }) {
       // Aquí asumimos que el rol viene en el objeto user retornado por el Auth Service
       const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
       
-      const brigResponse = await axios.get(`${BRIGADA_SERVICE_URL}/api/usuarios/correo=${userAuth.email || email}`, {
-        headers: {
-          Authorization: `Bearer ${nuevoToken}`
-        }
-      });
+      const brigResponse = await axios.get(
+        `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
+        {
+          headers: {
+            Authorization: `Bearer ${nuevoToken}`
+          }
+        });
 
       console.log('📋 Datos de Brigada:', brigResponse.data);
 
