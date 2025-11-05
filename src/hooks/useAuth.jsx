@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
 
       // ✅ OBTENER CORRECTAMENTE EL TOKEN
       // El Auth Service retorna { access_token, user } o { token, user }
-      const nuevoToken = response.data.access_token || response.data.token;
+      const nuevoToken = response.data.session.access_token;
       const userAuth = response.data.user;
 
       if (!nuevoToken) {
