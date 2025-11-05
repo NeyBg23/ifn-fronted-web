@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true);
       setError(null);
+
       // 1️⃣ Login en Auth Service
       console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
 
@@ -36,18 +37,36 @@ export function AuthProvider({ children }) {
         { email, password }
       );
 
-      const { token: nuevoToken, user } = response.data;
+      console.log('📊 Respuesta del Auth Service:', response.data); // 🔍 VER ESTRUCTURA
+
+
+      // ✅ OBTENER CORRECTAMENTE EL TOKEN
+      // El Auth Service retorna { access_token, user } o { token, user }
+      const nuevoToken = response.data.access_token || response.data.token;
+      const userAuth = response.data.user;
+
+      if (!nuevoToken) {
+        throw new Error('No se recibió token del Auth Service');
+      }
+
+      console.log('🔑 Token obtenido:', nuevoToken);
+      console.log('👤 Usuario Auth:', userAuth)
+
 
       // 2️⃣ Consultar rol desde backend de Brigadas (si es necesario)
       // Aquí asumimos que el rol viene en el objeto user retornado por el Auth Service
       const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
       
-      const brigResponse = await axios.get(`${BRIGADA_SERVICE_URL}/api/usuarios/me`, {
+      const brigResponse = await axios.get(`${BRIGADA_SERVICE_URL}/api/usuarios/correo=${userAuth.email || email}`, {
         headers: {
           Authorization: `Bearer ${nuevoToken}`
         }
       });
-      const usuarioBrigada = brigResponse.data;
+
+      console.log('📋 Datos de Brigada:', brigResponse.data);
+
+
+      const usuarioBrigada = brigResponse.data; // Asumimos que la respuesta tiene los datos del usuario incluyendo el rol
 
 
       // Guardar en localStorage
@@ -58,7 +77,7 @@ export function AuthProvider({ children }) {
       setUsuario(usuarioBrigada);
       setRol(usuarioBrigada.role || 'brigadista');  // Asignar rol desde datos de Brigada
 
-      console.log('✅ Login exitoso');
+      console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
 
       // Retornar éxito
       return { success: true, message: 'Login exitoso' };
