@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true);
       setError(null);
-
+      // 1️⃣ Login en Auth Service
       console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
 
       const response = await axios.post(
@@ -38,15 +38,29 @@ export function AuthProvider({ children }) {
 
       const { token: nuevoToken, user } = response.data;
 
+      // 2️⃣ Consultar rol desde backend de Brigadas (si es necesario)
+      // Aquí asumimos que el rol viene en el objeto user retornado por el Auth Service
+      const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
+      
+      const brigResponse = await axios.get(`${BRIGADA_SERVICE_URL}/api/usuarios/me`, {
+        headers: {
+          Authorization: `Bearer ${nuevoToken}`
+        }
+      });
+      const usuarioBrigada = brigResponse.data;
+
+
       // Guardar en localStorage
       localStorage.setItem('token', nuevoToken);
       localStorage.setItem('usuario', JSON.stringify(user));
 
       setToken(nuevoToken);
-      setUsuario(user);
-      setRol(user.role || 'brigadista');
+      setUsuario(usuarioBrigada);
+      setRol(usuarioBrigada.role || 'brigadista');  // Asignar rol desde datos de Brigada
 
       console.log('✅ Login exitoso');
+
+      // Retornar éxito
       return { success: true, message: 'Login exitoso' };
     } catch (err) {
       const mensaje = err.response?.data?.error || 'Error en login';
