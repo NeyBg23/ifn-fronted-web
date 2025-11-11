@@ -17,7 +17,6 @@ import { useAuth } from '../hooks/useAuth.jsx';
  */
 export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
   const { usuario, rol, loading } = useAuth();
-  console.log('🔐 Verificando acceso para ProtectedRoute:', { usuario, rol, requiredRole, requiredPermissions });
 
   // Mientras se verifica la autenticación, mostrar cargando
   if (loading) {
@@ -42,6 +41,7 @@ export function ProtectedRoute({ component: Component, requiredRole = null, requ
   }
 
   // Validar rol si es requerido
+  console.log(`requiredRole: ${requiredRole}, user rol: ${rol}`);
   if (requiredRole) {
     if (rol !== requiredRole) {
       console.warn(`⚠️ Rol requerido: ${requiredRole}, rol actual: ${rol}`);
