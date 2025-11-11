@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth.jsx';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
