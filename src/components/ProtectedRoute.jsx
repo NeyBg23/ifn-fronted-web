@@ -30,7 +30,7 @@ export function ProtectedRoute({ component: Component, requiredRole = null, requ
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        frontSize: '18px'
+        fontSize: '18px',
       }}>
         Cargando...
       </div>
