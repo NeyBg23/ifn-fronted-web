@@ -17,11 +17,6 @@ import { useAuth } from '../hooks/useAuth.jsx';
  */
 export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
   const { usuario, rol, loading } = useAuth();
-
-  // Mientras se verifica la autenticación, mostrar cargando
-  console.log('Usuario:', usuario);
-  console.log('Rol:', rol);
-  console.log('Loading:', loading);
   
   if (loading) {
     return (
