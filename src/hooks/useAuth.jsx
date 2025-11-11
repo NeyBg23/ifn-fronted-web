@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     if (tokenGuardado && usuarioGuardado) {
       setToken(tokenGuardado);
       setUsuario(JSON.parse(usuarioGuardado));
-      setRol(JSON.parse(usuarioGuardado).role || 'brigadista');
+      setRol(JSON.parse(usuarioGuardado).rol || 'brigadista');
     }
     setLoading(false);
   }, []);
