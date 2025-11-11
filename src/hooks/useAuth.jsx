@@ -1,16 +1,28 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext, createContext, useMemo } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
+
+// Variables de Entorno
 const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:4000';
 const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
 
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
   const [rol, setRol] = useState(null);
-  const [loading, setLoading] = useState(true); // Se inicia en TRUE
+  const [loading, setLoading] = useState(true); // Inicia en TRUE para esperar la verificación
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
+
+  // Función auxiliar para limpiar el estado y el almacenamiento local
+  const clearAuth = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    setToken(null);
+    setUsuario(null);
+    setRol(null);
+    setError(null);
+  };
 
   useEffect(() => {
     const checkAuthAndFetchUser = async () => {
@@ -18,7 +30,8 @@ export function AuthProvider({ children }) {
       
       if (tokenGuardado) {
         try {
-          // 1. INTENTAR OBTENER DATOS FRESCOS CON EL TOKEN GUARDADO
+          // INTENTAR OBTENER DATOS FRESCOS DEL SERVIDOR CON EL TOKEN GUARDADO
+          console.log('🔄 Revalidando token y obteniendo datos de usuario...');
           const brigResponse = await axios.get(
             `${BRIGADA_SERVICE_URL}/api/usuarios/me`,
             {
@@ -33,33 +46,27 @@ export function AuthProvider({ children }) {
           // 2. ESTABLECER ESTADOS CON DATOS DEL SERVIDOR (Rol fresco)
           setToken(tokenGuardado);
           setUsuario(usuarioBrigada);
-          setRol(usuarioBrigada.rol || null); // El rol por defecto debe ser null o manejado en DB
+          setRol(usuarioBrigada.rol || null);
 
-          // Opcional: Actualizar localStorage con el objeto de usuario fresco
+          // Actualizar localStorage con el objeto de usuario fresco
           localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
         
         } catch (err) {
-          // Si hay error (401, 403, 500, o token expirado), hacemos logout limpio
-          console.error('Token inválido o expirado. Forzando logout.', err);
-          localStorage.removeItem('token');
-          localStorage.removeItem('usuario');
-          setToken(null);
-          setUsuario(null);
-          setRol(null);
+          // Si hay error (401, 403, 500), forzamos un logout limpio
+          console.error('Token inválido, expirado o error en el Backend (500). Forzando logout.', err);
+          clearAuth();
         }
       } else {
         // No hay token guardado, asegurar que los estados están limpios
-        setUsuario(null);
-        setRol(null);
+        clearAuth();
       }
       
-      // SIEMPRE poner FALSE al final del chequeo
+      // 3. 🛑 SIEMPRE poner FALSE al final del chequeo
       setLoading(false);
     };
 
     checkAuthAndFetchUser();
-  }, []); // Se ejecuta una sola vez al montar
-
+  }, []); // Dependencia vacía para ejecutarse solo al montar
 
 const login = async (email, password) => {
   try {
@@ -67,8 +74,6 @@ const login = async (email, password) => {
     setError(null);
 
     // 1️⃣ Login en Auth Service
-    console.log('🔐 Intentando login en:', `${AUTH_SERVICE_URL}/auth/login`);
-
     const response = await axios.post(
       `${AUTH_SERVICE_URL}/auth/login`,
       { email, password }
@@ -80,7 +85,7 @@ const login = async (email, password) => {
       throw new Error('No se recibió token del Auth Service');
     }
 
-    // 3️⃣ Consultar usuario y rol en Brigada
+    // Consultar usuario y rol en Brigada
     const brigResponse = await axios.get(
       `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
       {
@@ -89,8 +94,6 @@ const login = async (email, password) => {
         }
       }
     );
-
-    console.log('👤 Datos de usuario obtenidos de Brigada:', brigResponse.data);
 
     // 4️⃣ Extraer usuario brigada correctamente
     const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
@@ -108,34 +111,22 @@ const login = async (email, password) => {
 
     return { success: true, message: 'Login exitoso' };
   } catch (err) {
-    // 🛑 CORRECCIÓN: Si falla la llamada a /usuarios/me (el 500) o el login
-    // Limpiamos el localStorage y los estados, y ponemos loading=false
+    // Limpiar estado si falla la consulta (e.g., el error 500)
     const mensaje = err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
     setError(mensaje);
-    
-    // Si ya se había obtenido el token pero falló la consulta al backend
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
-    setToken(null);
-    setUsuario(null);
-    setRol(null);
+    clearAuth(); // Limpiamos todo si falla el login o la consulta al backend
     
     console.error('❌ Error en login:', err);
     return { success: false, message: mensaje };
   } finally {
-    // ✅ Garantizado: Loading se pone en false en todos los casos
+    // Garantizado: Loading se pone en false en todos los casos
     setLoading(false);
   }
 }
 
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
-    setToken(null);
-    setUsuario(null);
-    setRol(null);
-    setError(null);
+    clearAuth();
     console.log('✅ Usuario desconectado');
   };
 
@@ -146,7 +137,8 @@ const login = async (email, password) => {
     return rolRequerido.includes(rol);
   };
 
-  const value = {
+  // ✅ CORRECCIÓN 3: Memorizar el objeto de valor del contexto con useMemo
+  const value = useMemo(() => ({
     usuario,
     rol,
     token,
@@ -157,7 +149,7 @@ const login = async (email, password) => {
     tieneRol,
     autenticado: !!usuario,
     estaAutenticado: !!token
-  };
+  }), [usuario, rol, token, loading, error]); // Dependencias
 
   return (
     <AuthContext.Provider value={value}>

@@ -1,167 +1,94 @@
-import React, { useState, useEffect, useContext, createContext, useMemo } from 'react';
-import axios from 'axios';
+// src/components/ProtectedRoute.jsx
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth.jsx';
 
-const AuthContext = createContext();
+/**
+ * ProtectedRoute protege rutas basado en autenticación y roles.
+ * 
+ * Props:
+ * - component: Componente React que se quiere proteger
+ * - requiredRole: (string opcional) rol requerido para acceder
+ * - requiredPermissions: (array opcional) permisos requeridos para acceder
+ * * Props:
+ * - component: Componente a renderizar si está autenticado
+ * - requiredRole: (opcional) rol requerido para acceder
+ *   Ejemplo: requiredRole="admin"
+ */
+export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
+  const { usuario, rol, loading } = useAuth();
 
-// Variables de Entorno
-const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:4000';
-const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
-
-export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
-  const [rol, setRol] = useState(null);
-  const [loading, setLoading] = useState(true); // Inicia en TRUE para esperar la verificación
-  const [token, setToken] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Función auxiliar para limpiar el estado y el almacenamiento local
-  const clearAuth = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
-    setToken(null);
-    setUsuario(null);
-    setRol(null);
-    setError(null);
-  };
-
-  useEffect(() => {
-    const checkAuthAndFetchUser = async () => {
-      const tokenGuardado = localStorage.getItem('token');
-      
-      if (tokenGuardado) {
-        try {
-          // INTENTAR OBTENER DATOS FRESCOS DEL SERVIDOR CON EL TOKEN GUARDADO
-          console.log('🔄 Revalidando token y obteniendo datos de usuario...');
-          const brigResponse = await axios.get(
-            `${BRIGADA_SERVICE_URL}/api/usuarios/me`,
-            {
-              headers: {
-                Authorization: `Bearer ${tokenGuardado}`
-              }
-            }
-          );
-          
-          const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
-          
-          // 2. ESTABLECER ESTADOS CON DATOS DEL SERVIDOR (Rol fresco)
-          setToken(tokenGuardado);
-          setUsuario(usuarioBrigada);
-          setRol(usuarioBrigada.rol || null);
-
-          // Actualizar localStorage con el objeto de usuario fresco
-          localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
-        
-        } catch (err) {
-          // Si hay error (401, 403, 500), forzamos un logout limpio
-          console.error('Token inválido, expirado o error en el Backend (500). Forzando logout.', err);
-          clearAuth();
-        }
-      } else {
-        // No hay token guardado, asegurar que los estados están limpios
-        clearAuth();
-      }
-      
-      // 3. 🛑 SIEMPRE poner FALSE al final del chequeo
-      setLoading(false);
-    };
-
-    checkAuthAndFetchUser();
-  }, []); // Dependencia vacía para ejecutarse solo al montar
-
-const login = async (email, password) => {
-  try {
-    setLoading(true);
-    setError(null);
-
-    // 1️⃣ Login en Auth Service
-    const response = await axios.post(
-      `${AUTH_SERVICE_URL}/auth/login`,
-      { email, password }
+  // Mientras se verifica la autenticación, mostrar cargando
+  console.log('Usuario:', usuario);
+  console.log('Rol:', rol);
+  console.log('Loading:', loading);
+  
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        frontSize: '18px'
+      }}>
+        Cargando...
+      </div>
     );
+  }
 
-    // 2️⃣ Obtener correctamente el token
-    const nuevoToken = response.data.session.access_token;
-    if (!nuevoToken) {
-      throw new Error('No se recibió token del Auth Service');
+  // Si no está autenticado, redirigir a login
+  if (!usuario) {
+    console.log('🚫 Acceso denegado. Usuario no autenticado.');
+    // No autenticado, redirigir a login
+    return <Navigate to="/login" replace />;
+  }
+
+  // Validar rol si es requerido
+  if (requiredRole) {
+    if (rol !== requiredRole) {
+      console.warn(`⚠️ Rol requerido: ${requiredRole}, rol actual: ${rol}`);
+      return <Navigate to="/no-autorizado" replace />;
     }
+  }
 
-    // Consultar usuario y rol en Brigada
-    const brigResponse = await axios.get(
-      `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
-      {
-        headers: {
-          Authorization: `Bearer ${nuevoToken}`
-        }
-      }
+  if (requiredPermissions.length > 0) {
+    const tieneTodosPermisos = requiredPermissions.every((perm) =>
+      checkPermiso(rol, perm)
     );
-
-    // 4️⃣ Extraer usuario brigada correctamente
-    const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
-
-    // 5️⃣ Guardar token y usuario en local storage
-    localStorage.setItem('token', nuevoToken);
-    localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
-
-    // 6️⃣ Actualizar estados en React
-    setToken(nuevoToken);
-    setUsuario(usuarioBrigada);
-    setRol(usuarioBrigada.rol || null);
-
-    console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
-
-    return { success: true, message: 'Login exitoso' };
-  } catch (err) {
-    // Limpiar estado si falla la consulta (e.g., el error 500)
-    const mensaje = err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
-    setError(mensaje);
-    clearAuth(); // Limpiamos todo si falla el login o la consulta al backend
-    
-    console.error('❌ Error en login:', err);
-    return { success: false, message: mensaje };
-  } finally {
-    // Garantizado: Loading se pone en false en todos los casos
-    setLoading(false);
-  }
-}
-
-
-  const logout = () => {
-    clearAuth();
-    console.log('✅ Usuario desconectado');
-  };
-
-  const tieneRol = (rolRequerido) => {
-    if (typeof rolRequerido === 'string') {
-      return rol === rolRequerido;
+    if (!tieneTodosPermisos) {
+      return <Navigate to="/no-autorizado" replace />;
     }
-    return rolRequerido.includes(rol);
+  }
+
+  return <Component />;
+}
+
+// Función para verificar si un rol tiene un permiso específico
+function checkPermiso(rol, permiso) {
+  const permisosPorRol = {
+    admin: [
+      'crear_empleados',
+      'ver_empleados',
+      'crear_brigadas',
+      'asignar_roles',
+      'validar_brigadas',
+      'ver_checklist',
+      'asignar_conglomerados',
+    ],
+    coordinador_brigadas: [
+      'asignar_roles',
+      'validar_brigadas',
+      'ver_checklist',
+      'ver_miembros_brigada',
+    ],
+    coordinador_regional: ['asignar_conglomerados', 'validar_brigadas', 'ver_brigadas'],
+    brigadista: ['ver_perfil', 'ver_mi_brigada', 'enviar_datos_campo'],
+    visualizador: ['ver_reportes'],
   };
 
-  // ✅ CORRECCIÓN 3: Memorizar el objeto de valor del contexto con useMemo
-  const value = useMemo(() => ({
-    usuario,
-    rol,
-    token,
-    loading,
-    error,
-    login,
-    logout,
-    tieneRol,
-    autenticado: !!usuario,
-    estaAutenticado: !!token
-  }), [usuario, rol, token, loading, error]); // Dependencias
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return permisosPorRol[rol]?.includes(permiso) || false;
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth debe ser usado dentro de AuthProvider');
-  }
-  return context;
-}
+// Exportar como componente por defecto
+export default ProtectedRoute;
