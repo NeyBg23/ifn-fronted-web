@@ -90,6 +90,8 @@ const login = async (email, password) => {
       }
     );
 
+    console.log('👤 Datos de usuario obtenidos de Brigada:', brigResponse.data);
+
     // 4️⃣ Extraer usuario brigada correctamente
     const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
 
