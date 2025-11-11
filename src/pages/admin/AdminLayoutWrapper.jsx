@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import AdminLayout from "./AdminLayoutWrapper.jsx";
 
 function AdminLayoutWrapper() {
+  console.log("Renderizando AdminLayoutWrapper");
   return (
     <AdminLayout>
       <Outlet />
