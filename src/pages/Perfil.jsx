@@ -3,7 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 import { useState, useEffect, useCallback } from "react";
-import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield } from "lucide-react";
+import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield, Save, ArrowLeftToLine } from "lucide-react";
 import { useAuth } from "../hooks/useAuth"; 
 
 const Perfil = () => {
@@ -305,12 +305,15 @@ const Perfil = () => {
             </div>
 
 
-          <div className="flex justify-content-center gap-3 mb-5">
+          <div className="flex justify-content-center gap-3">
             <button
-              className="btn btn-secondary"
+              className="btn btn-danger"
               onClick={() => window.history.back()}
             >
-              Volver
+              <div className="flex">
+                <ArrowLeftToLine size={27} className="me-2" />
+                Volver
+              </div>
             </button>
             <button
               className="btn btn-success btn-lg"
@@ -323,7 +326,10 @@ const Perfil = () => {
                   Guardando...
                 </>
               ) : (
-                "Guardar Cambios"
+                <div className="flex">
+                  <Save size={27} className="me-2" />
+                  Guardar Cambios
+                </div>
               )}
             </button>
           </div>
