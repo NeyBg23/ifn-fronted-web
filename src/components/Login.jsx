@@ -220,7 +220,7 @@ function Login() {
                     </div>
                     
                     {/* WIDGET DE HCAPTCHA */}
-                    <div className="mt-5 pt-2">
+                    <div className="pt-2">
                         <HCaptcha
                             sitekey={HCATCHA_SITE_KEY}
                             onVerify={onVerify}
