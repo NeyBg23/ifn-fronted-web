@@ -29,7 +29,7 @@ function App() {
 
         {/* Rutas protegidas ADMIN */}
         <Route path="/admin/*" element={
-          <ProtectedRoute component={AdminLayout} />
+          <ProtectedRoute component={AdminLayout} requiredRole="admin" />
         }>
           {/* Estas rutas están anidadas DENTRO de AdminLayout */}
           <Route index element={<HomeAdmin />} />
