@@ -100,14 +100,6 @@ const Brigadas = () => {
             </div>
           )}
 
-          <p>Aquí puedes crear una nueva brigada.</p>
-          <button
-            className="btn-crear"
-            onClick={() => navigate(`/admin/brigadas/crear-nueva`)}
-          >
-            Crear Nueva Brigada 🛡️
-          </button>
-
           {/* 🧸 Lista de brigadas como tarjetas (refleja la base) */}
           <div className="cards-grid">
             {brigadasFiltradas.map((brigada) => (

@@ -36,13 +36,13 @@ function App() {
           
           <Route path="perfil" element={<Perfil />} />
 
-            {/* ✅ RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
+            {/* RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
           <Route path="conglomerados" element={<Conglomerados />} />
           <Route path="conglomerados/:idconglomerado" element={<ConglomeradoDetalle />} />
 
-          {/* ⚠️ Rutas solo de administración/gestión (Crear brigada, Empleados) */}
+          {/* Rutas solo de administración/gestión (Crear brigada, Empleados) */}
           <Route path="brigadas/crear-nueva" element={<ConformarBrigada />} />
           <Route path="empleados" element={<Empleados />} />
           <Route path="empleados/:idempleado" element={<EmpleadoDetalle />} />
@@ -55,7 +55,7 @@ function App() {
           <Route index element={<HomeUser />} /> 
           <Route path="perfil" element={<Perfil />} /> 
 
-            {/* ✅ RUTAS COMPARTIDAS (para que UserLayout pueda acceder) */}
+            {/* RUTAS COMPARTIDAS (para que UserLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
           <Route path="conglomerados" element={<Conglomerados />} />
