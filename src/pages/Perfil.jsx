@@ -1,3 +1,7 @@
+// Para la animación de aparición de izquierda a su posición fija
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 import { useState, useEffect, useCallback } from "react";
 import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield } from "lucide-react";
 import { useAuth } from "../hooks/useAuth"; 
@@ -31,6 +35,8 @@ const Perfil = () => {
 
 
   useEffect(() => {
+    AOS.init({ duration: 700, easing: "ease-out", once: true });
+
     const cargarPerfil = async () => {
       if (!token) return setLoading(false);
 
@@ -127,9 +133,9 @@ const Perfil = () => {
   }
 
   return (
-    <div className="container py-4">
+    <div className="container py-2">
       <div className="row justify-content-center">
-        <div className="col-lg-8">
+        <div className="col-lg-10">
           {mensaje && (
             <div className={`alert ${mensaje.includes("Error") ? "alert-danger" : "alert-success"} alert-dismissible fade show`}>
               {mensaje}
@@ -141,17 +147,17 @@ const Perfil = () => {
             </div>
           )}
 
-          <div className="card mb-4">
+          <div data-aos="zoom-in" className="card mb-4">
             <div className="card-header bg-light">
               <h5 className="mb-0">Información Personal</h5>
               <small className="text-muted">Estos campos no pueden ser editados</small>
             </div>
+            <br />
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
-                    <User size={18} className="me-2" />
-                    Nombre Completo
+                  <label className="form-label fw-bold flex">
+                    <User size={18} className="me-2" /> Nombre Completo
                   </label>
                   <input
                     type="text"
@@ -162,7 +168,7 @@ const Perfil = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
+                  <label className="form-label fw-bold flex">
                     <Mail size={18} className="me-2" />
                     Correo Electrónico
                   </label>
@@ -175,7 +181,7 @@ const Perfil = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
+                  <label className="form-label fw-bold flex">
                     <Briefcase size={18} className="me-2" />
                     Cargo
                   </label>
@@ -188,7 +194,7 @@ const Perfil = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
+                  <label className="form-label fw-bold flex">
                     <Shield size={18} className="me-2" />
                     Rol
                   </label>
@@ -201,7 +207,7 @@ const Perfil = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
+                  <label className="form-label fw-bold flex">
                     <Calendar size={18} className="me-2" />
                     Fecha de Ingreso
                   </label>
@@ -214,7 +220,7 @@ const Perfil = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">
+                  <label className="form-label fw-bold flex">
                     <Calendar size={18} className="me-2" />
                     Fecha de Creación
                   </label>
@@ -228,15 +234,19 @@ const Perfil = () => {
                 </div>
               </div>
             </div>
+
+            <br />
+
             <div className="card mb-4">
             <div className="card-header bg-success text-white">
               <h5 className="mb-0">Información Editable</h5>
               <small>Puedes actualizar estos campos</small>
             </div>
+            <br />
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-12">
-                  <label htmlFor="descripcion" className="form-label fw-bold">
+                  <label htmlFor="descripcion" className="form-label fw-bold flex">
                     <FileText size={18} className="me-2" />
                     Descripción
                   </label>
@@ -250,7 +260,7 @@ const Perfil = () => {
                   ></textarea>
                 </div>
                 <div className="col-md-6">
-                  <label htmlFor="region" className="form-label fw-bold">
+                  <label htmlFor="region" className="form-label fw-bold flex">
                     <MapPin size={18} className="me-2" />
                     Región
                   </label>
@@ -269,7 +279,7 @@ const Perfil = () => {
                   </select>
                 </div>
                 <div className="col-md-6">
-                  <label htmlFor="telefono" className="form-label fw-bold">
+                  <label htmlFor="telefono" className="form-label fw-bold flex">
                     <Phone size={18} className="me-2" />
                     Teléfono
                   </label>

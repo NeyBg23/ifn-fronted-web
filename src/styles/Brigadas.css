@@ -8,6 +8,7 @@
   box-sizing: border-box;
   min-height: calc(100vh - 120px); /* ajusta según header/footer */
   background: transparent;
+  margin-top: -50px;
 }
 
 h1, h2, h3 {

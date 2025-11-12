@@ -1,3 +1,7 @@
+// Para la animación de aparición de izquierda a su posición fija
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/Brigadas.css";  //  Importamos los estilos bonitos (crearemos este archivo después)
@@ -12,6 +16,9 @@ const Conglomerados = () => {
 
   //  Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
   useEffect(() => {
+    
+    AOS.init({ duration: 900, easing: "ease-out", once: true });
+
     const fetchData = async () => {
       const session = JSON.parse(localStorage.getItem("session"));  //  La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
@@ -74,7 +81,7 @@ const Conglomerados = () => {
 
 
           {/*  Lista de brigadas como tarjetas (refleja la base) */}
-          <div className="cards-grid">
+          <div data-aos="fade-up" className="cards-grid">
             {conglomeradosFiltradas.map((conglomerado) => (
               <div key={conglomerado.id} className="card-brigada">
                 <h3>{conglomerado.nombre}</h3>

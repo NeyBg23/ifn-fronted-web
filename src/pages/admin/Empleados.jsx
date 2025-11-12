@@ -1,12 +1,6 @@
-// 📂 src/components/Empleados.jsx
-// =============================================================
-// 🌳 Empleados.jsx
-// -------------------------------------------------------------
-// Página para gestionar Empleados (Brigadistas):
-//  - Carga la lista de empleados desde el backend.
-//  - Filtra por nombre, correo, cédula y región.
-//  - Permite crear nuevos empleados mediante un modal Bootstrap.
-// =============================================================
+// Para la animación de aparición de izquierda a su posición fija
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -53,6 +47,9 @@ export default function Empleados() {
 
   // Carga inicial de empleados
   useEffect(() => {
+
+    AOS.init({ duration: 900, easing: "ease-out", once: true });
+
     (async () => {
       const session = JSON.parse(localStorage.getItem("session"));
       if (!session) return alert("¡Necesitas login! 🔑");
@@ -83,11 +80,13 @@ export default function Empleados() {
   const handleFileChange = e => {
     const file = e.target.files[0];
     if (!file) return;
+
     const allowed = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ];
+
     if (!allowed.includes(file.type)) return alert("Solo PDF, DOC o DOCX");
     if (file.size > 5 * 1024 * 1024) return alert("Máx 5MB");
     setHojaVida(file);
@@ -190,9 +189,9 @@ export default function Empleados() {
         {/* Filtros responsivos */}
         <div className="container mb-4">
           <div className="card p-4">
-            <h5 className="mb-3 text-center">🔎 Filtrar Empleados</h5>
-            <div className="row g-3">
-              <div className="col-12 col-md-6 col-lg-3">
+            <h5 className="mb-4 text-center">🔎 Filtrar Empleados</h5>
+            <div className="row g-1">
+              <div className="col-12 col-md-6 col-lg-4">
                 <input
                   className="form-control"
                   placeholder="Nombre..."
@@ -200,7 +199,7 @@ export default function Empleados() {
                   onChange={e => setFiltroNombre(e.target.value)}
                 />
               </div>
-              <div className="col-12 col-md-6 col-lg-3">
+              <div className="col-12 col-md-6 col-lg-4">
                 <input
                   className="form-control"
                   placeholder="Correo..."
@@ -208,7 +207,7 @@ export default function Empleados() {
                   onChange={e => setFiltroCorreo(e.target.value)}
                 />
               </div>
-              <div className="col-12 col-md-6 col-lg-3">
+              <div className="col-12 col-md-6 col-lg-4">
                 <input
                   className="form-control"
                   placeholder="Cédula..."
@@ -216,7 +215,7 @@ export default function Empleados() {
                   onChange={e => setFiltroCedula(e.target.value)}
                 />
               </div>
-              <div className="col-12 col-md-6 col-lg-3">
+              <div className="col-12 col-md-6 col-lg-4">
                 <select
                   className="form-select"
                   value={filtroRegion}
@@ -431,7 +430,7 @@ export default function Empleados() {
         </div>
 
         {/* Grid de tarjetas responsivo */}
-        <div className="cards-grid mt-4">
+        <div data-aos="fade-up" className="cards-grid mt-4">
           {empleadosFiltrados.map(emp => (
             <div key={emp.id} className="card-brigada">
               <h3>{emp.nombre_completo}</h3>

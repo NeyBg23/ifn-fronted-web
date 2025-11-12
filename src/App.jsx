@@ -24,17 +24,28 @@ function App() {
       <Routes>
         {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={
+          <>
+            <Login />
+          </>
+        } />
         <Route path="/no-autorizado" element={<NoAutorizado />} />
 
         {/* Rutas protegidas ADMIN */}
         <Route path="/admin/*" element={
-          <ProtectedRoute component={AdminLayout} requiredRole="admin" />
+          <>
+            <ProtectedRoute component={AdminLayout} requiredRole="admin" />
+          </>
+
         }>
           {/* Estas rutas están anidadas DENTRO de AdminLayout */}
           <Route index element={<HomeAdmin />} />
           
-          <Route path="perfil" element={<Perfil />} />
+          <Route path="perfil" element={
+            <>
+              <Perfil />
+            </>
+          }/>
 
             {/* RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
@@ -50,10 +61,15 @@ function App() {
 
         {/* Rutas protegidas USER (Accesibles por cualquier usuario autenticado) */}
         <Route path="/user/*" element={
+          
           <ProtectedRoute component={UserLayout}/>
         }>
           <Route index element={<HomeUser />} /> 
-          <Route path="perfil" element={<Perfil />} /> 
+          <Route path="perfil" element={
+            <>
+              <Perfil />
+            </>
+          } /> 
 
             {/* RUTAS COMPARTIDAS (para que UserLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
