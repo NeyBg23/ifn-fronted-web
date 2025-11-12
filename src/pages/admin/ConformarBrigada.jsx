@@ -238,29 +238,29 @@ const ConformarBrigada = () => {
           <h5 className="card-title mb-3">Resumen de Asignaciones</h5>
           <div className="d-flex flex-wrap justify-content-around gap-3">
             <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-3 border rounded">
-                <Shield size={28} className="mb-2 text-success" />
+              <div className="p-2 border rounded">
+                <Shield size={28} className="mb-2 text-success w-100" />
                 <h6 className="mb-2">Jefe de Brigada</h6>
                 <span className="badge bg-success fs-6">{contarRol("jefe")}</span>
               </div>
             </div>
             <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-3 border rounded">
-                <Users size={28} className="mb-2 text-primary" />
+              <div className="p-2 border rounded">
+                <Users size={28} className="mb-2 text-primary w-100" />
                 <h6 className="mb-2">Brigadistas</h6>
                 <span className="badge bg-primary fs-6">{contarRol("brigadista")}</span>
               </div>
             </div>
             <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-3 border rounded">
-                <Briefcase size={28} className="mb-2 text-info" />
+              <div className="p-2 border rounded">
+                <Briefcase size={28} className="mb-2 text-info w-100" />
                 <h6 className="mb-2">Co-Investigadores</h6>
                 <span className="badge bg-info fs-6">{contarRol("coinvestigador")}</span>
               </div>
             </div>
             <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-3 border rounded">
-                <UserCheck size={28} className="mb-2 text-warning" />
+              <div className="p-2 border rounded">
+                <UserCheck size={28} className="mb-2 text-warning w-100" />
                 <h6 className="mb-2">Apoyo Técnico</h6>
                 <span className="badge bg-warning fs-6">{contarRol("apoyo")}</span>
               </div>
