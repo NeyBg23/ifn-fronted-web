@@ -9,6 +9,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
+import { useAuth } from "../../hooks/useAuth.jsx";
+
+const user = useAuth();
 
 const Brigadas = () => {
   const navigate = useNavigate();
@@ -83,6 +86,20 @@ const Brigadas = () => {
               </div>
             </div>
           </div>
+
+          {
+            user && user.usuario.rol === 'admin' && (
+
+            <div className="mb-4">
+              <p>Aquí puedes crear una nueva brigada.</p>
+                <button
+                  className="btn-crear"
+                  onClick={() => navigate(`/admin/brigadas/crear-nueva`)}
+                >
+                  Crear Nueva Brigada 🛡️
+                </button>
+            </div>
+          )}
 
           <p>Aquí puedes crear una nueva brigada.</p>
           <button

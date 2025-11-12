@@ -4,7 +4,6 @@ import { useAuth } from '../hooks/useAuth.jsx';
 export default function Header() {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const user = useAuth();
   const handleLogout = () => {
     logout();
     alert("Se ha cerrado sesión correctamente.");
