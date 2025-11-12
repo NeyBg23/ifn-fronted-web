@@ -11,9 +11,8 @@ import { useState, useEffect } from "react";
 import "../../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
 import { useAuth } from "../../hooks/useAuth.jsx";
 
-const user = useAuth();
-
 const Brigadas = () => {
+  const user = useAuth();
   const navigate = useNavigate();
   const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
   const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
