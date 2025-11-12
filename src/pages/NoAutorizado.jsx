@@ -8,7 +8,7 @@ function NoAutorizado() {
 
     const irALogin = () => {
         localStorage.removeItem('token'); // Elimina el token del almacenamiento local
-        localStorage.removeItem('usario');  // Elimina el usuario del almacenamiento local       
+        localStorage.removeItem('usuario');  // Elimina el usuario del almacenamiento local       
         navigate('/login', { replace: true  });     // Redirige a la página de login     
     }
   return (

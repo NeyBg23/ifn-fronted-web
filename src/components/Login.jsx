@@ -19,7 +19,6 @@ function Login() {
     const resultado = await login(email, password);
 
     if (resultado.success) {
-
       if (resultado.usuario.rol === 'admin') navigate("/admin");
       else navigate("/user");
 

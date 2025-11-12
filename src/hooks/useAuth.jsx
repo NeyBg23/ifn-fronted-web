@@ -99,6 +99,7 @@ const login = async (email, password) => {
     // 5️⃣ Guardar token y usuario en local storage
     localStorage.setItem('token', nuevoToken);
     localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
+    localStorage.setItem("session", JSON.stringify(response.data.session));
 
     // 6️⃣ Actualizar estados en React
     setToken(nuevoToken);
