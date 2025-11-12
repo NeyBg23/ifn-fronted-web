@@ -4,8 +4,8 @@ import Login from "./components/Login";
 import NoAutorizado from "./pages/NoAutorizado";
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import HomeAdmin from "./pages/admin/Home";
-import Brigadas from "./pages/admin/Brigadas";
-import Conglomerados from "./pages/admin/Conglomerados";
+import Brigadas from "./pages/Brigadas.jsx";
+import Conglomerados from "./pages/Conglomerados.jsx";
 import Empleados from "./pages/admin/Empleados";
 import Perfil from "./pages/Perfil.jsx";
 import BrigadaDetalle from "./pages/admin/info/BrigadaDetalle"; 
@@ -36,23 +36,30 @@ function App() {
           
           <Route path="perfil" element={<Perfil />} />
 
+            {/* ✅ RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
-          <Route path="brigadas/crear-nueva" element={<ConformarBrigada />} />
           <Route path="conglomerados" element={<Conglomerados />} />
           <Route path="conglomerados/:idconglomerado" element={<ConglomeradoDetalle />} />
+
+          {/* ⚠️ Rutas solo de administración/gestión (Crear brigada, Empleados) */}
+          <Route path="brigadas/crear-nueva" element={<ConformarBrigada />} />
           <Route path="empleados" element={<Empleados />} />
           <Route path="empleados/:idempleado" element={<EmpleadoDetalle />} />
         </Route>
 
+        {/* Rutas protegidas USER (Accesibles por cualquier usuario autenticado) */}
         <Route path="/user/*" element={
           <ProtectedRoute component={UserLayout}/>
         }>
-          {/* Estas rutas están anidadas DENTRO de UserLayout 
-            y usarán su <Outlet /> 
-          */}
-          <Route index element={<HomeUser />} /> {/* URL: /user */}
-          <Route path="perfil" element={<Perfil />} /> {/* URL: /user/perfil */}
+          <Route index element={<HomeUser />} /> 
+          <Route path="perfil" element={<Perfil />} /> 
+
+            {/* ✅ RUTAS COMPARTIDAS (para que UserLayout pueda acceder) */}
+          <Route path="brigadas" element={<Brigadas />} />
+          <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
+          <Route path="conglomerados" element={<Conglomerados />} />
+          <Route path="conglomerados/:idconglomerado" element={<ConglomeradoDetalle />} />
         </Route>
 
         {/* Fallback */}

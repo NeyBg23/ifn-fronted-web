@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 export default function Header() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const user = useAuth();
   const handleLogout = () => {
     logout();
     alert("Se ha cerrado sesión correctamente.");
@@ -51,7 +52,11 @@ export default function Header() {
                 <li className="nav-item">
                   <button
                     className="nav-link btn btn-link text-start text-white"
-                    onClick={() => navigate("/admin/brigadas")}
+                    onClick={() => {
+                        {
+                            user && user.usuario.rol === 'admin' ? navigate("/admin/brigadas") : navigate("/user/brigadas");
+                        }
+                    }}
                     data-bs-dismiss="offcanvas"
                   >
                     Brigadas
@@ -62,7 +67,9 @@ export default function Header() {
                 <li className="nav-item">
                     <button
                         className="nav-link btn btn-link text-start text-white"
-                        onClick={() => navigate("/admin/conglomerados")}
+                        onClick={() => {
+                            user && user.usuario.rol === 'admin' ? navigate("/admin/conglomerados") : navigate("/user/conglomerados");
+                        }}
                         data-bs-dismiss="offcanvas"
                     >
                         Conglomerados
