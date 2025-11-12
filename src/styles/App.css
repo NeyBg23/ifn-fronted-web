@@ -42,7 +42,7 @@ h1, h2, h3, h4 {
 
 /* Contenedor de las cards de empleados */
 .empleados-container {
-  display:contents;
+  display:flex;
   flex-wrap: wrap;          /* Permite que bajen a otra fila */
   justify-content: center;  /* Centra las filas */
   gap: 10px !important;                /* Espacio entre tarjetas */
@@ -59,7 +59,10 @@ h1, h2, h3, h4 {
 }
 
 .card.h-10 {
-    width: 330px;
+  flex: 1 1 330px; /* cada card mide 330px mínimo */
+  max-width: 380px;
+  width: 550px;
+  height: 230px;
 }
 
 /* Efecto hover opcional */

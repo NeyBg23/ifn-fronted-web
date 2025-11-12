@@ -177,8 +177,9 @@ const ConformarBrigada = () => {
   };
 
   return (
-    <div className="container py-4">
+    <div className="lista-brigadas">
       <h1 className="mb-4">Conformar Nueva Brigada 🌳</h1>
+      <p>Aquí podras asignar brigadas a un conglomerado</p>
 
       <div className="card mb-4">
         <div className="card-body">
@@ -315,7 +316,7 @@ const ConformarBrigada = () => {
             const tieneAlgunRol = roles.length > 0;
 
             return (
-                <div key={empleado.id} className="col-md-4">
+                <div key={empleado.id} >
                 <div className={`card h-10 ${tieneAlgunRol ? "border-success" : ""}`}>
                     <div className="card-body">
                     <div className="d-flex align-items-start mb-3">
