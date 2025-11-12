@@ -19,7 +19,10 @@ function Login() {
     const resultado = await login(email, password);
 
     if (resultado.success) {
-      navigate("/admin"); // ← Redirige a admin si login es exitoso
+
+      if (resultado.usuario.rol === 'admin') navigate("/admin");
+      else navigate("/user");
+
     } else {
       setLocalError(resultado.message);
     }

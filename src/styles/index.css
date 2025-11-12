@@ -10,6 +10,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Estas tres líneas hacen la magia del sticky footer */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1; /* Ocupa todo el espacio vertical sobrante */
+  width: -webkit-fill-available !important;
 }
 
 /* Footer Styles */
@@ -17,6 +26,7 @@ footer {
     background-color: #1B5E20;
     color: var(--light-text);
     padding: 2rem 0;
+    flex-shrink: 0;
 }
 
 .footer-content {

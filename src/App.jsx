@@ -2,13 +2,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
 import NoAutorizado from "./pages/NoAutorizado";
-
-import AdminLayoutWrapper from "./pages/admin/AdminLayoutWrapper.jsx";
+import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import HomeAdmin from "./pages/admin/Home";
 import Brigadas from "./pages/admin/Brigadas";
 import Conglomerados from "./pages/admin/Conglomerados";
 import Empleados from "./pages/admin/Empleados";
-import Perfil from "./pages/admin/Perfil";
+import Perfil from "./pages/Perfil.jsx";
 import BrigadaDetalle from "./pages/admin/info/BrigadaDetalle"; 
 import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
@@ -16,11 +15,12 @@ import ConformarBrigada from "./pages/admin/ConformarBrigada";
 import ScrollToTop from "./pages/ScrollTop.jsx";
 import HomeUser from "./pages/user/Home";
 import "./styles/App.css";
+import UserLayout from "./pages/user/UserLayout.jsx";
 
 function App() {
   return (
     <Router>
-      <ScrollToTop /> {/** Esto es para que cada vez que entren a una página, los mande a la parte superior de ella y no se quede abajo, por culpa de la config predeterminada de React */}
+      <ScrollToTop />
       <Routes>
         {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -29,10 +29,13 @@ function App() {
 
         {/* Rutas protegidas ADMIN */}
         <Route path="/admin/*" element={
-          <ProtectedRoute component={AdminLayoutWrapper} requiredRole="admin" />
+          <ProtectedRoute component={AdminLayout} requiredRole="admin" />
         }>
-          {/* Estas rutas dentro están protegidas */}
+          {/* Estas rutas están anidadas DENTRO de AdminLayout */}
           <Route index element={<HomeAdmin />} />
+          
+          <Route path="perfil" element={<Perfil />} />
+
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
           <Route path="brigadas/crear-nueva" element={<ConformarBrigada />} />
@@ -40,13 +43,17 @@ function App() {
           <Route path="conglomerados/:idconglomerado" element={<ConglomeradoDetalle />} />
           <Route path="empleados" element={<Empleados />} />
           <Route path="empleados/:idempleado" element={<EmpleadoDetalle />} />
-          <Route path="perfil" element={<Perfil />} />
         </Route>
 
-        {/* Rutas protegidas USER - sin rol específico (cualquier usuario autenticado) */}
-        <Route path="/user" element={
-          <ProtectedRoute component={HomeUser} />
-        } />
+        <Route path="/user/*" element={
+          <ProtectedRoute component={UserLayout}/>
+        }>
+          {/* Estas rutas están anidadas DENTRO de UserLayout 
+            y usarán su <Outlet /> 
+          */}
+          <Route index element={<HomeUser />} /> {/* URL: /user */}
+          <Route path="perfil" element={<Perfil />} /> {/* URL: /user/perfil */}
+        </Route>
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

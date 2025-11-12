@@ -1,7 +1,7 @@
 
 body {
-    background: #ffff;
-    align-items: center;
+  background: #ffff;
+  align-items: center;
 }
 
 .custom-navbar {
@@ -24,7 +24,7 @@ body {
 }
 
 .card-title {
-  margin-top: 10PX;
+  margin-top: 10px;
   color: black;
 }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .border-3 {
-  width: 235px;
+  width: 100%;
   border-color: #17c42e !important;
 }
 .offcanvas {

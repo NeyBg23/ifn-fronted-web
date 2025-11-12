@@ -81,10 +81,8 @@ const login = async (email, password) => {
 
     // 2️⃣ Obtener correctamente el token
     const nuevoToken = response.data.session.access_token;
-    if (!nuevoToken) {
-      throw new Error('No se recibió token del Auth Service');
-    }
-
+    if (!nuevoToken) throw new Error('No se recibió token del Auth Service');
+    
     // Consultar usuario y rol en Brigada
     const brigResponse = await axios.get(
       `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
@@ -109,7 +107,7 @@ const login = async (email, password) => {
 
     console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
 
-    return { success: true, message: 'Login exitoso' };
+    return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
   } catch (err) {
     // Limpiar estado si falla la consulta (e.g., el error 500)
     const mensaje = err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';

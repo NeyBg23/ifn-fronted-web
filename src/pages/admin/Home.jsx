@@ -1,4 +1,3 @@
-// src/pages/admin/Home.jsx
 const Home = () => {
   return (
     <div>

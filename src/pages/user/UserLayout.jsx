@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../Header.jsx';
 
-const AdminLayout = () => {
+const UserLayout = () => {
   return (
     <>
       <Header />
@@ -13,4 +13,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;
