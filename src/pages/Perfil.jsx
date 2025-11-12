@@ -35,7 +35,7 @@ const Perfil = () => {
 
 
   useEffect(() => {
-    AOS.init({ duration: 700, easing: "ease-out", once: true });
+    AOS.init({ duration: 900, easing: "ease-out", once: true });
 
     const cargarPerfil = async () => {
       if (!token) return setLoading(false);
@@ -133,9 +133,15 @@ const Perfil = () => {
   }
 
   return (
-    <div className="container py-2">
+    <div className="container">
       <div className="row justify-content-center">
         <div className="col-lg-10">
+
+          <div className="lista-brigadas">
+            <h1 className='font-bold'>Perfil de Usuario</h1>
+            <p className='text-muted'>Aquí puedes ver y editar tu información personal.</p>
+          </div>
+
           {mensaje && (
             <div className={`alert ${mensaje.includes("Error") ? "alert-danger" : "alert-success"} alert-dismissible fade show`}>
               {mensaje}
@@ -147,12 +153,14 @@ const Perfil = () => {
             </div>
           )}
 
-          <div data-aos="zoom-in" className="card mb-4">
+          <div data-aos="fade-right" className="card mb-4">
             <div className="card-header bg-light">
               <h5 className="mb-0">Información Personal</h5>
               <small className="text-muted">Estos campos no pueden ser editados</small>
             </div>
+            
             <br />
+            
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-md-6">
@@ -235,70 +243,69 @@ const Perfil = () => {
               </div>
             </div>
 
-            <br />
+          </div>
 
-            <div className="card mb-4">
-            <div className="card-header bg-success text-white">
-              <h5 className="mb-0">Información Editable</h5>
-              <small>Puedes actualizar estos campos</small>
-            </div>
-            <br />
-            <div className="card-body">
-              <div className="row g-3">
-                <div className="col-12">
-                  <label htmlFor="descripcion" className="form-label fw-bold flex">
-                    <FileText size={18} className="me-2" />
-                    Descripción
-                  </label>
-                  <textarea
-                    id="descripcion"
-                    className="form-control"
-                    rows="4"
-                    placeholder="Escribe una breve descripción sobre ti..."
-                    value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
-                  ></textarea>
-                </div>
-                <div className="col-md-6">
-                  <label htmlFor="region" className="form-label fw-bold flex">
-                    <MapPin size={18} className="me-2" />
-                    Región
-                  </label>
-                  <select
-                    id="region"
-                    className="form-select"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                  >
-                    <option value="">Seleccionar región</option>
-                    <option value="Amazonía">Amazonía</option>
-                    <option value="Pacífico">Pacífico</option>
-                    <option value="Andina">Andina</option>
-                    <option value="Caribe">Caribe</option>
-                    <option value="Orinoquía">Orinoquía</option>
-                  </select>
-                </div>
-                <div className="col-md-6">
-                  <label htmlFor="telefono" className="form-label fw-bold flex">
-                    <Phone size={18} className="me-2" />
-                    Teléfono
-                  </label>
-                  <input
-                    type="tel"
-                    id="telefono"
-                    className="form-control"
-                    placeholder="Ej: +57 300 123 4567"
-                    value={telefono}
-                    onChange={(e) => setTelefono(e.target.value)}
-                  />
+            <div data-aos="fade-left" className="card mb-4">
+              <div className="card-header bg-success text-white">
+                <h5 className="mb-0">Información Editable</h5>
+                <small>Puedes actualizar estos campos</small>
+              </div>
+              <br />
+              <div className="card-body">
+                <div className="row g-3">
+                  <div className="col-12">
+                    <label htmlFor="descripcion" className="form-label fw-bold flex">
+                      <FileText size={18} className="me-2" />
+                      Descripción
+                    </label>
+                    <textarea
+                      id="descripcion"
+                      className="form-control"
+                      rows="4"
+                      placeholder="Escribe una breve descripción sobre ti..."
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
+                    ></textarea>
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="region" className="form-label fw-bold flex">
+                      <MapPin size={18} className="me-2" />
+                      Región
+                    </label>
+                    <select
+                      id="region"
+                      className="form-select"
+                      value={region}
+                      onChange={(e) => setRegion(e.target.value)}
+                    >
+                      <option value="">Seleccionar región</option>
+                      <option value="Amazonía">Amazonía</option>
+                      <option value="Pacífico">Pacífico</option>
+                      <option value="Andina">Andina</option>
+                      <option value="Caribe">Caribe</option>
+                      <option value="Orinoquía">Orinoquía</option>
+                    </select>
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="telefono" className="form-label fw-bold flex">
+                      <Phone size={18} className="me-2" />
+                      Teléfono
+                    </label>
+                    <input
+                      type="tel"
+                      id="telefono"
+                      className="form-control"
+                      placeholder="Ej: +57 300 123 4567"
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            </div>
-          </div>
 
 
-          <div className="d-flex justify-content-end gap-2">
+          <div className="flex justify-content-center gap-3 mb-5">
             <button
               className="btn btn-secondary"
               onClick={() => window.history.back()}
