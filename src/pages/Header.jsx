@@ -36,7 +36,7 @@ export default function Header() {
             aria-labelledby="offcanvasDarkNavbarLabel"
           >
             <div className="offcanvas-header">
-              <h5 className="offcanvas-title text-white" id="offcanvasDarkNavbarLabel">
+              <h5 className="offcanvas-title text-white text-justify" id="offcanvasDarkNavbarLabel">
                 Panel Administrativo
               </h5>
               <button

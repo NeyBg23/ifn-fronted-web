@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import "../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
+import "../styles/Brigadas.css";  //  Importamos los estilos bonitos (crearemos este archivo después)
 
 const Conglomerados = () => {
   const navigate = useNavigate();
-  const [conglomerados, setConglomerado] = useState([]);  // 🧸 Lista de conglomerados
-  const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
-  const [filtroRegion, setFiltroRegion] = useState(""); // 🧸 Estado para el filtro de región
+  const [conglomerados, setConglomerado] = useState([]);  //  Lista de conglomerados
+  const [filtroNombre, setFiltroNombre] = useState(""); //  Estado para el filtro de nombre
+  const [filtroRegion, setFiltroRegion] = useState(""); //  Estado para el filtro de región
 
-  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
+  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  //  Dirección del backend
 
-  // 🧸 Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
+  //  Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
   useEffect(() => {
     const fetchData = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
+      const session = JSON.parse(localStorage.getItem("session"));  //  La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
 
       // Pide conglomerados
@@ -23,8 +23,8 @@ const Conglomerados = () => {
       const dataConglomerados = await resConglomerados.json();
       setConglomerado(dataConglomerados.data || []);
     };
-    fetchData();  // 🧸 Llama a la función
-  }, []);  // 🧸 Solo corre una vez al entrar
+    fetchData();  //  Llama a la función
+  }, []);  //  Solo corre una vez al entrar
 
   // 🧩 Filtrado dinámico (sin tocar el DOM)
   const conglomeradosFiltradas = conglomerados.filter((conglomerado) => {
@@ -38,7 +38,7 @@ const Conglomerados = () => {
   });
 
   return (
-    <div className="brigadas-container">  {/* 🧸 Contenedor principal, con CSS para fondo verde */}
+    <div className="brigadas-container">  {/*  Contenedor principal, con CSS para fondo verde */}
         <div className="lista-brigadas">
           <h1>Conglomerados 🌳</h1>
           <p>Aquí puedes ver los Conglomerados existentes.</p>
@@ -73,7 +73,7 @@ const Conglomerados = () => {
           </div>
 
 
-          {/* 🧸 Lista de brigadas como tarjetas (refleja la base) */}
+          {/*  Lista de brigadas como tarjetas (refleja la base) */}
           <div className="cards-grid">
             {conglomeradosFiltradas.map((conglomerado) => (
               <div key={conglomerado.id} className="card-brigada">

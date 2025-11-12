@@ -17,6 +17,8 @@ body {
 }
 
 #root {
+  margin: 0 auto;
+  text-align: center;
   flex: 1; /* Ocupa todo el espacio vertical sobrante */
   width: -webkit-fill-available !important;
 }

@@ -8,23 +8,23 @@
  */
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import "../styles/Brigadas.css";  // 🧸 Importamos los estilos bonitos (crearemos este archivo después)
+import "../styles/Brigadas.css";  //  Importamos los estilos bonitos (crearemos este archivo después)
 import { useAuth } from "../hooks/useAuth.jsx";
 
 const Brigadas = () => {
   const user = useAuth();
   const navigate = useNavigate();
-  const [ruta, setRuta] = useState("Brigadas");  // 🧸 Cambia entre vistas (como páginas de un libro)
-  const [brigadas, setBrigadas] = useState([]);  // 🧸 Lista de brigadas
-  const [filtroNombre, setFiltroNombre] = useState(""); // 🧸 Estado para el filtro de nombre
-  const [filtroRegion, setFiltroRegion] = useState(""); // 🧸 Estado para el filtro de región
+  const [ruta, setRuta] = useState("Brigadas");  //  Cambia entre vistas (como páginas de un libro)
+  const [brigadas, setBrigadas] = useState([]);  //  Lista de brigadas
+  const [filtroNombre, setFiltroNombre] = useState(""); //  Estado para el filtro de nombre
+  const [filtroRegion, setFiltroRegion] = useState(""); //  Estado para el filtro de región
 
-  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  // 🧸 Dirección del backend
+  const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";  //  Dirección del backend
 
-  // 🧸 Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
+  //  Paso mágico: Carga datos cuando entras a la página (como buscar tesoros al inicio del juego)
   useEffect(() => {
     const fetchData = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));  // 🧸 La llave (token) del login
+      const session = JSON.parse(localStorage.getItem("session"));  //  La llave (token) del login
       if (!session) return alert("¡Necesitas login! 🔑");
 
       // Pide brigadas
@@ -34,8 +34,8 @@ const Brigadas = () => {
       const dataBrigadas = await resBrigadas.json();
       setBrigadas(dataBrigadas.data || []);
     };
-    fetchData();  // 🧸 Llama a la función
-  }, []);  // 🧸 Solo corre una vez al entrar
+    fetchData();  //  Llama a la función
+  }, []);  //  Solo corre una vez al entrar
 
   // 🧩 Filtrado dinámico (sin tocar el DOM)
   const brigadasFiltradas = brigadas.filter((brigada) => {
@@ -49,7 +49,7 @@ const Brigadas = () => {
   });
 
   return (
-    <div className="brigadas-container">  {/* 🧸 Contenedor principal, con CSS para fondo verde */}
+    <div className="brigadas-container">  {/*  Contenedor principal, con CSS para fondo verde */}
       {ruta === "Brigadas" && (
         <div className="lista-brigadas">
           <h1>Brigadas del Bosque 🌳</h1>
@@ -100,7 +100,7 @@ const Brigadas = () => {
             </div>
           )}
 
-          {/* 🧸 Lista de brigadas como tarjetas (refleja la base) */}
+          {/*  Lista de brigadas como tarjetas (refleja la base) */}
           <div className="cards-grid">
             {brigadasFiltradas.map((brigada) => (
               <div key={brigada.id} className="card-brigada">
