@@ -68,18 +68,23 @@ export function AuthProvider({ children }) {
     checkAuthAndFetchUser();
   }, []); // Dependencia vacía para ejecutarse solo al montar
 
-const login = async (email, password) => {
+
+const login = async (email, password, hcaptchaToken) => {
   try {
     setLoading(true);
     setError(null);
 
-    // 1️⃣ Login en Auth Service
+    // 1️Login en Auth Service (Incluyendo el token de hCaptcha)
     const response = await axios.post(
       `${AUTH_SERVICE_URL}/auth/login`,
-      { email, password }
+      { 
+        email, 
+        password, 
+        hcaptchaToken // ⬅️ Enviar el token al backend
+      }
     );
 
-    // 2️⃣ Obtener correctamente el token
+    // Obtener correctamente el token
     const nuevoToken = response.data.session.access_token;
     if (!nuevoToken) throw new Error('No se recibió token del Auth Service');
     
@@ -93,15 +98,15 @@ const login = async (email, password) => {
       }
     );
 
-    // 4️⃣ Extraer usuario brigada correctamente
+    // 4Extraer usuario brigada correctamente
     const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
 
-    // 5️⃣ Guardar token y usuario en local storage
+    // 5Guardar token y usuario en local storage
     localStorage.setItem('token', nuevoToken);
     localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
     localStorage.setItem("session", JSON.stringify(response.data.session));
 
-    // 6️⃣ Actualizar estados en React
+    // Actualizar estados en React
     setToken(nuevoToken);
     setUsuario(usuarioBrigada);
     setRol(usuarioBrigada.rol || null);
@@ -110,15 +115,14 @@ const login = async (email, password) => {
 
     return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
   } catch (err) {
-    // Limpiar estado si falla la consulta (e.g., el error 500)
+
     const mensaje = err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
     setError(mensaje);
-    clearAuth(); // Limpiamos todo si falla el login o la consulta al backend
+    clearAuth(); 
     
     console.error('❌ Error en login:', err);
     return { success: false, message: mensaje };
   } finally {
-    // Garantizado: Loading se pone en false en todos los casos
     setLoading(false);
   }
 }
@@ -136,7 +140,7 @@ const login = async (email, password) => {
     return rolRequerido.includes(rol);
   };
 
-  // ✅ CORRECCIÓN 3: Memorizar el objeto de valor del contexto con useMemo
+  // Memorizar el objeto de valor del contexto con useMemo
   const value = useMemo(() => ({
     usuario,
     rol,

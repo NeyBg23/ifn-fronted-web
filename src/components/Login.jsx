@@ -1,27 +1,67 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import HCaptcha from '@hcaptcha/react-hcaptcha'; // ⬅Importamos hCaptcha
+
+// ** IMPORTANTE: REEMPLAZA ESTA CLAVE CON TU CLAVE PÚBLICA DE SITIO (SITEKEY) **
+const HCATCHA_SITE_KEY = "58942e22-4f6c-463c-a4b0-e80c6ace7692"; 
 
 function Login() {
   const navigate = useNavigate();
-  const { login, loading, error } = useAuth();
+  // Asumimos que 'login' en useAuth ahora acepta el token de hCaptcha
+  const { login, loading, error } = useAuth(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  
+  // Estados para hCaptcha
+  const [hcaptchaToken, setHcaptchaToken] = useState(null); // ⬅Guardará el token
+  const hcaptchaRef = useRef(null); // ⬅Referencia para resetear el widget
+  
   const [localError, setLocalError] = useState("");
+
+  // Funciones de hCaptcha
+  const onVerify = (token) => {
+    setHcaptchaToken(token);
+    setLocalError(""); // Limpia errores si el CAPTCHA se resuelve
+  };
+
+  const onExpire = () => {
+    setHcaptchaToken(null);
+    setLocalError("El CAPTCHA ha expirado. Por favor, complétalo de nuevo.");
+  };
+  
+  // Función para resetear el CAPTCHA visualmente (llamada al fallar el login)
+  const resetCaptcha = () => {
+      if (hcaptchaRef.current) {
+          hcaptchaRef.current.resetCaptcha();
+          setHcaptchaToken(null);
+      }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLocalError("");
-
-    const resultado = await login(email, password);
+    
+    // Verificación del token de hCaptcha
+    if (!hcaptchaToken) {
+        setLocalError("Por favor, completa la verificación de seguridad (CAPTCHA).");
+        return;
+    }
+    
+    // **Llamar a login con el token**
+    // Tu hook 'useAuth' (la función 'login') debe ser modificado para aceptar este tercer argumento
+    const resultado = await login(email, password, hcaptchaToken);
 
     if (resultado.success) {
       if (resultado.usuario.rol === "admin") navigate("/admin");
       else navigate("/user");
     } else {
+      // Si el login falla, resetea el CAPTCHA
       setLocalError(resultado.message);
+      resetCaptcha();
     }
   };
 
@@ -51,7 +91,7 @@ function Login() {
         <main className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="w-full max-w-5xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-              {/* Left Section - Information */}
+              {/* Left Section - Information (Manteniendo tu diseño original) */}
               <div className="hidden lg:block">
                 <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-green-700">
                   <h2 className="text-3xl font-bold text-green-900 mb-6">
@@ -168,7 +208,7 @@ function Login() {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-2"
                         >
                           <i
                             className={`fas ${
@@ -177,6 +217,16 @@ function Login() {
                           ></i>
                         </button>
                       </div>
+                    </div>
+                    
+                    {/* WIDGET DE HCAPTCHA */}
+                    <div className="pt-2">
+                        <HCaptcha
+                            sitekey={HCATCHA_SITE_KEY}
+                            onVerify={onVerify}
+                            onExpire={onExpire}
+                            ref={hcaptchaRef}
+                        />
                     </div>
 
                     {/* Error Message */}
@@ -192,7 +242,8 @@ function Login() {
                     {/* Submit Button */}
                     <button
                       type="submit"
-                      disabled={loading}
+                      // Deshabilita el botón si está cargando o si el CAPTCHA NO ha sido completado
+                      disabled={loading || !hcaptchaToken}
                       className="w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
                     >
                       {loading ? (
