@@ -1,17 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.jsx';
-import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList } from "lucide-react";
+import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList, Leaf } from "lucide-react";
+
 
 export default function Header() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const user = useAuth();
 
+
   const handleLogout = () => {
     logout();
     alert("Se ha cerrado sesión correctamente.");
     navigate("/");
   };
+
 
   return (
     <div className="admin-layout-container">
@@ -56,6 +59,7 @@ export default function Header() {
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end pe-3 gap-3">
 
+
                 <li className="nav-item">
                   <button
                     className="nav-link flex btn btn-link text-start"
@@ -72,6 +76,7 @@ export default function Header() {
                 </li>
 
 
+
                 <li className="nav-item">
                     <button
                         className="nav-link flex btn btn-link text-start"
@@ -84,6 +89,25 @@ export default function Header() {
                       Conglomerados
                     </button>
                 </li>
+
+
+                {/* ⭐ NUEVO PASO 4.3: Botón Levantamiento de Datos (solo para brigadistas) */}
+                {
+                  user && user.usuario.rol === 'brigadista' && (
+                    <li className="nav-item">
+                      <button
+                        className="nav-link flex btn btn-link text-start"
+                        onClick={() => navigate("/user/levantamiento-datos")}
+                        data-bs-dismiss="offcanvas"
+                        style={{ color: '#4CAF50', fontWeight: 'bold' }}
+                      >
+                        <Leaf size={25} className="me-2" />
+                        📍 Levantamiento de Datos
+                      </button>
+                    </li>
+                  )
+                }
+
 
                 {
                   user && user.usuario.rol === 'admin' && (
@@ -101,6 +125,7 @@ export default function Header() {
                 }
 
 
+
                 <li className="nav-item">
                   <button
                     className="nav-link flex btn btn-link text-start"
@@ -113,7 +138,9 @@ export default function Header() {
                 </li>
                 
 
+
                 <hr className="border-3 opacity-3" />
+
 
                 <li className="nav-item">
                   <button
