@@ -4,10 +4,6 @@ import "aos/dist/aos.css";
 
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  Upload, X, FileText, User, Mail, Phone, MapPin,
-  CreditCard, FileUp, Text
-} from "lucide-react";
 import "../../styles/Brigadas.css";
 import supabase from "../../db/supabase";
 import empleado_imagen from "../../img/empleado.png";
@@ -41,8 +37,6 @@ export default function Empleados() {
 
   // Estado para manejo de archivo
   const [hojaVida, setHojaVida] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
   // Carga inicial de empleados
@@ -52,14 +46,15 @@ export default function Empleados() {
 
     (async () => {
       const session = JSON.parse(localStorage.getItem("session"));
-      if (!session) return alert("¡Necesitas login! 🔑");
+      // Cambiado alert por console.error
+      if (!session) return console.error("¡Necesitas login! 🔑");
       const res = await fetch(`${API_URL}/api/empleados`, {
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
       const data = await res.json();
       setEmpleados(data.data || []);
     })();
-  }, []);
+  }, [API_URL]); // Agregado API_URL como dependencia
 
   // Filtra empleados según inputs
   const empleadosFiltrados = empleados.filter(emp => {
@@ -69,29 +64,6 @@ export default function Empleados() {
     const r = !filtroRegion || emp.region === filtroRegion;
     return n && c && ced && r;
   });
-
-  // Manejo de cambios en formulario
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setNuevoEmpleado(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Manejo de archivo
-  const handleFileChange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const allowed = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ];
-
-    if (!allowed.includes(file.type)) return alert("Solo PDF, DOC o DOCX");
-    if (file.size > 5 * 1024 * 1024) return alert("Máx 5MB");
-    setHojaVida(file);
-    setPreviewUrl(file.name);
-  };
 
   // Elimina archivo seleccionado
   const handleRemoveFile = () => {
@@ -106,7 +78,8 @@ export default function Empleados() {
     e.preventDefault();
     setMostrarErrorContraseña(false);
     const session = JSON.parse(localStorage.getItem("session"));
-    if (!session) return alert("¡Necesitas login! 🔑");
+    // Cambiado alert por console.error
+    if (!session) return console.error("¡Necesitas login! 🔑");
     if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
       return setMostrarErrorContraseña(true);
     }
@@ -118,7 +91,9 @@ export default function Empleados() {
       const { error: upErr } = await supabase.storage
         .from("hojas_de_vida")
         .upload(path, hojaVida);
-      if (!upErr) {
+      if (upErr) {
+        console.error("Error al subir CV:", upErr.message); // Manejo de error de subida
+      } else {
         const { data: urlData } = supabase.storage
           .from("hojas_de_vida")
           .getPublicUrl(path);
@@ -141,6 +116,9 @@ export default function Empleados() {
       hoja_vida_url
     };
 
+
+    console.log("Payload de nuevo empleado:", payload);
+
     const res = await fetch(`${API_URL}/api/usuarios`, {
       method: "POST",
       headers: {
@@ -149,9 +127,13 @@ export default function Empleados() {
       },
       body: JSON.stringify(payload)
     });
+
     const data = await res.json();
+
     if (res.ok) {
-      alert("✅ Empleado creado correctamente");
+
+      console.log("✅ Empleado creado correctamente"); // Cambiado alert por console.log
+
       setEmpleados(prev => [...prev, data.usuario]);
       setNuevoEmpleado({
         nombre_completo: "",
@@ -167,11 +149,19 @@ export default function Empleados() {
         fecha_ingreso: "",
         rol: "brigadista"
       });
+
       handleRemoveFile();
-      bootstrap.Modal.getInstance(document.getElementById("modalNuevoEmpleado")).hide();
-    } else {
-      alert("❌ Error al crear empleado: " + (data.error || "Intenta nuevamente"));
-    }
+      // El código original hacía referencia a un modal de Bootstrap que debe existir
+      // si se usa esta línea. La dejo dentro de un try/catch por si acaso.
+      try {
+        if (window.bootstrap && document.getElementById("modalNuevoEmpleado")) {
+            window.bootstrap.Modal.getInstance(document.getElementById("modalNuevoEmpleado")).hide();
+        }
+      } catch (error) {
+        console.warn("No se pudo cerrar el modal. Asegúrate de que Bootstrap esté disponible.", error);
+      }
+
+    } else console.error("❌ Error al crear empleado: " + (data.error || "Intenta nuevamente")); // Cambiado alert por console.error
   };
 
   return (
@@ -232,201 +222,15 @@ export default function Empleados() {
           </div>
         </div>
 
-        {/* Botón nuevo empleado */}
+        {/* Botón nuevo empleado - CORRECCIÓN APLICADA AQUÍ */}
         <div className="text-center mb-4">
           <button
             className="btn btn-success"
-            data-bs-toggle="modal"
-            data-bs-target="#modalNuevoEmpleado"
+            // Se utiliza 'onClick' y se envuelve 'navigate' en una función flecha
+            onClick={() => navigate('/admin/nuevoEmpleado')}
           >
             Crear Nuevo Empleado 🛡️
           </button>
-        </div>
-
-        {/* Modal Crear Empleado */}
-        <div
-          className="modal fade"
-          id="modalNuevoEmpleado"
-          tabIndex="-1"
-          aria-labelledby="modalNuevoEmpleadoLabel"
-        >
-          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div className="modal-content border-0 shadow-lg">
-              <div className="modal-header bg-gradient-primary text-white border-0">
-                <h5
-                  className="modal-title d-flex align-items-center gap-2"
-                  id="modalNuevoEmpleadoLabel"
-                >
-                  <User size={27} /> Crear Nuevo Empleado
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  data-bs-dismiss="modal"
-                />
-              </div>
-              <div className="modal-body p-4">
-                <form onSubmit={handleCrearEmpleado} id="formNuevoEmpleado">
-                  {/* Información Personal */}
-                  <div className="row g-4">
-                    <div className="col-6">
-                      <label className="form-label fw-semibold">
-                        <User size={16} className="me-1" /> Nombre completo
-                      </label>
-                      <input
-                        type="text"
-                        name="nombre_completo"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.nombre_completo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">
-                        <CreditCard size={16} className="me-1" /> Cédula
-                      </label>
-                      <input
-                        type="text"
-                        name="cedula"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.cedula}
-                        onChange={handleChange}
-                        required   // ← Aquí
-                      />
-                    </div>
-                  </div>
-
-                  {/* Acceso */}
-                  <div className="row g-4">
-                    {mostrarErrorContraseña && (
-                      <div className="alert alert-danger" role="alert">
-                        Las contraseñas no coinciden
-                      </div>
-                    )}
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">
-                        <Mail size={16} className="me-1" /> Contraseña
-                      </label>
-                      <input
-                        type="password"
-                        name="contraseña"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.contraseña}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold">
-                        <Mail size={16} className="me-1" /> Confirmar contraseña
-                      </label>
-                      <input
-                        type="password"
-                        name="confirmarContraseña"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.confirmarContraseña}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Cargo, Fecha y Rol */}
-                  <div className="row g-3 mb-4">
-                    <div className="col-12 col-md-4">
-                      <label className="form-label fw-semibold">Cargo</label>
-                      <input
-                        type="text"
-                        name="cargo"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.cargo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="col-12 col-md-4">
-                      <label className="form-label fw-semibold">Fecha ingreso</label>
-                      <input
-                        type="date"
-                        name="fecha_ingreso"
-                        className="form-control form-control-lg"
-                        value={nuevoEmpleado.fecha_ingreso}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="col-12 col-md-4">
-                      <label className="form-label fw-semibold">Rol</label>
-                      <select
-                        name="rol"
-                        className="form-select form-select-lg"
-                        value={nuevoEmpleado.rol}
-                        onChange={handleChange}
-                      >
-                        <option value="brigadista">Brigadista</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Descripción */}
-                  <div className="mb-4">
-                    <label className="form-label fw-semibold">
-                      <FileText size={16} className="me-1" /> Descripción
-                    </label>
-                    <textarea
-                      name="descripcion"
-                      className="form-control"
-                      rows="3"
-                      value={nuevoEmpleado.descripcion}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Hoja de Vida */}
-                  <div className="mb-4">
-                    <label className="form-label fw-semibold">
-                      <Upload size={16} className="me-1" /> Hoja de Vida
-                    </label>
-                    {!hojaVida ? (
-                      <div className="border-dashed p-4 text-center bg-light">
-                        <input
-                          type="file"
-                          id="hojaVidaInput"
-                          className="position-absolute w-100 h-100 opacity-0"
-                          accept=".pdf,.doc,.docx"
-                          onChange={handleFileChange}
-                        />
-                        <Upload size={40} className="text-secondary mb-2" />
-                        <p>Haz clic o arrastra aquí</p>
-                        <small>PDF, DOC, DOCX (máx 5MB)</small>
-                      </div>
-                    ) : (
-                      <div className="d-flex align-items-center justify-content-between p-3 bg-light">
-                        <FileText size={24} className="text-primary" />
-                        <div>
-                          <p className="mb-0 fw-semibold">{previewUrl}</p>
-                          <small>{(hojaVida.size / 1024 / 1024).toFixed(2)} MB</small>
-                        </div>
-                        <button className="btn btn-sm btn-outline-danger" onClick={handleRemoveFile}>
-                          <X size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer bg-light border-0">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-                <button type="submit" form="formNuevoEmpleado" className="btn btn-success">
-                  <User size={18} className="me-2" /> Guardar Empleado
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Grid de tarjetas responsivo */}

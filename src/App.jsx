@@ -16,6 +16,7 @@ import ScrollToTop from "./pages/ScrollTop.jsx";
 import HomeUser from "./pages/user/Home";
 import "./styles/App.css";
 import UserLayout from "./pages/user/UserLayout.jsx";
+import NuevoEmpleado from "./pages/admin/NuevoEmpleado.jsx";
 
 function App() {
   return (
@@ -47,7 +48,8 @@ function App() {
             </>
           }/>
 
-            {/* RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
+          {/* RUTAS COMPARTIDAS (para que AdminLayout pueda acceder) */}
+          <Route path="nuevoEmpleado" element={<NuevoEmpleado/>}></Route>
           <Route path="brigadas" element={<Brigadas />} />
           <Route path="brigadas/:idbrigada" element={<BrigadaDetalle />} />
           <Route path="conglomerados" element={<Conglomerados />} />

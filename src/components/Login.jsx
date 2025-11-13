@@ -1,14 +1,12 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import HCaptcha from '@hcaptcha/react-hcaptcha'; // ⬅Importamos hCaptcha
+import HCaptcha from '@hcaptcha/react-hcaptcha'; // Importamos hCaptcha
 
-// ** IMPORTANTE: REEMPLAZA ESTA CLAVE CON TU CLAVE PÚBLICA DE SITIO (SITEKEY) **
 const HCATCHA_SITE_KEY = "58942e22-4f6c-463c-a4b0-e80c6ace7692"; 
 
 function Login() {
   const navigate = useNavigate();
-  // Asumimos que 'login' en useAuth ahora acepta el token de hCaptcha
   const { login, loading, error } = useAuth(); 
 
   const [email, setEmail] = useState("");
@@ -16,8 +14,8 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   
   // Estados para hCaptcha
-  const [hcaptchaToken, setHcaptchaToken] = useState(null); // ⬅Guardará el token
-  const hcaptchaRef = useRef(null); // ⬅Referencia para resetear el widget
+  const [hcaptchaToken, setHcaptchaToken] = useState(null); // Guardará el token
+  const hcaptchaRef = useRef(null); // Referencia para resetear el widget
   
   const [localError, setLocalError] = useState("");
 
@@ -220,7 +218,7 @@ function Login() {
                     </div>
                     
                     {/* WIDGET DE HCAPTCHA */}
-                    <div className="pt-2">
+                    <div className="pt-2 flex justify-center">
                         <HCaptcha
                             sitekey={HCATCHA_SITE_KEY}
                             onVerify={onVerify}
