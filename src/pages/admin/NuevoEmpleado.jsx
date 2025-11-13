@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-// Importamos los iconos necesarios
+import { useState } from 'react';
+
 import {
   User, Settings, CheckCircle, CreditCard, LockKeyhole, FileText, Upload, FileUp, X,
+  PhoneCall,
 } from 'lucide-react';
 
-// --- Componentes Auxiliares MOVIDOS FUERA DEL COMPONENTE PRINCIPAL ---
 
 // Componente para el indicador de paso (barra superior)
 const StepIndicator = ({ step, currentStep, totalSteps }) => {
@@ -52,7 +52,8 @@ const StepContent = ({
   hojaVida, 
   handleFileChange, 
   handleRemoveFile, 
-  mostrarErrorContraseña 
+  mostrarErrorContraseña,
+  mostrarErrorCamposVacios
 }) => {
   if (stepId === 1) {
     return (
@@ -60,6 +61,13 @@ const StepContent = ({
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
           <User className="h-6 w-6 text-indigo-600" /> Información Personal
         </h2>
+
+        {mostrarErrorCamposVacios && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+            <span className="block sm:inline">Debe llenar todos los campos</span>
+          </div>
+        )}
+
         {/* Nombre completo */}
         <div className="flex flex-col">
           <label htmlFor="nombre_completo" className="mb-2 font-semibold text-slate-700 flex items-center">
@@ -92,6 +100,23 @@ const StepContent = ({
             required
           />
         </div>
+
+        {/* Telefono */}
+        <div className="flex flex-col">
+          <label htmlFor="telefono" className="mb-2 font-semibold text-slate-700 flex items-center">
+            <PhoneCall size={20} className="mr-2 text-indigo-500" /> Teléfono
+          </label>
+          <input
+            type="number"
+            id="telefono"
+            name="telefono"
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            value={nuevoEmpleado.telefono}
+            onChange={handleChange}
+            placeholder="Ej: 3112685855"
+            required
+          />
+        </div>
       </div>
     );
   }
@@ -102,12 +127,34 @@ const StepContent = ({
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
           <LockKeyhole className="h-6 w-6 text-indigo-600" /> Seguridad y Acceso
         </h2>
-        
-        {mostrarErrorContraseña && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
-            <span className="block sm:inline">⚠️ Las contraseñas no coinciden.</span>
-          </div>
-        )}
+
+        {
+            mostrarErrorContraseña ? (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+                    <span className="block sm:inline">Las contraseñas no coinciden.</span>
+                </div>
+            ) : mostrarErrorCamposVacios ? (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+                    <span className="block sm:inline">Debe llenar todos los campos</span>
+                </div>
+            ) : null
+        }
+
+        {/* Correo */}
+        <div className="flex flex-col">
+          <label htmlFor="correo" className="mb-2 font-semibold text-slate-700 flex items-center">
+            <LockKeyhole size={20} className="mr-2 text-indigo-500" /> Correo
+          </label>
+          <input
+            type="email"
+            id="correo"
+            name="correo"
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            value={nuevoEmpleado.correo}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
         {/* Contraseña */}
         <div className="flex flex-col">
@@ -263,7 +310,7 @@ const NuevoEmpleado = () => {
   const totalSteps = 3;
   const [currentStep, setCurrentStep] = useState(1);
   const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false);
-  
+  const [mostrarErrorCamposVacios, setMostrarErrorCamposVacios] = useState(false);
   // Estado para todos los campos del formulario
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: '',
@@ -300,22 +347,35 @@ const NuevoEmpleado = () => {
     }
   };
 
-  // 3. Remover archivo
+  // Remover archivo
   const handleRemoveFile = () => {
     setHojaVida(null);
     // Opcional: limpiar el input de tipo file para permitir la subida del mismo archivo de nuevo
     document.getElementById('hojaVidaInput').value = ''; 
   };
 
-  // 4. Lógica de navegación "Siguiente" con validación
+  // Lógica de navegación "Siguiente" con validación
   const nextStep = () => {
     let isValid = true;
     setMostrarErrorContraseña(false);
+    setMostrarErrorCamposVacios(false);
+
+    if (currentStep === 1) {
+        if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || !nuevoEmpleado?.telefono) {
+            setMostrarErrorCamposVacios(true);
+            isValid = false;
+        }
+    }
 
     // Validaciones para el paso 2
     if (currentStep === 2) {
       if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
         setMostrarErrorContraseña(true);
+        isValid = false;
+      }
+
+      if (!nuevoEmpleado.correo) {
+        setMostrarErrorCamposVacios(true)
         isValid = false;
       }
       // Se pueden añadir más validaciones de campos requeridos para este paso si es necesario
@@ -327,12 +387,12 @@ const NuevoEmpleado = () => {
     }
   };
 
-  // 5. Lógica de navegación "Anterior"
+  // Lógica de navegación "Anterior"
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // 6. Manejador de envío final del formulario
+  // Manejador de envío final del formulario
   const handleCrearEmpleado = (e) => {
     e.preventDefault();
     if (currentStep === totalSteps) {
@@ -340,7 +400,7 @@ const NuevoEmpleado = () => {
       console.log("Datos del Empleado:", nuevoEmpleado);
       console.log("Archivo adjunto:", hojaVida ? hojaVida.name : 'Ninguno');
 
-      // Aquí iría la lógica para enviar los datos (API, Firestore, etc.)
+      // Aquí iría la lógica para enviar los datos
     } else {
       // Si se intenta enviar antes del último paso (lo manejamos con el botón de "Next")
       nextStep(); 
@@ -348,8 +408,8 @@ const NuevoEmpleado = () => {
   };
 
   const steps = [
-    { id: 1, title: 'Información Básica', icon: User, fields: ['nombre_completo', 'cedula'] },
-    { id: 2, title: 'Seguridad y Acceso', icon: LockKeyhole, fields: ['contraseña', 'confirmarContraseña'] },
+    { id: 1, title: 'Información Básica', icon: User, fields: ['nombre_completo', 'cedula', 'teléfono'] },
+    { id: 2, title: 'Seguridad y Acceso', icon: LockKeyhole, fields: ['correo','contraseña', 'confirmarContraseña'] },
     { id: 3, title: 'Puesto y Archivos', icon: Settings, fields: ['cargo', 'fecha_ingreso', 'rol', 'descripcion', 'hojaVida'] },
   ];
   
@@ -398,6 +458,7 @@ const NuevoEmpleado = () => {
                     handleFileChange={handleFileChange}
                     handleRemoveFile={handleRemoveFile}
                     mostrarErrorContraseña={mostrarErrorContraseña}
+                    mostrarErrorCamposVacios={mostrarErrorCamposVacios}
                   />
                 </div>
               ))}
