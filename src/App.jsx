@@ -17,6 +17,7 @@ import HomeUser from "./pages/user/Home";
 import "./styles/App.css";
 import UserLayout from "./pages/user/UserLayout.jsx";
 import NuevoEmpleado from "./pages/admin/NuevoEmpleado.jsx";
+import LevantamientoDatos from "./pages/LevantamientoDatos.jsx";
 
 function App() {
   return (
@@ -70,8 +71,13 @@ function App() {
           <Route path="perfil" element={
             <>
               <Perfil />
+               
+
             </>
-          } /> 
+          } 
+          
+          />
+          <Route path="levantamiento-datos" element={<LevantamientoDatos />} /> 
 
             {/* RUTAS COMPARTIDAS (para que UserLayout pueda acceder) */}
           <Route path="brigadas" element={<Brigadas />} />
