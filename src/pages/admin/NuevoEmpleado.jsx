@@ -427,7 +427,7 @@ const NuevoEmpleado = () => {
   
   // --- Renderizado Principal ---
   return (
-    <div className="min-h-screen bg-gray-100 flex items-start justify-center p-4 md:p-12">
+    <div className="min-h-screen flex items-start justify-center p-4 md:p-12">
       {/* Script para cargar Tailwind CSS */}
       <script src="https://cdn.tailwindcss.com"></script>
       <div className="w-full max-w-5xl bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-200">
