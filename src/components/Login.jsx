@@ -241,6 +241,7 @@ function Login() {
                     <button
                       type="submit"
                       // Deshabilita el botón si está cargando o si el CAPTCHA NO ha sido completado
+                      style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
                       disabled={loading || !hcaptchaToken}
                       className="w-full bg-gradient-to-r from-green-700 to-green-600 hover:from-green-800 hover:to-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
                     >

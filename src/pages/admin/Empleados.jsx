@@ -229,7 +229,7 @@ export default function Empleados() {
             // Se utiliza 'onClick' y se envuelve 'navigate' en una función flecha
             onClick={() => navigate('/admin/nuevoEmpleado')}
           >
-            Crear Nuevo Empleado 🛡️
+            Crear Nuevo Empleado
           </button>
         </div>
 

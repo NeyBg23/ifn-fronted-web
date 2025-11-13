@@ -336,18 +336,18 @@ const ConformarBrigada = () => {
                         <br />
                             <small className="text-muted">
                                 {empleado.signedUrl ? (
-                                    <a
-                                        href={empleado.signedUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="btn btn-outline-primary btn-sm mt-1"
-                                    >
-                                        📄 Ver hoja de vida
-                                    </a>
-                                    ) : (
-                                    <small className="text-danger fw-semibold mt-1 d-block">
-                                        📄 No tiene hoja de vida
-                                    </small>
+                                  <a
+                                      href={empleado.signedUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="btn btn-outline-primary btn-sm mt-1"
+                                  >
+                                      📄 Ver hoja de vida
+                                  </a>
+                                ) : (
+                                  <h2 className="text-danger fw-semibold mt-2 d-block">
+                                      📄 No tiene hoja de vida
+                                  </h2>
                                 )}
                             </small>
 
@@ -441,11 +441,12 @@ const ConformarBrigada = () => {
       <div className="d-flex justify-content-end gap-2">
         <button className="btn btn-secondary">Cancelar</button>
         <button
+          style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
           className="btn btn-success btn-lg"
           onClick={handleCrearBrigada}
           disabled={asignaciones.length === 0}
         >
-          Crear Brigada 🛡️
+          Crear Brigada
         </button>
       </div>
     </div>

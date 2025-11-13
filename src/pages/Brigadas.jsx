@@ -99,6 +99,7 @@ const Brigadas = () => {
             <div className="mb-4">
               <p>Aquí puedes crear una nueva brigada.</p>
                 <button
+                  style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
                   className="btn-crear"
                   onClick={() => navigate(`/admin/brigadas/crear-nueva`)}
                 >

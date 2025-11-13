@@ -316,6 +316,7 @@ const Perfil = () => {
               </div>
             </button>
             <button
+              style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
               className="btn btn-success btn-lg"
               onClick={handleGuardar}
               disabled={guardando}

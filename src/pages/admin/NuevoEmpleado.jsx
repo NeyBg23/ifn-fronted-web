@@ -24,8 +24,8 @@ const StepIndicator = ({ step, currentStep, totalSteps }) => {
     >
       <div className="relative flex flex-col items-center w-full">
         <span className={`relative grid h-10 w-10 place-items-center rounded-full transition-colors duration-300
-          ${isCompleted ? 'bg-indigo-600 text-white' : ''}
-          ${isActive ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-200 text-slate-500'}
+          ${isCompleted ? 'bg-success text-white' : ''}
+          ${isActive ? 'bg-success text-white shadow-lg' : 'bg-slate-200 text-slate-500'}
         `}>
           {isCompleted && step.id === totalSteps ? <CheckCircle className="h-6 w-6" /> : <IconComponent className="h-6 w-6" />}
         </span>
@@ -59,7 +59,7 @@ const StepContent = ({
     return (
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
-          <User className="h-6 w-6 text-indigo-600" /> Información Personal
+          <User className="h-6 w-6 text-success" /> Información Personal
         </h2>
 
         {mostrarErrorCamposVacios && (
@@ -71,7 +71,7 @@ const StepContent = ({
         {/* Nombre completo */}
         <div className="flex flex-col">
           <label htmlFor="nombre_completo" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <User size={20} className="mr-2 text-indigo-500" /> Nombre completo
+            <User size={20} className="mr-2 text-success" /> Nombre completo
           </label>
           <input
             type="text"
@@ -81,13 +81,12 @@ const StepContent = ({
             value={nuevoEmpleado.nombre_completo}
             onChange={handleChange}
             placeholder="Ej: Juan Pérez"
-            required
           />
         </div>
         {/* Cédula */}
         <div className="flex flex-col">
           <label htmlFor="cedula" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <CreditCard size={20} className="mr-2 text-indigo-500" /> Cédula
+            <CreditCard size={20} className="mr-2 text-success" /> Cédula
           </label>
           <input
             type="text"
@@ -97,14 +96,13 @@ const StepContent = ({
             value={nuevoEmpleado.cedula}
             onChange={handleChange}
             placeholder="Ej: 000-0000000-0"
-            required
           />
         </div>
 
         {/* Telefono */}
         <div className="flex flex-col">
           <label htmlFor="telefono" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <PhoneCall size={20} className="mr-2 text-indigo-500" /> Teléfono
+            <PhoneCall size={20} className="mr-2 text-success" /> Teléfono
           </label>
           <input
             type="number"
@@ -114,7 +112,6 @@ const StepContent = ({
             value={nuevoEmpleado.telefono}
             onChange={handleChange}
             placeholder="Ej: 3112685855"
-            required
           />
         </div>
       </div>
@@ -125,7 +122,7 @@ const StepContent = ({
     return (
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
-          <LockKeyhole className="h-6 w-6 text-indigo-600" /> Seguridad y Acceso
+          <LockKeyhole className="h-6 w-6 text-success" /> Seguridad y Acceso
         </h2>
 
         {
@@ -143,7 +140,7 @@ const StepContent = ({
         {/* Correo */}
         <div className="flex flex-col">
           <label htmlFor="correo" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-indigo-500" /> Correo
+            <LockKeyhole size={20} className="mr-2 text-success" /> Correo
           </label>
           <input
             type="email"
@@ -152,14 +149,13 @@ const StepContent = ({
             className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
             value={nuevoEmpleado.correo}
             onChange={handleChange}
-            required
           />
         </div>
 
         {/* Contraseña */}
         <div className="flex flex-col">
           <label htmlFor="contraseña" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-indigo-500" /> Contraseña
+            <LockKeyhole size={20} className="mr-2 text-success" /> Contraseña
           </label>
           <input
             type="password"
@@ -168,13 +164,12 @@ const StepContent = ({
             className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
             value={nuevoEmpleado.contraseña}
             onChange={handleChange}
-            required
           />
         </div>
         {/* Confirmar Contraseña */}
         <div className="flex flex-col">
           <label htmlFor="confirmarContraseña" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-indigo-500" /> Confirmar Contraseña
+            <LockKeyhole size={20} className="mr-2 text-success" /> Confirmar Contraseña
           </label>
           <input
             type="password"
@@ -183,7 +178,6 @@ const StepContent = ({
             className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
             value={nuevoEmpleado.confirmarContraseña}
             onChange={handleChange}
-            required
           />
         </div>
       </div>
@@ -193,9 +187,16 @@ const StepContent = ({
   if (stepId === 3) {
     return (
       <div className="space-y-6">
+
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
-          <Settings className="h-6 w-6 text-indigo-600" /> Puesto y Documentación
+          <Settings className="h-6 w-6 text-success" /> Puesto y Documentación
         </h2>
+
+        {mostrarErrorCamposVacios && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+            <span className="block sm:inline">Debe llenar todos los campos</span>
+          </div>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Cargo */}
@@ -208,7 +209,6 @@ const StepContent = ({
               className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
               value={nuevoEmpleado.cargo}
               onChange={handleChange}
-              required
             />
           </div>
           {/* Fecha Ingreso */}
@@ -221,7 +221,6 @@ const StepContent = ({
               className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
               value={nuevoEmpleado.fecha_ingreso}
               onChange={handleChange}
-              required
             />
           </div>
           {/* Rol */}
@@ -243,7 +242,7 @@ const StepContent = ({
         {/* Descripción */}
         <div className="flex flex-col">
           <label htmlFor="descripcion" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <FileText size={20} className="mr-2 text-indigo-500" /> Descripción
+            <FileText size={20} className="mr-2 text-success" /> Descripción
           </label>
           <textarea
             id="descripcion"
@@ -258,7 +257,7 @@ const StepContent = ({
         {/* Hoja de Vida (File Upload) */}
         <div className="flex flex-col">
           <label className="mb-2 font-semibold text-slate-700 flex items-center">
-            <Upload size={20} className="mr-2 text-indigo-500" /> Hoja de vida (PDF, DOCX - máx 5MB)
+            <Upload size={20} className="mr-2 text-success" /> Hoja de vida (PDF, DOCX - máx 5MB)
           </label>
           
           {!hojaVida ? (
@@ -314,6 +313,8 @@ const NuevoEmpleado = () => {
   // Estado para todos los campos del formulario
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: '',
+    correo: '',
+    telefono: '',
     cedula: '',
     contraseña: '',
     confirmarContraseña: '',
@@ -381,6 +382,16 @@ const NuevoEmpleado = () => {
       // Se pueden añadir más validaciones de campos requeridos para este paso si es necesario
     }
 
+    // Validaciones para el paso 3
+    if (currentStep === 3) {
+      if (!nuevoEmpleado.cargo || !nuevoEmpleado.fecha_ingreso || !nuevoEmpleado.rol) {
+        setMostrarErrorCamposVacios(true)
+        isValid = false;
+      }
+    }
+
+    if (currentStep === totalSteps) return handleCrearEmpleado();
+    
     // Si las validaciones pasan, avanza
     if (isValid && currentStep < totalSteps) {
       setCurrentStep((prev) => prev + 1);
@@ -395,6 +406,7 @@ const NuevoEmpleado = () => {
   // Manejador de envío final del formulario
   const handleCrearEmpleado = (e) => {
     e.preventDefault();
+
     if (currentStep === totalSteps) {
       console.log("¡Formulario Finalizado y Enviado!");
       console.log("Datos del Empleado:", nuevoEmpleado);
@@ -419,10 +431,12 @@ const NuevoEmpleado = () => {
       {/* Script para cargar Tailwind CSS */}
       <script src="https://cdn.tailwindcss.com"></script>
       <div className="w-full max-w-5xl bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-200">
+
         <h1 className="text-4xl font-extrabold text-slate-900 mb-4 flex items-center gap-3">
-          <User className="h-8 w-8 text-indigo-600" />
+          <User className="h-8 w-8 text-success" />
           Crear Nuevo Empleado
         </h1>
+
         <p className="text-slate-600 mb-10">Completa los siguientes {totalSteps} pasos para registrar un nuevo colaborador.</p>
 
         {/* Stepper Container */}
@@ -440,7 +454,7 @@ const NuevoEmpleado = () => {
           </div>
 
           {/* Contenido de pasos */}
-          <form id="formNuevoEmpleado" onSubmit={handleCrearEmpleado}>
+          <form id="formNuevoEmpleado" onSubmit={handleCrearEmpleado} noValidate>
             <div className="mt-6 min-h-64">
               {steps.map((step) => (
                 <div 
@@ -480,11 +494,11 @@ const NuevoEmpleado = () => {
               {/* Botón Siguiente / Finalizar */}
               <button
                 type={currentStep === totalSteps ? 'submit' : 'button'}
-                onClick={currentStep < totalSteps ? nextStep : handleCrearEmpleado}
+                onClick={nextStep}
                 data-stepper-next
                 className="inline-flex items-center justify-center border align-middle font-semibold text-sm rounded-lg py-3 px-8 shadow-md transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700 hover:border-indigo-700"
               >
-                {currentStep < totalSteps ? 'Siguiente Paso' : '💾 Guardar Empleado'}
+                {currentStep < totalSteps ? 'Siguiente' : '💾 Guardar Empleado'}
               </button>
             </div>
           </form>

@@ -73,7 +73,7 @@ function Footer() {
             © 2025 derechos reservados - Inventario Forestal Nacional de Colombia
           </p>
 
-          <p>Desarrollado por <a href="https://github.com/DeveloperTI0001" className="text-green-200 hover:text-green-100 transition" target="_blank">DeveloperTI0001</a> y <a href="https://github.com/NeyBg23" className="text-green-200 hover:text-green-100 transition" target="_blank">NeyBg</a></p>
+          <p>Desarrollado por <a href="https://github.com/DeveloperTI0001" className="text-green-200 hover:text-green-100 transition" target="_blank" rel="noopener noreferrer">DeveloperTI0001</a> y <a href="https://github.com/NeyBg23" className="text-green-200 hover:text-green-100 transition" target="_blank" rel="noopener noreferrer">NeyBg</a></p>
         </div>
       </div>
     </footer>

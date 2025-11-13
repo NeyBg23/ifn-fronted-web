@@ -59,10 +59,10 @@ h1, h2, h3, h4 {
 }
 
 .card.h-10 {
-  flex: 1 1 330px; /* cada card mide 330px mínimo */
+  flex: 1 1 330px;
   max-width: 380px;
   width: 550px;
-  height: 230px;
+  height: auto;
 }
 
 /* Efecto hover opcional */
