@@ -76,7 +76,7 @@ const login = async (email, password, hcaptchaToken) => {
 
     // 1️Login en Auth Service (Incluyendo el token de hCaptcha)
     const response = await axios.post(
-      `${AUTH_SERVICE_URL}/auth/login`,
+      `${AUTH_SERVICE_URL}/login`,
       { 
         email, 
         password, 
