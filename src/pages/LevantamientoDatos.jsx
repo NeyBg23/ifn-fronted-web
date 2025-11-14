@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import '../styles/LevantamientoDatos.css'
 
-// ⭐ ACTUALIZADO: URL correcta del backend de Brigadas
+// ACTUALIZADO: URL correcta del backend de Brigadas
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
 
 export default function LevantamientoDatos() {
@@ -12,11 +12,11 @@ export default function LevantamientoDatos() {
   useEffect(() => {
     const cargarConglomeradoBrigadista = async () => {
       try {
-        // ✅ Obtener token del localStorage
+        // Obtener token del localStorage
         const token = localStorage.getItem('token')
         if (!token) throw new Error('Token no disponible. Por favor, inicia sesión.')
 
-        // ✅ Llamar al endpoint correcto: GET /api/brigadista/mi-conglomerado
+        // Llamar al endpoint correcto: GET /api/brigadista/mi-conglomerado
         const response = await fetch(
           `${API_BRIGADAS}/api/brigadista/mi-conglomerado`,
           {
@@ -36,7 +36,7 @@ export default function LevantamientoDatos() {
 
         const data = await response.json()
         
-        // ✅ Guardar el conglomerado obtenido
+        // Guardar el conglomerado obtenido
         if (data.conglomerado) {
           setConglomerado(data.conglomerado)
           console.log('✅ Conglomerado cargado:', data.conglomerado)
@@ -77,7 +77,7 @@ export default function LevantamientoDatos() {
         borderRadius: '8px',
         textAlign: 'center'
       }}>
-        ❌ Error: {error}
+        ❌ {error}
       </div>
     )
   }
@@ -90,17 +90,17 @@ export default function LevantamientoDatos() {
         color: '#1565c0',
         textAlign: 'center'
       }}>
-        ℹ️ No hay conglomerado asignado en este momento
+        No hay conglomerado asignado en este momento
       </div>
     )
   }
 
-  // ✅ Conglomerado cargado correctamente
+  // Conglomerado cargado correctamente
   return (
     <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
       <h1>📍 Levantamiento de Datos IFN</h1>
       
-      {/* ✅ Mostrar datos del conglomerado pre-poblado */}
+      {/* Mostrar datos del conglomerado pre-poblado */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1.5rem', 
@@ -119,7 +119,7 @@ export default function LevantamientoDatos() {
           <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
         </div>
 
-        {/* ✅ Botón para iniciar captura */}
+        {/* Botón para iniciar captura */}
         <button 
           onClick={() => alert('Captura de datos: En desarrollo para PASO 5')}
           style={{
@@ -138,7 +138,7 @@ export default function LevantamientoDatos() {
         </button>
       </div>
 
-      {/* ℹ️ Panel informativo */}
+      {/* Panel informativo */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1rem', 

@@ -8,13 +8,11 @@ export default function Header() {
   const { logout } = useAuth();
   const user = useAuth();
 
-
   const handleLogout = () => {
     logout();
     alert("Se ha cerrado sesión correctamente.");
     navigate("/");
   };
-
 
   return (
     <div className="admin-layout-container">
@@ -91,7 +89,7 @@ export default function Header() {
                 </li>
 
 
-                {/* ⭐ NUEVO PASO 4.3: Botón Levantamiento de Datos (solo para brigadistas) */}
+                {/* Botón Levantamiento de Datos (solo para brigadistas) */}
                 {
                   user && user.usuario.rol === 'brigadista' && (
                     <li className="nav-item">
@@ -102,7 +100,7 @@ export default function Header() {
                         style={{ color: '#4CAF50', fontWeight: 'bold' }}
                       >
                         <Leaf size={25} className="me-2" />
-                        📍 Levantamiento de Datos
+                        Levantamiento de Datos
                       </button>
                     </li>
                   )
