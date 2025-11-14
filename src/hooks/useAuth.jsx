@@ -116,7 +116,7 @@ const login = async (email, password, hcaptchaToken) => {
     return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
   } catch (err) {
 
-    const mensaje = err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
+    const mensaje = err.response?.data?.detail || err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
     setError(mensaje);
     clearAuth(); 
     
