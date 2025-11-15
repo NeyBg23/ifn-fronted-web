@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
 import '../styles/LevantamientoDatos.css'
 
-
-// ACTUALIZADO: URL correcta del backend de Brigadas
-// ⭐ CONFIGURACIÓN DE APIS
-
+// 🌲 CONFIGURACIÓN DE APIs
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
-const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' // 🌲 Backend desplegado de levantamiento
+const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' //  En producción
 
 export default function LevantamientoDatos() {
   // ========== ESTADO GENERAL ==========
@@ -14,12 +11,16 @@ export default function LevantamientoDatos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
+  // ========== ESTADO SUBPARCELAS ==========
+  const [subparcelas, setSubparcelas] = useState([])
+  const [subparcelaSeleccionada, setSubparcelaSeleccionada] = useState(null)
+
   // ========== ESTADO FORMULARIO ÁRBOL ==========
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [arbolForm, setArbolForm] = useState({
     numero_arbol: '',
     especie: '',
-    dap: '', // Diámetro a la altura del pecho
+    dap: '',
     altura: '',
     condicion: 'vivo',
     observaciones: ''
@@ -30,14 +31,17 @@ export default function LevantamientoDatos() {
   const [arboles, setArboles] = useState([])
   const [cargandoArboles, setCargandoArboles] = useState(false)
 
+  // ========== ESTADO RESUMEN/CONTEO ==========
+  const [resumen, setResumen] = useState(null)
+  const [validacion, setValidacion] = useState(null)
+  const [cargandoResumen, setCargandoResumen] = useState(false)
+
   // ========== CARGAR CONGLOMERADO ==========
   useEffect(() => {
     const cargarConglomeradoBrigadista = async () => {
       try {
-
-        // Obtener token del localStorage
         const token = localStorage.getItem('token')
-        if (!token) throw new Error('Token no disponible. Por favor, inicia sesión.')
+        if (!token) throw new Error('Token no disponible')
 
         const response = await fetch(
           `${API_BRIGADAS}/api/brigadista/mi-conglomerado`,
@@ -51,18 +55,20 @@ export default function LevantamientoDatos() {
 
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error('No tienes conglomerado asignado aún')
+            throw new Error('No tienes conglomerado asignado')
           }
-          throw new Error(`Error del servidor: ${response.status}`)
+          throw new Error(`Error: ${response.status}`)
         }
 
         const data = await response.json()
-
         if (data.conglomerado) {
           setConglomerado(data.conglomerado)
           console.log('✅ Conglomerado cargado:', data.conglomerado)
-          // Cargar árboles del conglomerado
-          cargarArboles(data.conglomerado.id)
+
+          // Cargar subparcelas
+          cargarSubparcelas(data.conglomerado.id)
+          // Cargar resumen general
+          cargarResumenConglomerado(data.conglomerado.id)
         }
         setCargando(false)
       } catch (err) {
@@ -75,17 +81,37 @@ export default function LevantamientoDatos() {
     cargarConglomeradoBrigadista()
   }, [])
 
-  // ========== CARGAR ÁRBOLES DEL CONGLOMERADO ==========
-  const cargarArboles = async (conglomeradoId) => {
+  // ========== CARGAR SUBPARCELAS ==========
+  const cargarSubparcelas = async (conglomeradoId) => {
+    try {
+      // Aquí se cargarían desde el backend si existiera el endpoint
+      // Por ahora, se crean 5 subparcelas estándar del IFN
+      const subparcelas_temp = [
+        { id: 'sp1', numero: 1, nombre: 'Subparcela 1 (Centro)' },
+        { id: 'sp2', numero: 2, nombre: 'Subparcela 2 (Norte)' },
+        { id: 'sp3', numero: 3, nombre: 'Subparcela 3 (Este)' },
+        { id: 'sp4', numero: 4, nombre: 'Subparcela 4 (Sur)' },
+        { id: 'sp5', numero: 5, nombre: 'Subparcela 5 (Oeste)' }
+      ]
+      setSubparcelas(subparcelas_temp)
+      if (subparcelas_temp.length > 0) {
+        setSubparcelaSeleccionada(subparcelas_temp[0].id)
+        cargarArboles(subparcelas_temp[0].id)
+      }
+    } catch (err) {
+      console.error('Error cargando subparcelas:', err)
+    }
+  }
+
+  // ========== CARGAR ÁRBOLES DE SUBPARCELA ==========
+  const cargarArboles = async (subparcelaId) => {
     try {
       setCargandoArboles(true)
       const response = await fetch(
-        `${API_LEVANTAMIENTO}/api/levantamiento/resumen/${conglomeradoId}`,
+        `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaId}`,
         {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers: { 'Content-Type': 'application/json' }
         }
       )
 
@@ -93,11 +119,70 @@ export default function LevantamientoDatos() {
         const data = await response.json()
         setArboles(data.data || [])
         console.log('✅ Árboles cargados:', data.data)
+        
+        // Cargar resumen de subparcela
+        cargarResumenSubparcela(subparcelaId)
       }
       setCargandoArboles(false)
     } catch (err) {
       console.error('❌ Error cargando árboles:', err)
       setCargandoArboles(false)
+    }
+  }
+
+  // ========== CARGAR RESUMEN CONGLOMERADO ==========
+  const cargarResumenConglomerado = async (conglomeradoId) => {
+    try {
+      setCargandoResumen(true)
+      const response = await fetch(
+        `${API_LEVANTAMIENTO}/api/levantamiento/resumen-conglomerado/${conglomeradoId}`,
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        setResumen(data.resumen)
+        console.log('✅ Resumen conglomerado:', data.resumen)
+      }
+      setCargandoResumen(false)
+    } catch (err) {
+      console.error('❌ Error cargando resumen:', err)
+      setCargandoResumen(false)
+    }
+  }
+
+  // ========== CARGAR RESUMEN SUBPARCELA ==========
+  const cargarResumenSubparcela = async (subparcelaId) => {
+    try {
+      const response = await fetch(
+        `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaId}`,
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        setResumen(data.resumen)
+      }
+    } catch (err) {
+      console.error('Error cargando resumen subparcela:', err)
+    }
+  }
+
+  // ========== CARGAR VALIDACIÓN ==========
+  const cargarValidacion = async (conglomeradoId) => {
+    try {
+      const response = await fetch(
+        `${API_LEVANTAMIENTO}/api/levantamiento/validar/${conglomeradoId}`,
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        setValidacion(data)
+        console.log('✅ Validación:', data)
+      }
+    } catch (err) {
+      console.error('Error en validación:', err)
     }
   }
 
@@ -113,15 +198,21 @@ export default function LevantamientoDatos() {
   // ========== ENVIAR ÁRBOL ==========
   const enviarArbol = async (e) => {
     e.preventDefault()
-    
-    if (!conglomerado) {
-      alert('❌ No hay conglomerado cargado')
+
+    if (!conglomerado || !subparcelaSeleccionada) {
+      alert('❌ Error: No hay conglomerado o subparcela seleccionada')
       return
     }
 
-    // Validar campos obligatorios
     if (!arbolForm.numero_arbol || !arbolForm.especie || !arbolForm.dap) {
-      alert('❌ Por favor completa los campos obligatorios (Número, Especie, DAP)')
+      alert('❌ Completa campos obligatorios: Número, Especie, DAP')
+      return
+    }
+
+    // Validar rangos
+    const dap = parseFloat(arbolForm.dap)
+    if (dap < 0.1 || dap > 300) {
+      alert('❌ DAP debe estar entre 0.1 y 300 cm')
       return
     }
 
@@ -129,7 +220,7 @@ export default function LevantamientoDatos() {
       setEnviando(true)
 
       const datosArbol = {
-        subparcela_id: '1', // ⭐ TODO: Implementar selector de subparcela
+        subparcela_id: subparcelaSeleccionada,
         conglomerado_id: conglomerado.id,
         numero_arbol: parseInt(arbolForm.numero_arbol),
         especie: arbolForm.especie,
@@ -147,9 +238,7 @@ export default function LevantamientoDatos() {
         `${API_LEVANTAMIENTO}/api/levantamiento/detecciones-arboles`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(datosArbol)
         }
       )
@@ -162,7 +251,6 @@ export default function LevantamientoDatos() {
       const result = await response.json()
       console.log('✅ Árbol registrado:', result.data)
 
-      // ✅ Limpiar formulario
       setArbolForm({
         numero_arbol: '',
         especie: '',
@@ -173,8 +261,9 @@ export default function LevantamientoDatos() {
       })
       setMostrarFormulario(false)
 
-      // ✅ Recargar lista
-      cargarArboles(conglomerado.id)
+      // Recargar listas
+      cargarArboles(subparcelaSeleccionada)
+      cargarResumenConglomerado(conglomerado.id)
       alert('✅ Árbol registrado exitosamente')
     } catch (err) {
       console.error('❌ Error registrando árbol:', err)
@@ -184,56 +273,43 @@ export default function LevantamientoDatos() {
     }
   }
 
+  // ========== CAMBIAR SUBPARCELA ==========
+  const cambiarSubparcela = (subparcelaId) => {
+    setSubparcelaSeleccionada(subparcelaId)
+    cargarArboles(subparcelaId)
+  }
+
   // ========== RENDERIZADO ==========
 
-  // Estado de carga
   if (cargando) {
     return (
-      <div style={{ 
-        padding: '2rem', 
-        color: '#1B5E20',
-        textAlign: 'center',
-        fontSize: '1.2rem'
-      }}>
-        ⏳ Obteniendo tu conglomerado asignado...
+      <div style={{ padding: '2rem', color: '#1B5E20', textAlign: 'center', fontSize: '1.2rem' }}>
+        ⏳ Obteniendo tu conglomerado...
       </div>
     )
   }
 
-  // Error
   if (error) {
     return (
-      <div style={{ 
-        padding: '2rem', 
-        color: 'white',
-        backgroundColor: '#d32f2f',
-        borderRadius: '8px',
-        textAlign: 'center'
-      }}>
+      <div style={{ padding: '2rem', color: 'white', backgroundColor: '#d32f2f', borderRadius: '8px', textAlign: 'center' }}>
         ❌ {error}
       </div>
     )
   }
 
-  // Sin conglomerado
   if (!conglomerado) {
     return (
-      <div style={{ 
-        padding: '2rem', 
-        color: '#1565c0',
-        textAlign: 'center'
-      }}>
-        No hay conglomerado asignado en este momento
+      <div style={{ padding: '2rem', color: '#1565c0', textAlign: 'center' }}>
+        No hay conglomerado asignado
       </div>
     )
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
-      <h1>📍 Levantamiento de Datos IFN</h1>
-      
+    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <h1>📍 Levantamiento de Datos IFN - PASO 7</h1>
 
-      {/* Mostrar datos del conglomerado pre-poblado */}
+      {/* INFO CONGLOMERADO */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1.5rem', 
@@ -241,38 +317,119 @@ export default function LevantamientoDatos() {
         borderRadius: '8px',
         border: '3px solid #1B5E20'
       }}>
-        <h2>✅ Tu Conglomerado Asignado</h2>
-        
+        <h2>✅ Conglomerado Asignado</h2>
         <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <p><strong>Código:</strong> {conglomerado.codigo}</p>
-          <p><strong>Nombre:</strong> {conglomerado.nombre || 'N/A'}</p>
           <p><strong>Ubicación:</strong> {conglomerado.ubicacion || 'N/A'}</p>
           <p><strong>Coordenadas:</strong> {conglomerado.latitud}, {conglomerado.longitud}</p>
-          <p><strong>Descripción:</strong> {conglomerado.descripcion || 'N/A'}</p>
           <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
         </div>
-
-
-        {/* Botón para iniciar captura */}
-        <button 
-          onClick={() => setMostrarFormulario(!mostrarFormulario)}
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#1B5E20',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            marginTop: '1.5rem',
-            fontWeight: 'bold'
-          }}
-        >
-          {mostrarFormulario ? '❌ Cerrar formulario' : '🌳 Registrar Árbol'}
-        </button>
       </div>
 
-      {/* ========== FORMULARIO ÁRBOL ========== */}
+      {/* RESUMEN GENERAL */}
+      {resumen && (
+        <div style={{
+          marginTop: '2rem',
+          padding: '1.5rem',
+          backgroundColor: '#f3e5f5',
+          borderRadius: '8px',
+          border: '2px solid #7b1fa2'
+        }}>
+          <h3>📊 Resumen de Conteo Automático</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '2rem', color: '#1B5E20', margin: 0 }}>{resumen.total_arboles}</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Total Árboles</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '2rem', color: '#2e7d32', margin: 0 }}>🟢 {resumen.arboles_vivos}</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Vivos</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '2rem', color: '#c62828', margin: 0 }}>🔴 {resumen.arboles_muertos}</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Muertos</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '2rem', color: '#f57f17', margin: 0 }}>🟡 {resumen.arboles_enfermos}</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Enfermos</p>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen.diametro_promedio} cm</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>DAP Promedio</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen.altura_promedio} m</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Altura Promedio</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen.especies_unicas}</p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Especies Únicas</p>
+            </div>
+            <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
+              <p style={{ fontSize: '1rem', color: '#666', margin: 0 }}>
+                🌱 B: {resumen.categorias?.brinzales}<br/>
+                🌿 L: {resumen.categorias?.latizales}<br/>
+                🌳 F: {resumen.categorias?.fustales}<br/>
+                🌲 FG: {resumen.categorias?.fustales_grandes}
+              </p>
+              <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Categorías</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SELECTOR SUBPARCELAS */}
+      <div style={{
+        marginTop: '2rem',
+        padding: '1.5rem',
+        backgroundColor: '#fff3e0',
+        borderRadius: '8px',
+        border: '2px solid #ff9800'
+      }}>
+        <h3>🗂️ Seleccionar Subparcela</h3>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+          {subparcelas.map(sp => (
+            <button
+              key={sp.id}
+              onClick={() => cambiarSubparcela(sp.id)}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: subparcelaSeleccionada === sp.id ? '#1B5E20' : '#e8f5e9',
+                color: subparcelaSeleccionada === sp.id ? 'white' : '#1B5E20',
+                border: '2px solid #1B5E20',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              {sp.nombre}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* BOTÓN AGREGAR ÁRBOL */}
+      <button 
+        onClick={() => setMostrarFormulario(!mostrarFormulario)}
+        style={{
+          padding: '0.75rem 1.5rem',
+          backgroundColor: '#1B5E20',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '1rem',
+          marginTop: '1.5rem',
+          fontWeight: 'bold'
+        }}
+      >
+        {mostrarFormulario ? '❌ Cerrar formulario' : '🌳 Registrar Árbol'}
+      </button>
+
+      {/* FORMULARIO ÁRBOL */}
       {mostrarFormulario && (
         <div style={{
           marginTop: '2rem',
@@ -285,8 +442,6 @@ export default function LevantamientoDatos() {
           
           <form onSubmit={enviarArbol}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-              
-              {/* Número de Árbol */}
               <div>
                 <label style={{ fontWeight: 'bold' }}>Número de Árbol *</label>
                 <input
@@ -300,7 +455,6 @@ export default function LevantamientoDatos() {
                 />
               </div>
 
-              {/* Especie */}
               <div>
                 <label style={{ fontWeight: 'bold' }}>Especie *</label>
                 <input
@@ -314,9 +468,8 @@ export default function LevantamientoDatos() {
                 />
               </div>
 
-              {/* DAP (Diámetro) */}
               <div>
-                <label style={{ fontWeight: 'bold' }}>DAP (cm) *</label>
+                <label style={{ fontWeight: 'bold' }}>DAP (cm) * (0.1-300)</label>
                 <input
                   type="number"
                   name="dap"
@@ -324,12 +477,13 @@ export default function LevantamientoDatos() {
                   onChange={manejarCambioFormulario}
                   placeholder="Ej: 25.5"
                   step="0.1"
+                  min="0.1"
+                  max="300"
                   required
                   style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
                 />
               </div>
 
-              {/* Altura */}
               <div>
                 <label style={{ fontWeight: 'bold' }}>Altura (m)</label>
                 <input
@@ -343,7 +497,6 @@ export default function LevantamientoDatos() {
                 />
               </div>
 
-              {/* Condición */}
               <div>
                 <label style={{ fontWeight: 'bold' }}>Condición</label>
                 <select
@@ -358,7 +511,6 @@ export default function LevantamientoDatos() {
                 </select>
               </div>
 
-              {/* Observaciones */}
               <div style={{ gridColumn: '1 / -1' }}>
                 <label style={{ fontWeight: 'bold' }}>Observaciones</label>
                 <textarea
@@ -379,7 +531,6 @@ export default function LevantamientoDatos() {
               </div>
             </div>
 
-            {/* BOTONES */}
             <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
               <button
                 type="submit"
@@ -419,7 +570,7 @@ export default function LevantamientoDatos() {
         </div>
       )}
 
-      {/* ========== LISTADO DE ÁRBOLES ========== */}
+      {/* LISTADO ÁRBOLES */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1.5rem', 
@@ -434,10 +585,7 @@ export default function LevantamientoDatos() {
         ) : arboles.length === 0 ? (
           <p style={{ color: '#666' }}>📭 No hay árboles registrados aún</p>
         ) : (
-          <div style={{ 
-            overflowX: 'auto',
-            marginTop: '1rem'
-          }}>
+          <div style={{ overflowX: 'auto', marginTop: '1rem' }}>
             <table style={{
               width: '100%',
               borderCollapse: 'collapse',
@@ -460,9 +608,9 @@ export default function LevantamientoDatos() {
                     <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #ddd' }}>{arbol.dap}</td>
                     <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #ddd' }}>{arbol.altura || '-'}</td>
                     <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #ddd' }}>
-                      {arbol.condicion === 'vivo' && '🟢 Vivo'}
-                      {arbol.condicion === 'muerto' && '🔴 Muerto'}
-                      {arbol.condicion === 'enfermo' && '🟡 Enfermo'}
+                      {arbol.condicion === 'vivo' && '🟢'}
+                      {arbol.condicion === 'muerto' && '🔴'}
+                      {arbol.condicion === 'enfermo' && '🟡'}
                     </td>
                   </tr>
                 ))}
@@ -472,7 +620,47 @@ export default function LevantamientoDatos() {
         )}
       </div>
 
-      {/* ℹ️ PANEL INFORMATIVO */}
+      {/* VALIDACIÓN */}
+      <div style={{
+        marginTop: '2rem',
+        padding: '1rem',
+        backgroundColor: '#e3f2fd',
+        borderRadius: '8px',
+        borderLeft: '4px solid #1976d2'
+      }}>
+        <button 
+          onClick={() => conglomerado && cargarValidacion(conglomerado.id)}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#1976d2',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          🔍 Verificar Calidad de Datos
+        </button>
+        
+        {validacion && (
+          <div style={{ marginTop: '1rem' }}>
+            <p><strong>Porcentaje de validación:</strong> {validacion.porcentaje_validacion}%</p>
+            <p><strong>Errores encontrados:</strong> {validacion.total_errores}</p>
+            {validacion.total_errores > 0 && (
+              <ul style={{ marginTop: '0.5rem', color: '#d32f2f' }}>
+                {validacion.errores.sin_especie > 0 && <li>Sin especie: {validacion.errores.sin_especie}</li>}
+                {validacion.errores.sin_dap > 0 && <li>Sin DAP: {validacion.errores.sin_dap}</li>}
+                {validacion.errores.dap_fuera_rango > 0 && <li>DAP fuera de rango: {validacion.errores.dap_fuera_rango}</li>}
+                {validacion.errores.sin_condicion > 0 && <li>Sin condición: {validacion.errores.sin_condicion}</li>}
+                {validacion.errores.altura_inconsistente > 0 && <li>Altura inconsistente: {validacion.errores.altura_inconsistente}</li>}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* INFO PANEL */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1rem', 
@@ -482,9 +670,8 @@ export default function LevantamientoDatos() {
       }}>
         <h4>📋 Información del IFN</h4>
         <p style={{ fontSize: '0.95rem', color: '#666' }}>
-          Este conglomerado es una unidad de muestreo con <strong>5 subparcelas</strong> de 
-          <strong> 3,535 m²</strong> cada una. Procede con el levantamiento de datos siguiendo 
-          el manual del Inventario Forestal Nacional.
+          Este conglomerado tiene <strong>5 subparcelas</strong> de <strong>3,535 m²</strong> cada una. 
+          Registra todos los árboles según Manual IFN. Los datos se validan automáticamente.
         </p>
       </div>
     </div>
