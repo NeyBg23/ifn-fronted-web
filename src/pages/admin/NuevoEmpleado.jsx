@@ -387,10 +387,8 @@ const NuevoEmpleado = () => {
       if (!nuevoEmpleado.cargo || !nuevoEmpleado.fecha_ingreso || !nuevoEmpleado.rol) {
         setMostrarErrorCamposVacios(true)
         isValid = false;
-      }
+      } else return document.getElementById("formNuevoEmpleado").requestSubmit();
     }
-
-    if (currentStep === totalSteps) return handleCrearEmpleado();
     
     // Si las validaciones pasan, avanza
     if (isValid && currentStep < totalSteps) {
