@@ -362,13 +362,12 @@ const NuevoEmpleado = () => {
     setMostrarErrorCamposVacios(false);
 
     if (currentStep === 1) {
-        if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || !nuevoEmpleado?.telefono) {
-            setMostrarErrorCamposVacios(true);
-            isValid = false;
-        }
+      if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || !nuevoEmpleado.telefono) {
+        setMostrarErrorCamposVacios(true);
+        isValid = false;
+      }
     }
 
-    // Validaciones para el paso 2
     if (currentStep === 2) {
       if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
         setMostrarErrorContraseña(true);
@@ -376,27 +375,30 @@ const NuevoEmpleado = () => {
       }
 
       if (!nuevoEmpleado.correo) {
-        setMostrarErrorCamposVacios(true)
+        setMostrarErrorCamposVacios(true);
         isValid = false;
       }
-      // Se pueden añadir más validaciones de campos requeridos para este paso si es necesario
     }
 
-    // Validaciones para el paso 3
     if (currentStep === 3) {
       if (!nuevoEmpleado.cargo || !nuevoEmpleado.fecha_ingreso || !nuevoEmpleado.rol) {
-        setMostrarErrorCamposVacios(true)
+        setMostrarErrorCamposVacios(true);
         isValid = false;
+      }
+
+      // Si es válido y es el último paso → enviar formulario
+      if (isValid) {
+        document.getElementById("formNuevoEmpleado").requestSubmit();
+        return;
       }
     }
 
-    if (isValid) return document.getElementById("formNuevoEmpleado").requestSubmit();
-    
-    // Si las validaciones pasan, avanza
+    // Si es válido, avanza
     if (isValid && currentStep < totalSteps) {
       setCurrentStep((prev) => prev + 1);
     }
   };
+
 
   // Lógica de navegación "Anterior"
   const prevStep = () => {
