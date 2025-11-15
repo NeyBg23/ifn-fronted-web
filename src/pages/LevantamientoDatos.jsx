@@ -5,7 +5,7 @@ import '../styles/LevantamientoDatos.css'
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
 //const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' //  En producción
 //  DESARROLLO LOCAL (comentar Vercel)
-const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/'    //  En desarrollo
+const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app'    //  En desarrollo
 
 export default function LevantamientoDatos() {
   // ========== ESTADO GENERAL ==========
