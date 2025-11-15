@@ -199,81 +199,83 @@ export default function LevantamientoDatos() {
 
   // ========== ENVIAR ÁRBOL ==========
   const enviarArbol = async (e) => {
-    e.preventDefault()
+  e.preventDefault()
 
-    if (!conglomerado || !subparcelaSeleccionada) {
-      alert('❌ Error: No hay conglomerado o subparcela seleccionada')
-      return
-    }
-
-    if (!arbolForm.numero_arbol || !arbolForm.especie || !arbolForm.dap) {
-      alert('❌ Completa campos obligatorios: Número, Especie, DAP')
-      return
-    }
-
-    // Validar rangos
-    const dap = parseFloat(arbolForm.dap)
-    if (dap < 0.1 || dap > 300) {
-      alert('❌ DAP debe estar entre 0.1 y 300 cm')
-      return
-    }
-
-    try {
-      setEnviando(true)
-
-      const datosArbol = {
-        subparcela_id: subparcelaSeleccionada,
-        conglomerado_id: conglomerado.id,
-        numero_arbol: parseInt(arbolForm.numero_arbol),
-        especie: arbolForm.especie,
-        dap: parseFloat(arbolForm.dap),
-        altura: arbolForm.altura ? parseFloat(arbolForm.altura) : null,
-        condicion: arbolForm.condicion,
-        observaciones: arbolForm.observaciones,
-        usuario_id: localStorage.getItem('user_id') || 'unknown',
-        brigada_id: conglomerado.brigada_id || 'unknown'
-      }
-
-      console.log('📤 Enviando árbol:', datosArbol)
-
-      const response = await fetch(
-        `${API_LEVANTAMIENTO}/api/levantamiento/detecciones-arboles`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datosArbol)
-        }
-      )
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `Error ${response.status}`)
-      }
-
-      const result = await response.json()
-      console.log('✅ Árbol registrado:', result.data)
-
-      setArbolForm({
-        numero_arbol: '',
-        especie: '',
-        dap: '',
-        altura: '',
-        condicion: 'vivo',
-        observaciones: ''
-      })
-      setMostrarFormulario(false)
-
-      // Recargar listas
-      cargarArboles(subparcelaSeleccionada)
-      cargarResumenConglomerado(conglomerado.id)
-      alert('✅ Árbol registrado exitosamente')
-    } catch (err) {
-      console.error('❌ Error registrando árbol:', err)
-      alert(`❌ Error: ${err.message}`)
-    } finally {
-      setEnviando(false)
-    }
+  if (!conglomerado || !subparcelaSeleccionada) {
+    alert('❌ Error: No hay conglomerado o subparcela seleccionada')
+    return
   }
+
+  if (!arbolForm.numero_arbol || !arbolForm.especie || !arbolForm.dap) {
+    alert('❌ Completa campos obligatorios: Número, Especie, DAP')
+    return
+  }
+
+  const dap = parseFloat(arbolForm.dap)
+  if (dap < 0.1 || dap > 300) {
+    alert('❌ DAP debe estar entre 0.1 y 300 cm')
+    return
+  }
+
+  try {
+    setEnviando(true)
+
+    const datosArbol = {
+      subparcela_id: subparcelaSeleccionada,
+      conglomerado_id: conglomerado.id,
+      numero_arbol: parseInt(arbolForm.numero_arbol),
+      especie: arbolForm.especie,
+      dap: parseFloat(arbolForm.dap),
+      altura: arbolForm.altura ? parseFloat(arbolForm.altura) : null,
+      condicion: arbolForm.condicion,
+      observaciones: arbolForm.observaciones || ''
+    }
+
+    console.log('📤 Enviando árbol:', datosArbol)
+
+    const response = await fetch(
+      `https://monitoring-backend-eight.vercel.app/api/levantamiento/detecciones-arboles`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datosArbol)
+      }
+    )
+
+    const result = await response.json()
+    
+    if (!response.ok) {
+      console.error('❌ Error del servidor:', result)
+      alert(`❌ Error: ${result.error?.message || 'Error desconocido'}`)
+      setEnviando(false)
+      return
+    }
+
+    console.log('✅ Árbol registrado:', result.data)
+
+    setArbolForm({
+      numero_arbol: '',
+      especie: '',
+      dap: '',
+      altura: '',
+      condicion: 'vivo',
+      observaciones: ''
+    })
+    setMostrarFormulario(false)
+
+    cargarArboles(subparcelaSeleccionada)
+    cargarResumenConglomerado(conglomerado.id)
+    alert('✅ Árbol registrado exitosamente')
+    
+  } catch (err) {
+    console.error('❌ Error:', err)
+    alert('❌ Error registrando árbol')
+  } finally {
+    setEnviando(false)
+  }
+}
+
+
 
   // ========== CAMBIAR SUBPARCELA ==========
   const cambiarSubparcela = (subparcelaId) => {
