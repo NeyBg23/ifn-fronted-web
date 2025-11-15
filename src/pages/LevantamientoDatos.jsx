@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import '../styles/LevantamientoDatos.css'
 
-// 🌲 CONFIGURACIÓN DE APIs
+//  CONFIGURACIÓN DE APIs
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
-const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' //  En producción
+//const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' //  En producción
+//  DESARROLLO LOCAL (comentar Vercel)
+const API_LEVANTAMIENTO = 'http://localhost:3001'
 
 export default function LevantamientoDatos() {
   // ========== ESTADO GENERAL ==========
