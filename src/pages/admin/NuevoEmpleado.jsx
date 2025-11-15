@@ -412,34 +412,33 @@ const NuevoEmpleado = () => {
       const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
       try {
-        const response = await fetch(
-          `${AUTH_SERVICE_URL}/registrar`,
-          {
-            method: "POST",
-            headers: {
-              'Authorization': `Bearer ${tokenGuardado}`,
-              'Content-Type': 'application/json'
-            },
+        const response = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${tokenGuardado}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             correo: nuevoEmpleado.correo,
-            contraseña: nuevoEmpleado.contraseña
-          }
-        )
+            contraseña: nuevoEmpleado.contraseña,
+          }),
+        });
 
-        console.log(response)
+        const data = await response.json();
+        console.log("Respuesta del backend:", data);
 
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
 
       console.log("¡Formulario Finalizado y Enviado!");
       console.log("Datos del Empleado:", nuevoEmpleado);
 
-      // Aquí iría la lógica para enviar los datos
     } else {
-      // Si se intenta enviar antes del último paso (lo manejamos con el botón de "Next")
-      nextStep(); 
+      nextStep();
     }
   };
+
 
   const steps = [
     { id: 1, title: 'Información Básica', icon: User, fields: ['nombre_completo', 'cedula', 'teléfono'] },
