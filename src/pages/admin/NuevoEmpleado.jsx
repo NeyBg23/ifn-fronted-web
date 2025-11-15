@@ -404,13 +404,34 @@ const NuevoEmpleado = () => {
   };
 
   // Manejador de envío final del formulario
-  const handleCrearEmpleado = (e) => {
+  const handleCrearEmpleado = async (e) => {
     e.preventDefault();
 
     if (currentStep === totalSteps) {
+      const tokenGuardado = localStorage.getItem('token');
+      const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
+
+      try {
+        const response = await fetch(
+          `${AUTH_SERVICE_URL}/registrar`,
+          {
+            headers: {
+              'Authorization': `Bearer ${tokenGuardado}`,
+              'Content-Type': 'application/json'
+            },
+            correo: nuevoEmpleado.correo,
+            contraseña: nuevoEmpleado.contraseña
+          }
+        )
+
+        console.log(response)
+
+      } catch (err) {
+        console.log(err)
+      }
+
       console.log("¡Formulario Finalizado y Enviado!");
       console.log("Datos del Empleado:", nuevoEmpleado);
-      console.log("Archivo adjunto:", hojaVida ? hojaVida.name : 'Ninguno');
 
       // Aquí iría la lógica para enviar los datos
     } else {
