@@ -428,10 +428,6 @@ const NuevoEmpleado = () => {
       } catch (err) {
         console.log(err);
       }
-
-      console.log("¡Formulario Finalizado y Enviado!");
-      console.log("Datos del Empleado:", nuevoEmpleado);
-
     } else {
       nextStep();
     }
