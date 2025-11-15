@@ -70,6 +70,7 @@ export function AuthProvider({ children }) {
 
 
 const login = async (email, password, hcaptchaToken) => {
+  const tokenGuardado = localStorage.getItem('token');
   try {
     setLoading(true);
     setError(null);
@@ -77,11 +78,15 @@ const login = async (email, password, hcaptchaToken) => {
     // 1️Login en Auth Service (Incluyendo el token de hCaptcha)
     const response = await axios.post(
       `${AUTH_SERVICE_URL}/login`,
-      { 
-        email, 
-        password, 
-        hcaptchaToken // ⬅️ Enviar el token al backend
-      }
+      {
+        headers: {
+          'Authorization': `Bearer ${tokenGuardado}`,
+          'Content-Type': 'application/json'
+        },
+        email,
+        password,
+        hcaptchaToken
+      },
     );
 
     // Obtener correctamente el token
