@@ -13,8 +13,8 @@ import { useAuth } from '../hooks/useAuth.jsx';
  * - requiredRole: (opcional) rol requerido para acceder
  *   Ejemplo: requiredRole="admin"
  */
-export async function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
-  const { usuario, rol, loading } = await useAuth();
+export function ProtectedRoute({ component: Component, requiredRole = null, requiredPermissions = [] }) {
+  const { usuario, rol, loading } = useAuth();
   
   if (loading) {
     return (
