@@ -29,8 +29,6 @@ const EmpleadoDetalle = () => {
             data.data.hoja_vida_url.split("/").pop()
           );
 
-          console.log(nombreArchivo)
-
           const resSigned = await fetch(
             `${API_URL}/api/hoja-vida/${nombreArchivo}`,
             {
