@@ -415,6 +415,7 @@ const NuevoEmpleado = () => {
         const response = await fetch(
           `${AUTH_SERVICE_URL}/registrar`,
           {
+            method: "POST",
             headers: {
               'Authorization': `Bearer ${tokenGuardado}`,
               'Content-Type': 'application/json'
