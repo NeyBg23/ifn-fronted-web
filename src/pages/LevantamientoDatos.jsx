@@ -170,6 +170,7 @@ export default function LevantamientoDatos() {
 
 
 
+
 const obtenerColorPorCategoria = (categoria) => {
   switch (categoria) {
     case 'FG':
