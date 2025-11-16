@@ -321,13 +321,12 @@ const obtenerColorPorCategoria = (categoria) => {
 
   const cargarArboles = async (subparcelaId) => {
     try {
+      console.log('📥 Iniciando cargarArboles para:', subparcelaId)
       setCargandoArboles(true)
+      
       const response = await fetch(
         `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaId}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        }
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
       )
 
       if (response.ok) {
@@ -335,9 +334,9 @@ const obtenerColorPorCategoria = (categoria) => {
         setArboles(data.data || [])
         console.log('✅ Árboles cargados:', data.data)
         
-        // ✅ SOLO UNA VEZ - NO LLAMAR dos veces
-        // Cargar resumen de subparcela (esto trae el resumen)
-        cargarResumenSubparcela(subparcelaId)
+        // ✅ LLAMAR resumen
+        console.log('📊 Llamando cargarResumenSubparcela para:', subparcelaId)
+        await cargarResumenSubparcela(subparcelaId)
       }
       setCargandoArboles(false)
     } catch (err) {
@@ -345,6 +344,9 @@ const obtenerColorPorCategoria = (categoria) => {
       setCargandoArboles(false)
     }
   }
+
+
+
 
 
   // ========== CARGAR RESUMEN CONGLOMERADO ==========
@@ -371,18 +373,25 @@ const obtenerColorPorCategoria = (categoria) => {
   // ========== CARGAR RESUMEN SUBPARCELA ==========
   const cargarResumenSubparcela = async (subparcelaId) => {
     try {
+      console.log('🔄 Iniciando resumen-subparcela para:', subparcelaId)
+      
       const response = await fetch(
         `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaId}`,
         { method: 'GET', headers: { 'Content-Type': 'application/json' } }
       )
 
+      console.log('📡 Respuesta status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
-        console.log('✅ Resumen subparcela:', data.resumen)
+        console.log('✅ Resumen subparcela completo:', data)
+        console.log('📊 altura_promedio:', data.resumen?.altura_promedio)
         setResumen(data.resumen)
+      } else {
+        console.error('❌ Error en respuesta:', response.status)
       }
     } catch (err) {
-      console.error('Error cargando resumen subparcela:', err)
+      console.error('❌ Error cargando resumen subparcela:', err)
     }
   }
 
