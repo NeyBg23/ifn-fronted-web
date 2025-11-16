@@ -510,7 +510,7 @@ const obtenerColorPorCategoria = (categoria) => {
         </div>
       )}
 
-      // EN LA SECCIÓN SELECTOR SUBPARCELAS, REEMPLAZA TODO ESTO:
+     
 
       {/* SELECTOR SUBPARCELAS */}
       <div style={{
