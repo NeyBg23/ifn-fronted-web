@@ -102,7 +102,7 @@ const Perfil = () => {
         setMensaje("Perfil actualizado exitosamente");
         const data = await res.json();
 
-      const perfilData = data.user; // viene desde backend
+      const perfilData = data; // viene desde backend
 
       console.log(perfilData)
 
