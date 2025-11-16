@@ -50,7 +50,6 @@ const mostrarMapaArboles = async () => {
       return;
     }
 
-    // Llamar al backend para detectar árboles
     const response = await fetch(
       'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
       {
@@ -70,21 +69,19 @@ const mostrarMapaArboles = async () => {
       return;
     }
 
-    // Crear/mostrar mapa
     const mapContainer = document.getElementById('mapContainer');
     if (!mapContainer) {
       alert('Contenedor del mapa no encontrado');
       return;
     }
 
-    // Limpiar mapa anterior
     mapContainer.innerHTML = '';
 
-    const coordenadasCentro = [
-      parseFloat(data.arboles[0]?.latitud || conglomerado.latitud),  // ✅ CORRECTO
-      parseFloat(data.arboles[0]?.longitud || conglomerado.longitud)
-    ];
-
+    // ✅ SEGURO: Convertir String a número correctamente
+    const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
+    const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
+    
+    const coordenadasCentro = [lat, lng];
 
     const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
 
@@ -93,7 +90,6 @@ const mostrarMapaArboles = async () => {
       maxZoom: 19
     }).addTo(mapa);
 
-    // Marcador del centro
     L.circleMarker(coordenadasCentro, {
       radius: 10,
       fillColor: '#0066ff',
@@ -105,12 +101,20 @@ const mostrarMapaArboles = async () => {
       .bindPopup('<b>Centro del Conglomerado</b>')
       .addTo(mapa);
 
-    // Marcadores de árboles
+    // ✅ SEGURO: Validar cada árbol antes de plotear
     data.arboles.forEach((arbol) => {
+      const arbolLat = Number(arbol.latitud);
+      const arbolLng = Number(arbol.longitud);
+      
+      // Saltar si coordenadas son inválidas
+      if (!isFinite(arbolLat) || !isFinite(arbolLng)) {
+        return;
+      }
+
       const color = obtenerColorPorCategoria(arbol.categoria);
 
       L.circleMarker(
-        [parseFloat(arbol.latitud), parseFloat(arbol.longitud)],
+        [arbolLat, arbolLng],
         {
           radius: 6,
           fillColor: color,
@@ -133,13 +137,14 @@ const mostrarMapaArboles = async () => {
         .addTo(mapa);
     });
 
-    // Mostrar/actualizar estadísticas
     alert(`✅ ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
   } catch (error) {
     console.error('Error:', error);
     alert('Error mostrando mapa: ' + error.message);
   }
 };
+
+
 
 const obtenerColorPorCategoria = (categoria) => {
   switch (categoria) {
