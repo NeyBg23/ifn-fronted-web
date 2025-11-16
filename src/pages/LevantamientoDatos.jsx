@@ -435,8 +435,8 @@ const obtenerColorPorCategoria = (categoria) => {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>📍 Levantamiento de Datos IFN - PASO 7</h1>
+    <div style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
+      <h1>📍 Levantamiento de Datos IFN </h1>
 
       {/* INFO CONGLOMERADO */}
       <div style={{ 
