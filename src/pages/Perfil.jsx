@@ -51,7 +51,6 @@ const Perfil = () => {
         if (res.ok) {
           const data = await res.json();
           
-          // Ajustar esto a cómo tu backend devuelve los datos:
           const perfilData = data.user.data?.[0] || {};
           
           setUsuarioLocal(perfilData);
@@ -102,15 +101,8 @@ const Perfil = () => {
         setMensaje("Perfil actualizado exitosamente");
         const data = await res.json();
 
-      const perfilData = data; // viene desde backend
+        const perfilData = data.user;
 
-      console.log(perfilData)
-
-      setUsuarioLocal(prev => ({
-        ...prev,
-        ...perfilData
-      }));
-        
         setUsuarioLocal(perfilData);
       } else {
         setMensaje("Error al actualizar el perfil");

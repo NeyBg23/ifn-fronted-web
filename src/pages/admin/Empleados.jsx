@@ -5,7 +5,6 @@ import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../../styles/Brigadas.css";
-import supabase from "../../db/supabase";
 import empleado_imagen from "../../img/empleado.png";
 
 export default function Empleados() {
@@ -17,26 +16,8 @@ export default function Empleados() {
   const [filtroCorreo, setFiltroCorreo] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
-  const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false);
-
-  // Estado para nuevo empleado (todos los campos)
-  const [nuevoEmpleado, setNuevoEmpleado] = useState({
-    nombre_completo: "",
-    contraseña: "",
-    confirmarContraseña: "",
-    correo: "",
-    cedula: "",
-    region: "",
-    telefono: "",
-    direccion: "",
-    descripcion: "",
-    cargo: "",
-    fecha_ingreso: "",
-    rol: "brigadista"
-  });
 
   // Estado para manejo de archivo
-  const [hojaVida, setHojaVida] = useState(null);
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
   // Carga inicial de empleados
@@ -64,105 +45,6 @@ export default function Empleados() {
     const r = !filtroRegion || emp.region === filtroRegion;
     return n && c && ced && r;
   });
-
-  // Elimina archivo seleccionado
-  const handleRemoveFile = () => {
-    setHojaVida(null);
-    setPreviewUrl(null);
-    const inp = document.getElementById("hojaVidaInput");
-    if (inp) inp.value = "";
-  };
-
-  // Envía creación de empleado
-  const handleCrearEmpleado = async e => {
-    e.preventDefault();
-    setMostrarErrorContraseña(false);
-    const session = JSON.parse(localStorage.getItem("session"));
-    // Cambiado alert por console.error
-    if (!session) return console.error("¡Necesitas login! 🔑");
-    if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
-      return setMostrarErrorContraseña(true);
-    }
-
-    // Subir CV si existe
-    let hoja_vida_url = null;
-    if (hojaVida) {
-      const path = `empleados/${Date.now()}_${hojaVida.name}`;
-      const { error: upErr } = await supabase.storage
-        .from("hojas_de_vida")
-        .upload(path, hojaVida);
-      if (upErr) {
-        console.error("Error al subir CV:", upErr.message); // Manejo de error de subida
-      } else {
-        const { data: urlData } = supabase.storage
-          .from("hojas_de_vida")
-          .getPublicUrl(path);
-        hoja_vida_url = urlData.publicUrl;
-      }
-    }
-
-    const payload = {
-      nombre_completo: nuevoEmpleado.nombre_completo,
-      correo: nuevoEmpleado.correo,
-      cedula: nuevoEmpleado.cedula,
-      contraseña: nuevoEmpleado.contraseña,
-      region: nuevoEmpleado.region,
-      telefono: nuevoEmpleado.telefono,
-      direccion: nuevoEmpleado.direccion,
-      descripcion: nuevoEmpleado.descripcion,
-      cargo: nuevoEmpleado.cargo,
-      fecha_ingreso: nuevoEmpleado.fecha_ingreso,
-      rol: nuevoEmpleado.rol,
-      hoja_vida_url
-    };
-
-
-    console.log("Payload de nuevo empleado:", payload);
-
-    const res = await fetch(`${API_URL}/api/usuarios`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-
-      console.log("✅ Empleado creado correctamente"); // Cambiado alert por console.log
-
-      setEmpleados(prev => [...prev, data.usuario]);
-      setNuevoEmpleado({
-        nombre_completo: "",
-        contraseña: "",
-        confirmarContraseña: "",
-        correo: "",
-        cedula: "",
-        region: "",
-        telefono: "",
-        direccion: "",
-        descripcion: "",
-        cargo: "",
-        fecha_ingreso: "",
-        rol: "brigadista"
-      });
-
-      handleRemoveFile();
-      // El código original hacía referencia a un modal de Bootstrap que debe existir
-      // si se usa esta línea. La dejo dentro de un try/catch por si acaso.
-      try {
-        if (window.bootstrap && document.getElementById("modalNuevoEmpleado")) {
-            window.bootstrap.Modal.getInstance(document.getElementById("modalNuevoEmpleado")).hide();
-        }
-      } catch (error) {
-        console.warn("No se pudo cerrar el modal. Asegúrate de que Bootstrap esté disponible.", error);
-      }
-
-    } else console.error("❌ Error al crear empleado: " + (data.error || "Intenta nuevamente")); // Cambiado alert por console.error
-  };
 
   return (
     <div className="brigadas-container">

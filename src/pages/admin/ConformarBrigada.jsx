@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserCheck, Shield, Briefcase } from "lucide-react";
+import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
 
 const ConformarBrigada = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -7,11 +7,63 @@ const ConformarBrigada = () => {
   const [nombreBrigada, setNombreBrigada] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [region, setRegion] = useState("");
+  const [departamento, setDepartamento] = useState("");
+  const [municipio, setMunicipio] = useState("");
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
+
+  const regionesDepartamentos = {
+    "Amazonía": {
+      departamentos: ["Amazonas", "Caquetá", "Guainía", "Guaviare", "Putumayo", "Vaupés", "Vichada"]
+    },
+    "Caribe": {
+      departamentos: ["Atlántico", "Bolívar", "Cesar", "Córdoba", "La Guajira", "Magdalena", "Sucre"]
+    },
+    "Andina": {
+      departamentos: ["Antioquia", "Boyacá", "Caldas", "Cauca", "Cundinamarca", "Huila", "Nariño", "Quindío", "Risaralda", "Santander", "Tolima", "Valle del Cauca"]
+    },
+    "Orinoquía": {
+      departamentos: ["Arauca", "Casanare", "Meta"]
+    }
+  };
+
+  const departamentosYMunicipios = {
+    "": [],
+    "Amazonas": ["Leticia", "Puerto Nariño"],
+    "Antioquia": ["Medellín", "Bello", "Envigado", "Itagüí"],
+    "Arauca": ["Arauca", "Arauquita", "Fortul"],
+    "Atlántico": ["Barranquilla", "Soledad", "Malambo"],
+    "Bolívar": ["Cartagena", "Turbaco", "Santa Rosa de Lima"],
+    "Boyacá": ["Tunja", "Duitama", "Sogamoso"],
+    "Caldas": ["Manizales", "Villamaría", "Neira"],
+    "Caquetá": ["Florencia", "La Montañita"],
+    "Casanare": ["Yopal", "Aguazul"],
+    "Cauca": ["Popayán", "Puracé", "Piamonte"],
+    "Cesar": ["Valledupar", "Chiriguaná"],
+    "Chocó": ["Quibdó", "Istmina"],
+    "Córdoba": ["Montería", "Cereté"],
+    "Cundinamarca": ["Bogotá", "Soacha", "Fusagasugá"],
+    "Guainía": ["Inírida"],
+    "Guaviare": ["San José del Guaviare"],
+    "Huila": ["Neiva", "Pitalito"],
+    "La Guajira": ["Riohacha", "Maicao"],
+    "Magdalena": ["Santa Marta", "Ciénaga"],
+    "Meta": ["Villavicencio", "Acacías"],
+    "Nariño": ["Pasto", "Ipiales"],
+    "Norte de Santander": ["Cúcuta", "Ocaña"],
+    "Putumayo": ["Mocoa", "Puerto Caicedo"],
+    "Quindío": ["Armenia"],
+    "Risaralda": ["Pereira", "Dosquebradas"],
+    "Santander": ["Bucaramanga", "Floridablanca"],
+    "Sucre": ["Sincelejo", "Colosó"],
+    "Tolima": ["Ibagué", "Espinal"],
+    "Valle del Cauca": ["Cali", "Palmira"],
+    "Vaupés": ["Mitú"],
+    "Vichada": ["Puerto Carreño"]
+  };
 
   useEffect(() => {
     const fetchEmpleados = async () => {
@@ -24,7 +76,6 @@ const ConformarBrigada = () => {
         });
         const data = await res.json();
 
-        // Si hay empleados, intentamos generar signed URLs para los que tengan hoja_vida_url
         const empleadosConUrls = await Promise.all(
           (data.data || []).map(async (emp) => {
             if (!emp.hoja_vida_url) return emp;
@@ -61,14 +112,30 @@ const ConformarBrigada = () => {
     return coincideNombre && coincideRegion && coincideCedula;
   });
 
+  const getDepartamentosPorRegion = () => {
+    if (!region) return [];
+    return regionesDepartamentos[region]?.departamentos || [];
+  };
+
+  const handleRegionChange = (newRegion) => {
+    setRegion(newRegion);
+    setDepartamento("");
+    setMunicipio("");
+  };
+
+  const handleDepartamentoChange = (newDepartamento) => {
+    if (!getDepartamentosPorRegion().includes(newDepartamento)) {
+      alert("El departamento seleccionado no corresponde a esta región");
+      return;
+    }
+    setDepartamento(newDepartamento);
+    setMunicipio("");
+  };
+
   const toggleRol = (empleadoId, rol) => {
-    // Lo que hice fue primero encontrar a un empleado que cumpla esas condiciones
-    // para saber si ya tiene el rol que le intente dar click
     const existe = asignaciones.find(
       (a) => a.empleadoId === empleadoId && a.rol === rol
     );
-    // Y aquí lo que hice fue filtrar a ese empleado y quitarle el rol que intento
-    // volverle a dar como forma de quitarle ese rol
     if (existe) {
       setAsignaciones(
         asignaciones.filter(
@@ -76,23 +143,13 @@ const ConformarBrigada = () => {
         )
       );
     } else {
-      // Lo que hice fue filtrar al empleado que selecciono
-      // Si el que selecciono ya tenia un rol lo va a cambiar por el nuevo rol
-      // si no pues no pasa nada
       let verificarUnSoloRol = asignaciones.find(
-        (a) => { 
-          if (a.empleadoId === empleadoId) { 
+        (a) => {
+          if (a.empleadoId === empleadoId) {
             a.rol = rol
             return true;
           };
         });
-
-      // Lo que hice fue validar en caso de que verificarUnSoloRol no hizo ese proceso
-      // si no lo hizo significa que le acaba de asignar un rol y por lo tanto
-      // debe añadirlo en asignaciones
-
-      // y en el else, lo que hice fue cambiar directamente ya asignaciones 
-      // haciendo el cambio directo solo en ese empleado
 
       if (!verificarUnSoloRol) setAsignaciones([...asignaciones, { empleadoId, rol }])
       else setAsignaciones([...asignaciones]);
@@ -116,8 +173,13 @@ const ConformarBrigada = () => {
   };
 
   const handleCrearBrigada = async () => {
-    if (!nombreBrigada || !region) {
-      alert("Por favor completa el nombre y región de la brigada");
+    if (!nombreBrigada || !region || !departamento || !municipio) {
+      alert("Por favor completa el nombre, región, departamento y municipio de la brigada");
+      return;
+    }
+
+    if (!getDepartamentosPorRegion().includes(departamento)) {
+      alert("El departamento seleccionado no corresponde a la región");
       return;
     }
 
@@ -144,16 +206,20 @@ const ConformarBrigada = () => {
           nombre: nombreBrigada,
           descripcion,
           region,
+          departamento,
+          municipio,
           asignaciones
         })
       });
 
       if (response.ok) {
-        alert("¡Brigada creada exitosamente! 🌳");
+        alert("¡Brigada creada exitosamente!");
         setAsignaciones([]);
         setNombreBrigada("");
         setDescripcion("");
         setRegion("");
+        setDepartamento("");
+        setMunicipio("");
       } else {
         alert("Error al crear la brigada");
       }
@@ -176,278 +242,332 @@ const ConformarBrigada = () => {
     }
   };
 
+  const getRolColor = (rol) => {
+    switch (rol) {
+      case "jefe":
+        return { icon: Shield, color: "text-emerald-600", bg: "bg-emerald-100", badge: "bg-emerald-600" };
+      case "brigadista":
+        return { icon: Users, color: "text-blue-600", bg: "bg-blue-100", badge: "bg-blue-600" };
+      case "coinvestigador":
+        return { icon: Briefcase, color: "text-cyan-600", bg: "bg-cyan-100", badge: "bg-cyan-600" };
+      case "apoyo":
+        return { icon: UserCheck, color: "text-amber-600", bg: "bg-amber-100", badge: "bg-amber-600" };
+    }
+  };
+
   return (
-    <div className="lista-brigadas">
-      <h1 className="mb-4">Conformar Nueva Brigada 🌳</h1>
-      <p>Aquí podras asignar brigadas a un conglomerado</p>
-
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title mb-3">Información de la Brigada</h5>
-          <div className="row g-3">
-            <div className="col-md-6">
-              <label htmlFor="nombreBrigada" className="form-label">
-                Nombre de la Brigada
-              </label>
-              <input
-                type="text"
-                id="nombreBrigada"
-                className="form-control"
-                placeholder="Ej: Brigada Amazonas Norte"
-                value={nombreBrigada}
-                onChange={(e) => setNombreBrigada(e.target.value)}
-              />
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="region" className="form-label">
-                Región
-              </label>
-              <select
-                id="region"
-                className="form-select"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-              >
-                <option value="">Seleccionar región</option>
-                <option value="Amazonía">Amazonía</option>
-                <option value="Pacífico">Caribe</option>
-                <option value="Andina">Andina</option>
-                <option value="Caribe">Caribe</option>
-                <option value="Orinoquía">Orinoquía</option>
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="descripcion" className="form-label">
-                Descripción
-              </label>
-              <textarea
-                id="descripcion"
-                className="form-control"
-                rows="3"
-                placeholder="Describe el objetivo y alcance de esta brigada..."
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-              ></textarea>
-            </div>
-          </div>
+    <div className="min-h-screen p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-emerald-900 mb-3">Conformar Nueva Brigada</h1>
+          <p className="text-gray-600 text-lg">Crea y asigna roles a los miembros de tu brigada forestal</p>
         </div>
-      </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title mb-3">Resumen de Asignaciones</h5>
-          <div className="d-flex flex-wrap justify-content-around gap-3">
-            <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-2 border rounded">
-                <Shield size={28} className="mb-2 text-success w-100" />
-                <h6 className="mb-2">Jefe de Brigada</h6>
-                <span className="badge bg-success fs-6">{contarRol("jefe")}</span>
-              </div>
-            </div>
-            <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-2 border rounded">
-                <Users size={28} className="mb-2 text-primary w-100" />
-                <h6 className="mb-2">Brigadistas</h6>
-                <span className="badge bg-primary fs-6">{contarRol("brigadista")}</span>
-              </div>
-            </div>
-            <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-2 border rounded">
-                <Briefcase size={28} className="mb-2 text-info w-100" />
-                <h6 className="mb-2">Co-Investigadores</h6>
-                <span className="badge bg-info fs-6">{contarRol("coinvestigador")}</span>
-              </div>
-            </div>
-            <div className="text-center" style={{ minWidth: "150px" }}>
-              <div className="p-2 border rounded">
-                <UserCheck size={28} className="mb-2 text-warning w-100" />
-                <h6 className="mb-2">Apoyo Técnico</h6>
-                <span className="badge bg-warning fs-6">{contarRol("apoyo")}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div className="card p-4 mb-4">
-        <h5 className="mb-3">🔎 Filtrar Empleados</h5>
-        <div className="row g-3">
-            <div className="col-md-4">
-                <input
+        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Información de la Brigada</h2>
+              <div className="space-y-5">
+                <div>
+                  <label htmlFor="nombreBrigada" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Nombre de la Brigada
+                  </label>
+                  <input
                     type="text"
-                    className="form-control"
-                    placeholder="Buscar por nombre..."
-                    value={filtroNombre}
-                    onChange={(e) => setFiltroNombre(e.target.value)}
-                />
-            </div>
-            <div className="col-md-4">
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Buscar por cedula..."
-                    value={filtroCedula}
-                    onChange={(e) => setFiltroCedula(e.target.value)}
-                />
-            </div>
-            <div className="col-md-4">
-                <select
-                className="form-select"
-                value={filtroRegion}
-                onChange={(e) => setFiltroRegion(e.target.value)}
-                >
-                <option value="">Seleccionar región</option>
-                <option value="Amazonía">Amazonía</option>
-                <option value="Pacífico">Caribe</option>
-                <option value="Andina">Andina</option>
-                <option value="Caribe">Caribe</option>
-                <option value="Orinoquía">Orinoquía</option>
-                </select>
-            </div>
-        </div>
-      </div>
+                    id="nombreBrigada"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+                    placeholder="Ej: Brigada Amazonas Norte"
+                    value={nombreBrigada}
+                    onChange={(e) => setNombreBrigada(e.target.value)}
+                  />
+                </div>
 
-      <h5 className="mb-3">Seleccionar Empleados</h5>
-      <div className="row g-3 mb-4">
-        <div className="empleados-container">
-            {empleadosFiltrados.map((empleado) => {
-            const roles = getRolesEmpleado(empleado.id);
-            const tieneAlgunRol = roles.length > 0;
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="region" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Región
+                    </label>
+                    <select
+                      id="region"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+                      value={region}
+                      onChange={(e) => handleRegionChange(e.target.value)}
+                    >
+                      <option value="">Seleccionar región</option>
+                      <option value="Amazonía">Amazonía</option>
+                      <option value="Caribe">Caribe</option>
+                      <option value="Andina">Andina</option>
+                      <option value="Orinoquía">Orinoquía</option>
+                    </select>
+                  </div>
 
-            return (
-                <div key={empleado.id} >
-                <div className={`card h-10 ${tieneAlgunRol ? "border-success" : ""}`}>
-                    <div className="card-body">
-                    <div className="d-flex align-items-start mb-3">
-                        <div
-                        className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3"
-                        style={{ width: "50px", height: "50px", flexShrink: 0 }}
-                        >
-                        {empleado.nombre?.charAt(0) || ''}
-                        </div>
-                        <div>
-                        <h6 className="mb-1">
-                            {empleado.nombre_completo}
-                        </h6>
-                        <small className="text-muted">{empleado.descripcion || 'Sin descripcion'}</small>
-                        <br />
-                        <small className="text-muted">Región: {empleado.region}</small>
-                        <br />
-                            <small className="text-muted">
-                                {empleado.signedUrl ? (
-                                  <a
-                                      href={empleado.signedUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="btn btn-outline-primary btn-sm mt-1"
-                                  >
-                                      📄 Ver hoja de vida
-                                  </a>
-                                ) : (
-                                  <h2 className="text-danger fw-semibold mt-2 d-block">
-                                      📄 No tiene hoja de vida
-                                  </h2>
-                                )}
-                            </small>
+                  <div>
+                    <label htmlFor="departamento" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Departamento
+                    </label>
+                    <select
+                      id="departamento"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition disabled:bg-gray-100"
+                      value={departamento}
+                      onChange={(e) => handleDepartamentoChange(e.target.value)}
+                      disabled={!region}
+                    >
+                      <option value="">Seleccionar departamento</option>
+                      {getDepartamentosPorRegion().map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-                        </div>
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="municipio" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Municipio
+                    </label>
+                    <select
+                      id="municipio"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition disabled:bg-gray-100"
+                      value={municipio}
+                      onChange={(e) => setMunicipio(e.target.value)}
+                      disabled={!departamento}
+                    >
+                      <option value="">Seleccionar municipio</option>
+                      {departamento && departamentosYMunicipios[departamento]?.map((mun) => (
+                        <option key={mun} value={mun}>{mun}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Ubicación Completa
+                    </label>
+                    <div className="px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-2">
+                      <MapPin size={18} className="text-emerald-600 flex-shrink-0" />
+                      <span className="text-sm text-emerald-900">
+                        {municipio && departamento ? `${municipio}, ${departamento}` : "Selecciona región y departamento"}
+                      </span>
                     </div>
+                  </div>
+                </div>
 
-                    {roles.length > 0 && (
-                        <div className="mb-2">
-                        <small className="text-success fw-bold">Roles asignados:</small>
-                        <div className="d-flex flex-wrap gap-1 mt-1">
+                <div>
+                  <label htmlFor="descripcion" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Descripción
+                  </label>
+                  <textarea
+                    id="descripcion"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+                    rows="4"
+                    placeholder="Describe el objetivo, alcance y características especiales de esta brigada..."
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl shadow-lg p-6 text-white sticky top-6">
+              <h3 className="text-white font-bold mb-4">Resumen de Asignaciones</h3>
+              <div className="space-y-2">
+                <div className="bg-emerald-500 bg-opacity-40 rounded-lg p-3 border border-emerald-400 border-opacity-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Shield size={18} className="text-emerald-100" />
+                      <span className="text-xs font-medium text-emerald-50">Jefe de Brigada</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{contarRol("jefe")}</div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-500 bg-opacity-40 rounded-lg p-3 border border-blue-400 border-opacity-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Users size={18} className="text-blue-100" />
+                      <span className="text-xs font-medium text-blue-50">Brigadistas</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{contarRol("brigadista")}</div>
+                  </div>
+                </div>
+
+                <div className="bg-cyan-500 bg-opacity-40 rounded-lg p-3 border border-cyan-400 border-opacity-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Briefcase size={18} className="text-cyan-100" />
+                      <span className="text-xs font-medium text-cyan-50">Co-Investigadores</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{contarRol("coinvestigador")}</div>
+                  </div>
+                </div>
+
+                <div className="bg-amber-500 bg-opacity-40 rounded-lg p-3 border border-amber-400 border-opacity-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <UserCheck size={18} className="text-amber-100" />
+                      <span className="text-xs font-medium text-amber-50">Apoyo Técnico</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{contarRol("apoyo")}</div>
+                  </div>
+                </div>
+
+                <div className="bg-cyan-900 bg-opacity-40 rounded-lg p-3 border border-cyan-400 border-opacity-50 mt-3 pt-3 border-t-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Users size={18} className="text-cyan-100" />
+                      <span className="text-xs font-medium text-emerald-50">Total de miembros</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white">{asignaciones.length}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <FileText size={24} className="text-emerald-600" />
+            Filtrar Empleados
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <input
+              type="text"
+              className="px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+              placeholder="Buscar por nombre..."
+              value={filtroNombre}
+              onChange={(e) => setFiltroNombre(e.target.value)}
+            />
+            <input
+              type="text"
+              className="px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+              placeholder="Buscar por cédula..."
+              value={filtroCedula}
+              onChange={(e) => setFiltroCedula(e.target.value)}
+            />
+            <select
+              className="px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
+              value={filtroRegion}
+              onChange={(e) => setFiltroRegion(e.target.value)}
+            >
+              <option value="">Todas las regiones</option>
+              <option value="Amazonía">Amazonía</option>
+              <option value="Caribe">Caribe</option>
+              <option value="Andina">Andina</option>
+              <option value="Orinoquía">Orinoquía</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Seleccionar Empleados</h2>
+          {empleadosFiltrados.length === 0 ? (
+            <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
+              <p className="text-gray-500 text-lg">No se encontraron empleados con los filtros aplicados</p>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {empleadosFiltrados.map((empleado) => {
+                const roles = getRolesEmpleado(empleado.id);
+                const tieneAlgunRol = roles.length > 0;
+                const urlFotoPerfil = empleado.foto_url;
+                console.log(urlFotoPerfil)
+
+                return (
+                  <div key={empleado.id} className={`bg-white rounded-xl border-2 transition-all ${tieneAlgunRol ? 'border-emerald-400 shadow-md' : 'border-gray-200 shadow-sm hover:shadow-md'}`}>
+                    <div className="p-5">
+                      <div className="flex items-start gap-3 mb-4">
+
+                          {
+                            urlFotoPerfil ?
+                              <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
+                                  <img src={urlFotoPerfil} alt="Foto" className="w-full h-full object-cover rounded-full"/>
+                              </div>
+                            :
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
+                              {empleado.nombre_completo?.charAt(0) || '?'}
+                            </div>
+                          }
+
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 truncate">{empleado.nombre_completo}</h3>
+                          <p className="text-xs text-gray-500 truncate">{empleado.cedula}</p>
+                          <p className="text-xs text-gray-500 mt-1">{empleado.region}</p>
+                        </div>
+                      </div>
+
+                      {roles.length > 0 && (
+                        <div className="mb-4 pb-4 border-b border-gray-200">
+                          <p className="text-xs font-semibold text-emerald-600 mb-2 uppercase tracking-wide">Roles asignados</p>
+                          <div className="flex flex-wrap gap-2">
                             {roles.map((rol) => (
-                            <span
-                                key={rol}
-                                className={`badge ${
-                                rol === "jefe"
-                                    ? "bg-success"
-                                    : rol === "brigadista"
-                                    ? "bg-primary"
-                                    : rol === "coinvestigador"
-                                    ? "bg-info"
-                                    : "bg-warning"
-                                }`}
-                            >
+                              <span key={rol} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white ${getRolColor(rol).badge}`}>
                                 {getRolLabel(rol)}
-                            </span>
+                              </span>
                             ))}
+                          </div>
                         </div>
-                        </div>
-                    )}
+                      )}
 
-                    <div className="d-flex flex-wrap gap-2">
-                        <button
-                        className={`btn btn-sm ${
-                            tieneRol(empleado.id, "jefe")
-                            ? "btn-success"
-                            : "btn-outline-success"
-                        }`}
-                        onClick={() => toggleRol(empleado.id, "jefe")}
-                        title="Jefe de Brigada"
+                      {empleado.signedUrl ? (
+                        <a
+                          href={empleado.signedUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition"
                         >
-                        <Shield size={16} />
-                        </button>
-                        <button
-                        className={`btn btn-sm ${
-                            tieneRol(empleado.id, "brigadista")
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => toggleRol(empleado.id, "brigadista")}
-                        title="Brigadista"
-                        >
-                        <Users size={16} />
-                        </button>
-                        <button
-                        className={`btn btn-sm ${
-                            tieneRol(empleado.id, "coinvestigador")
-                            ? "btn-info"
-                            : "btn-outline-info"
-                        }`}
-                        onClick={() => toggleRol(empleado.id, "coinvestigador")}
-                        title="Co-Investigador"
-                        >
-                        <Briefcase size={16} />
-                        </button>
-                        <button
-                        className={`btn btn-sm ${
-                            tieneRol(empleado.id, "apoyo")
-                            ? "btn-warning"
-                            : "btn-outline-warning"
-                        }`}
-                        onClick={() => toggleRol(empleado.id, "apoyo")}
-                        title="Apoyo Técnico"
-                        >
-                        <UserCheck size={16} />
-                        </button>
+                          Descargar hoja de vida
+                        </a>
+                      ) : (
+                        <div className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-lg">
+                          Sin hoja de vida
+                        </div>
+                      )}
+
+                      <div className="flex gap-2">
+                        {[
+                          { rol: "jefe", icon: Shield },
+                          { rol: "brigadista", icon: Users },
+                          { rol: "coinvestigador", icon: Briefcase },
+                          { rol: "apoyo", icon: UserCheck }
+                        ].map(({ rol, icon: Icon }) => (
+                          <button
+                            key={rol}
+                            className={`flex-1 p-2 rounded-lg font-medium transition ${
+                              tieneRol(empleado.id, rol)
+                                ? `${getRolColor(rol).badge} text-white`
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                            onClick={() => toggleRol(empleado.id, rol)}
+                            title={getRolLabel(rol)}
+                          >
+                            <Icon size={16} className="mx-auto" />
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    </div>
-                </div>
-                </div>
-            );
-            })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {empleadosFiltrados.length === 0 && (
-          <div className="col-12">
-            <p className="text-muted text-center">No se encontraron empleados 😅</p>
-          </div>
-        )}
-      </div>
-
-      <div className="d-flex justify-content-end gap-2">
-        <button className="btn btn-secondary">Cancelar</button>
-        <button
-          style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
-          className="btn btn-success btn-lg"
-          onClick={handleCrearBrigada}
-          disabled={asignaciones.length === 0}
-        >
-          Crear Brigada
-        </button>
+        <div className="flex justify-end gap-4 mt-8">
+          <button className="px-6 py-3 rounded-lg border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition">
+            Cancelar
+          </button>
+          <button
+            className="px-8 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold hover:shadow-lg hover:shadow-emerald-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleCrearBrigada}
+            disabled={asignaciones.length === 0}
+          >
+            Crear Brigada
+          </button>
+        </div>
       </div>
     </div>
   );
