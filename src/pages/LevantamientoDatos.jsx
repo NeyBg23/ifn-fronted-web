@@ -258,7 +258,27 @@ const obtenerColorPorCategoria = (categoria) => {
         const data = await response.json()
         if (data.conglomerado) {
           setConglomerado(data.conglomerado)
-          console.log(' Conglomerado cargado:', data.conglomerado)
+          console.log('✅ Conglomerado cargado:', data.conglomerado)
+
+          // ✅ NUEVO: Traer departamento y municipio del backend
+          try {
+            const backendResponse = await fetch(
+              `${API_LEVANTAMIENTO}/api/levantamiento/conglomerado/${data.conglomerado.id}`
+            )
+            
+            if (backendResponse.ok) {
+              const backendData = await backendResponse.json()
+              // Actualizar con datos del backend
+              setConglomerado(prev => ({
+                ...prev,
+                departamento: backendData.data?.departamento,
+                municipio: backendData.data?.municipio
+              }))
+              console.log('✅ Departamento y municipio actualizados')
+            }
+          } catch (err) {
+            console.log('Info: No se pudo traer departamento/municipio')
+          }
 
           // Cargar subparcelas
           cargarSubparcelas(data.conglomerado.id)
@@ -275,6 +295,7 @@ const obtenerColorPorCategoria = (categoria) => {
 
     cargarConglomeradoBrigadista()
   }, [])
+
 
   // ========== CARGAR SUBPARCELAS ==========
   const cargarSubparcelas = async (conglomeradoId) => {
