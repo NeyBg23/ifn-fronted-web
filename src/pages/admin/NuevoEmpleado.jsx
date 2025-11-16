@@ -534,7 +534,6 @@ const NuevoEmpleado = () => {
 
               if (responseBrigada.ok) {
                 alert("El usuario ha sido creado con éxito.");
-                // Aquí podrías redirigir o limpiar el formulario
               } else {
 
                 try {
