@@ -321,7 +321,7 @@ const obtenerColorPorCategoria = (categoria) => {
 
   const cargarArboles = async (subparcelaId) => {
     try {
-      console.log('📥 Iniciando cargarArboles para:', subparcelaId)
+      console.log(' Iniciando cargarArboles para:', subparcelaId)
       setCargandoArboles(true)
       
       const response = await fetch(
@@ -335,7 +335,7 @@ const obtenerColorPorCategoria = (categoria) => {
         console.log('✅ Árboles cargados:', data.data)
         
         // ✅ LLAMAR resumen
-        console.log('📊 Llamando cargarResumenSubparcela para:', subparcelaId)
+        console.log(' Llamando cargarResumenSubparcela para:', subparcelaId)
         await cargarResumenSubparcela(subparcelaId)
       }
       setCargandoArboles(false)
