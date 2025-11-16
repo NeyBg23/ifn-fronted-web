@@ -54,12 +54,12 @@ export default function LevantamientoDatos() {
 
       let data;
 
-      // ✅ Verificar cache
+      //  Verificar cache
       if (cacheArboles[subparcelaSeleccionada]) {
         data = cacheArboles[subparcelaSeleccionada];
         console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
       } else {
-        // ✅ CAMBIO PRINCIPAL: Usar GET en lugar de POST
+        //  CAMBIO PRINCIPAL: Usar GET en lugar de POST
         // Primero intentar obtener los árboles ya guardados
         const responseGet = await fetch(
           `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
@@ -72,7 +72,7 @@ export default function LevantamientoDatos() {
           arbolesExistentes = dataGet.data || [];
         }
 
-        // ✅ Si no hay árboles, ENTONCES detectar nuevos (una sola vez)
+        //  Si no hay árboles, ENTONCES detectar nuevos (una sola vez)
         if (arbolesExistentes.length === 0) {
           console.log('🔍 No hay árboles. Detectando nuevos...');
           
@@ -110,7 +110,7 @@ export default function LevantamientoDatos() {
           };
         }
 
-        // ✅ Guardar en cache
+        //  Guardar en cache
         setCacheArboles(prev => ({
           ...prev,
           [subparcelaSeleccionada]: data
@@ -201,7 +201,7 @@ export default function LevantamientoDatos() {
           .addTo(mapa);
       });
 
-      alert(`✅ ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
+      alert(` ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
     } catch (error) {
       console.error('Error:', error);
       alert('Error mostrando mapa: ' + error.message);
@@ -258,7 +258,7 @@ const obtenerColorPorCategoria = (categoria) => {
         const data = await response.json()
         if (data.conglomerado) {
           setConglomerado(data.conglomerado)
-          console.log('✅ Conglomerado cargado:', data.conglomerado)
+          console.log(' Conglomerado cargado:', data.conglomerado)
 
           // Cargar subparcelas
           cargarSubparcelas(data.conglomerado.id)
@@ -438,13 +438,21 @@ const obtenerColorPorCategoria = (categoria) => {
     )
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('❌ Error del servidor (texto):', errorText)
-      const result = await response.json()
-      alert(`❌ Error: ${result.error || 'Error desconocido'}`)
+      try {
+        const result = await response.json()
+        console.error('❌ Error del servidor:', result)
+        alert(`❌ Error: ${result.error || 'Error desconocido'}`)
+      } catch (e) {
+        console.error('❌ Error sin JSON')
+        alert('❌ Error registrando árbol')
+      }
       setEnviando(false)
       return
     }
+
+    const result = await response.json()
+
+
 
 
     console.log('✅ Árbol registrado:', result.data)
