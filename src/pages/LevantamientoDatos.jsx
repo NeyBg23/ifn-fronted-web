@@ -378,12 +378,14 @@ const obtenerColorPorCategoria = (categoria) => {
 
       if (response.ok) {
         const data = await response.json()
+        console.log('✅ Resumen subparcela:', data.resumen)
         setResumen(data.resumen)
       }
     } catch (err) {
       console.error('Error cargando resumen subparcela:', err)
     }
   }
+
 
   // ========== CARGAR VALIDACIÓN ==========
   const cargarValidacion = async (conglomeradoId) => {
