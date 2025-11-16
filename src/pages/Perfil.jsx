@@ -33,7 +33,6 @@ const Perfil = () => {
     });
   }, []);
 
-
   useEffect(() => {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
@@ -41,15 +40,19 @@ const Perfil = () => {
       if (!token) return setLoading(false);
 
       try {
-        const res = await fetch(`${API_URL}/api/perfil`, {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await fetch(`https://fast-api-brigada.vercel.app/usuarios/${usuarioLocal.correo}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}` 
+          },
         });
 
         if (res.ok) {
           const data = await res.json();
           
           // Ajustar esto a cómo tu backend devuelve los datos:
-          const perfilData = data.data || data.usuario || data; 
+          const perfilData = data.user.data?.[0] || {};
           
           setUsuarioLocal(perfilData);
           // Inicializar los campos editables con los datos obtenidos
@@ -77,7 +80,9 @@ const Perfil = () => {
     setMensaje("");
 
     try {
-      const res = await fetch(`${API_URL}/api/perfil`, {
+      const correo = usuarioLocal.correo
+
+      const res = await fetch(`https://fast-api-brigada.vercel.app/usuario-actualizar`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -86,9 +91,12 @@ const Perfil = () => {
         body: JSON.stringify({
           descripcion,
           region,
-          telefono
+          telefono,
+          correo
         })
       });
+
+      console.log(res)
 
       if (res.ok) {
         setMensaje("Perfil actualizado exitosamente");
