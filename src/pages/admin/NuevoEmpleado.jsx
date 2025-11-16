@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useDepartamentos } from '@/hooks/useDepartamentos';  // ✅ NUEVO - Import Hook
-import FileUpload from '@/components/FileUpload';
-import supabase from '@/lib/supabaseClient';
+import { useState } from 'react';
+
 import {
-  User, Settings, CheckCircle, LockKeyhole, FileText, Upload, FileUp, X,
+  User, Settings, CheckCircle, CreditCard, LockKeyhole, FileText, Upload, FileUp, X,
   PhoneCall,
 } from 'lucide-react';
 
-// ============================================================================
-// COMPONENTE: StepIndicator
-// ============================================================================
+// --- COMPONENTE StepIndicator ---
+// Componente para el indicador de paso (barra superior)
 const StepIndicator = ({ step, currentStep, totalSteps }) => {
   const isActive = currentStep === step.id;
   const isCompleted = currentStep > step.id;
@@ -47,10 +44,9 @@ const StepIndicator = ({ step, currentStep, totalSteps }) => {
   );
 };
 
-// ============================================================================
-// COMPONENTE: FileUpload
-// ============================================================================
-const FileUploadComponent = ({ 
+// --- COMPONENTE FileUpload ---
+// Componente reutilizable para subir archivos (Foto de Perfil y Hoja de Vida)
+const FileUpload = ({ 
   file, 
   handleFileChange, 
   handleRemoveFile, 
@@ -104,9 +100,8 @@ const FileUploadComponent = ({
   );
 };
 
-// ============================================================================
-// COMPONENTE: StepContent
-// ============================================================================
+// --- COMPONENTE StepContent ---
+// Componente para el contenido de cada paso (formulario)
 const StepContent = ({ 
   stepId, 
   nuevoEmpleado, 
@@ -118,16 +113,8 @@ const StepContent = ({
   handleFileChangeFotoPerfil,
   handleRemoveFileFotoPerfil,
   mostrarErrorContraseña,
-  mostrarErrorCamposVacios,
-  // ✅ NUEVO - Props para departamentos y municipios
-  departamentos,
-  municipiosFiltrados,
-  loading,
-  error
+  mostrarErrorCamposVacios
 }) => {
-  // ============================================================================
-  // PASO 1: DATOS PERSONALES (CON DEPARTAMENTOS Y MUNICIPIOS DINÁMICOS)
-  // ============================================================================
   if (stepId === 1) {
     return (
       <div className="space-y-6">
@@ -136,154 +123,74 @@ const StepContent = ({
         </h2>
 
         {mostrarErrorCamposVacios && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>Debe llenar todos los campos obligatorios</span>
-          </div>
-        )}
-
-        {/* ✅ NUEVO - Mostrar estado de carga */}
-        {loading && (
-          <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-xl">
-            <span>⏳ Cargando departamentos y municipios...</span>
-          </div>
-        )}
-
-        {/* ✅ NUEVO - Mostrar errores */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>⚠️ {error}</span>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+            <span className="block sm:inline">Debe llenar todos los campos obligatorios</span>
           </div>
         )}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Foto de Perfil */}
-          <FileUploadComponent
-            id="fotoPerfilInput"
-            label="Foto de Perfil (JPG, PNG)"
-            accept=".jpg,.jpeg,.png"
-            file={fotoPerfil}
-            handleFileChange={handleFileChangeFotoPerfil}
-            handleRemoveFile={handleRemoveFileFotoPerfil}
-            maxSizeMB={2}
-          />
+            {/* Foto de Perfil */}
+            <FileUpload
+                id="fotoPerfilInput"
+                label="Foto de Perfil (JPG, PNG)"
+                accept=".jpg,.jpeg,.png"
+                file={fotoPerfil}
+                handleFileChange={handleFileChangeFotoPerfil}
+                handleRemoveFile={handleRemoveFileFotoPerfil}
+            />
 
-          <div className='space-y-6'>
-            {/* Nombre completo */}
-            <div className="flex flex-col">
-              <label htmlFor="nombre_completo" className="mb-2 font-semibold text-slate-700 flex items-center">
-                <User size={20} className="mr-2 text-success" /> Nombre completo <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="nombre_completo"
-                name="nombre_completo"
-                className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                value={nuevoEmpleado.nombre_completo || ''}
-                onChange={handleChange}
-                placeholder="Ej: Juan Pérez"
-                required
-              />
+            <div className='space-y-6'>
+                {/* Nombre completo */}
+                <div className="flex flex-col">
+                    <label htmlFor="nombre_completo" className="mb-2 font-semibold text-slate-700 flex items-center">
+                        <User size={20} className="mr-2 text-success" /> Nombre completo
+                    </label>
+                    <input
+                        type="text"
+                        id="nombre_completo"
+                        name="nombre_completo"
+                        className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                        value={nuevoEmpleado.nombre_completo}
+                        onChange={handleChange}
+                        placeholder="Ej: Juan Pérez"
+                    />
+                </div>
+                {/* Cédula */}
+                <div className="flex flex-col">
+                    <label htmlFor="cedula" className="mb-2 font-semibold text-slate-700 flex items-center">
+                        <CreditCard size={20} className="mr-2 text-success" /> Cédula
+                    </label>
+                    <input
+                        type="text"
+                        id="cedula"
+                        name="cedula"
+                        className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                        value={nuevoEmpleado.cedula}
+                        onChange={handleChange}
+                        placeholder="Ej: 000-0000000-0"
+                    />
+                </div>
+                {/* Telefono */}
+                <div className="flex flex-col">
+                    <label htmlFor="telefono" className="mb-2 font-semibold text-slate-700 flex items-center">
+                        <PhoneCall size={20} className="mr-2 text-success" /> Teléfono
+                    </label>
+                    <input
+                        type="number"
+                        id="telefono"
+                        name="telefono"
+                        className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                        value={nuevoEmpleado.telefono}
+                        onChange={handleChange}
+                        placeholder="Ej: 3112685855"
+                    />
+                </div>
             </div>
-
-            {/* Cédula */}
-            <div className="flex flex-col">
-              <label htmlFor="cedula" className="mb-2 font-semibold text-slate-700 flex items-center">
-                <FileText size={20} className="mr-2 text-success" /> Cédula <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="cedula"
-                name="cedula"
-                className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                value={nuevoEmpleado.cedula || ''}
-                onChange={handleChange}
-                placeholder="Ej: 1234567890"
-                required
-              />
-            </div>
-
-            {/* Teléfono */}
-            <div className="flex flex-col">
-              <label htmlFor="telefono" className="mb-2 font-semibold text-slate-700 flex items-center">
-                <PhoneCall size={20} className="mr-2 text-success" /> Teléfono <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                value={nuevoEmpleado.telefono || ''}
-                onChange={handleChange}
-                placeholder="Ej: 3112685855"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* ✅ NUEVO - Segunda fila de campos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Departamento DINÁMICO */}
-          <div className="flex flex-col">
-            <label htmlFor="departamento_id" className="mb-2 font-semibold text-slate-700">
-              🏛️ Departamento <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="departamento_id"
-              name="departamento_id"
-              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition appearance-none"
-              value={nuevoEmpleado.departamento_id || ''}
-              onChange={handleChange}
-              disabled={loading || departamentos.length === 0}
-              required
-            >
-              <option value="">
-                {loading ? "⏳ Cargando..." : departamentos.length === 0 ? "❌ Sin datos" : "Selecciona Departamento"}
-              </option>
-              {departamentos.map(depto => (
-                <option key={depto.id} value={depto.id}>
-                  {depto.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Municipio DINÁMICO - Filtrado por Departamento */}
-          <div className="flex flex-col">
-            <label htmlFor="municipio_id" className="mb-2 font-semibold text-slate-700">
-              🏙️ Municipio <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="municipio_id"
-              name="municipio_id"
-              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition appearance-none"
-              value={nuevoEmpleado.municipio_id || ''}
-              onChange={handleChange}
-              disabled={!nuevoEmpleado.departamento_id || municipiosFiltrados.length === 0}
-              required
-            >
-              <option value="">
-                {!nuevoEmpleado.departamento_id 
-                  ? "Selecciona departamento primero"
-                  : municipiosFiltrados.length === 0
-                  ? "No hay municipios"
-                  : "Selecciona Municipio"}
-              </option>
-              {municipiosFiltrados.map(muni => (
-                <option key={muni.id} value={muni.id}>
-                  {muni.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
       </div>
     );
   }
 
-  // ============================================================================
-  // PASO 2: SEGURIDAD Y ACCESO
-  // ============================================================================
   if (stepId === 2) {
     return (
       <div className="space-y-6">
@@ -291,153 +198,116 @@ const StepContent = ({
           <LockKeyhole className="h-6 w-6 text-success" /> Seguridad y Acceso
         </h2>
 
-        {mostrarErrorContraseña && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>❌ Las contraseñas no coinciden.</span>
-          </div>
-        )}
-
-        {mostrarErrorCamposVacios && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>Debe llenar todos los campos.</span>
-          </div>
-        )}
+        {
+          mostrarErrorContraseña ? (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+                  <span className="block sm:inline">Las contraseñas no coinciden.</span>
+              </div>
+          ) : mostrarErrorCamposVacios ? (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+                  <span className="block sm:inline">Debe llenar todos los campos (Correo y Contraseñas).</span>
+              </div>
+          ) : null
+        }
 
         {/* Correo */}
         <div className="flex flex-col">
           <label htmlFor="correo" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-success" /> Correo <span className="text-red-500">*</span>
+            <LockKeyhole size={20} className="mr-2 text-success" /> Correo
           </label>
           <input
             type="email"
             id="correo"
             name="correo"
-            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-            value={nuevoEmpleado.correo || ''}
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            value={nuevoEmpleado.correo}
             onChange={handleChange}
-            placeholder="correo@example.com"
-            required
           />
         </div>
 
         {/* Contraseña */}
         <div className="flex flex-col">
           <label htmlFor="contraseña" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-success" /> Contraseña <span className="text-red-500">*</span>
+            <LockKeyhole size={20} className="mr-2 text-success" /> Contraseña
           </label>
           <input
             type="password"
             id="contraseña"
             name="contraseña"
-            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-            value={nuevoEmpleado.contraseña || ''}
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            value={nuevoEmpleado.contraseña}
             onChange={handleChange}
-            placeholder="Mínimo 8 caracteres"
-            required
           />
         </div>
-
         {/* Confirmar Contraseña */}
         <div className="flex flex-col">
           <label htmlFor="confirmarContraseña" className="mb-2 font-semibold text-slate-700 flex items-center">
-            <LockKeyhole size={20} className="mr-2 text-success" /> Confirmar Contraseña <span className="text-red-500">*</span>
+            <LockKeyhole size={20} className="mr-2 text-success" /> Confirmar Contraseña
           </label>
           <input
             type="password"
             id="confirmarContraseña"
             name="confirmarContraseña"
-            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-            value={nuevoEmpleado.confirmarContraseña || ''}
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            value={nuevoEmpleado.confirmarContraseña}
             onChange={handleChange}
-            placeholder="Repite tu contraseña"
-            required
           />
         </div>
-
-        {/* Validación de contraseñas coinciden */}
-        {nuevoEmpleado.contraseña && nuevoEmpleado.confirmarContraseña && 
-         nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>❌ Las contraseñas no coinciden</span>
-          </div>
-        )}
-
-        {nuevoEmpleado.contraseña && nuevoEmpleado.confirmarContraseña && 
-         nuevoEmpleado.contraseña === nuevoEmpleado.confirmarContraseña && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl">
-            <span>✅ Las contraseñas coinciden</span>
-          </div>
-        )}
       </div>
     );
   }
 
-  // ============================================================================
-  // PASO 3: PUESTO Y DOCUMENTACIÓN
-  // ============================================================================
   if (stepId === 3) {
     return (
       <div className="space-y-6">
+
         <h2 className="text-2xl font-semibold text-slate-800 border-b pb-2 mb-4 flex items-center gap-2">
           <Settings className="h-6 w-6 text-success" /> Puesto y Documentación
         </h2>
 
         {mostrarErrorCamposVacios && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span>Debe llenar todos los campos obligatorios del puesto.</span>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+            <span className="block sm:inline">Debe llenar todos los campos obligatorios del puesto (Cargo, Fecha, Rol).</span>
           </div>
         )}
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Cargo */}
           <div className="flex flex-col">
-            <label htmlFor="cargo" className="mb-2 font-semibold text-slate-700">
-              💼 Cargo <span className="text-red-500">*</span>
-            </label>
+            <label htmlFor="cargo" className="mb-2 font-semibold text-slate-700">Cargo</label>
             <input
               type="text"
               id="cargo"
               name="cargo"
-              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-              value={nuevoEmpleado.cargo || ''}
+              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+              value={nuevoEmpleado.cargo}
               onChange={handleChange}
-              placeholder="Ej: Brigadista"
-              required
             />
           </div>
-
           {/* Fecha Ingreso */}
           <div className="flex flex-col">
-            <label htmlFor="fecha_ingreso" className="mb-2 font-semibold text-slate-700">
-              📅 Fecha Ingreso <span className="text-red-500">*</span>
-            </label>
+            <label htmlFor="fecha_ingreso" className="mb-2 font-semibold text-slate-700">Fecha Ingreso</label>
             <input
               type="date"
               id="fecha_ingreso"
               name="fecha_ingreso"
-              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-              value={nuevoEmpleado.fecha_ingreso || ''}
+              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+              value={nuevoEmpleado.fecha_ingreso}
               onChange={handleChange}
-              required
             />
           </div>
-
           {/* Rol */}
           <div className="flex flex-col">
-            <label htmlFor="rol" className="mb-2 font-semibold text-slate-700">
-              🎭 Rol <span className="text-red-500">*</span>
-            </label>
+            <label htmlFor="rol" className="mb-2 font-semibold text-slate-700">Rol</label>
             <select
               id="rol"
               name="rol"
-              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition appearance-none"
-              value={nuevoEmpleado.rol || 'brigadista'}
+              className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none"
+              value={nuevoEmpleado.rol}
               onChange={handleChange}
-              required
             >
-              <option value="brigadista">👤 Brigadista</option>
-              <option value="coordinador">👨‍💼 Coordinador</option>
-              <option value="admin">🔐 Administrador</option>
+              <option value="brigadista">Brigadista</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
         </div>
@@ -450,106 +320,58 @@ const StepContent = ({
           <textarea
             id="descripcion"
             name="descripcion"
-            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+            className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
             rows="3"
-            value={nuevoEmpleado.descripcion || ''}
+            value={nuevoEmpleado.descripcion}
             onChange={handleChange}
-            placeholder="Describe el rol, responsabilidades o notas adicionales"
           />
         </div>
 
-        {/* Hoja de Vida */}
-        <FileUploadComponent
-          id="hojaVidaInput"
-          label="📎 Hoja de vida (PDF, DOCX)"
-          accept=".pdf,.doc,.docx"
-          file={hojaVida}
-          handleFileChange={handleFileChange}
-          handleRemoveFile={handleRemoveFile}
-          maxSizeMB={5}
+        {/* Hoja de Vida (File Upload) */}
+        <FileUpload
+            id="hojaVidaInput"
+            label="Hoja de vida (PDF, DOCX)"
+            accept=".pdf,.doc,.docx"
+            file={hojaVida}
+            handleFileChange={handleFileChange}
+            handleRemoveFile={handleRemoveFile}
+            maxSizeMB={5}
         />
       </div>
     );
   }
-
   return null;
 };
 
-// ============================================================================
-// COMPONENTE PRINCIPAL: NuevoEmpleado
-// ============================================================================
-export default function NuevoEmpleado() {
+// --- COMPONENTE PRINCIPAL: NuevoEmpleado ---
+
+const NuevoEmpleado = () => {
   const totalSteps = 3;
   const [currentStep, setCurrentStep] = useState(1);
   const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false);
   const [mostrarErrorCamposVacios, setMostrarErrorCamposVacios] = useState(false);
   
-  // ✅ NUEVO - Hook para obtener departamentos y municipios
-  const {
-    departamentos,
-    municipios,
-    loading,
-    error,
-    getMunicipiosPorDepartamento,
-    getNombreDepartamento,
-    getNombreMunicipio,
-  } = useDepartamentos();
-
-  // Estado del formulario
+  // Estado para todos los campos del formulario
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: '',
-    cedula: '',
-    telefono: '',
-    region: '',
-    departamento_id: '',      // ✅ NUEVO
-    municipio_id: '',         // ✅ NUEVO
     correo: '',
+    telefono: '',
+    cedula: '',
     contraseña: '',
     confirmarContraseña: '',
     cargo: '',
     fecha_ingreso: '',
-    rol: 'brigadista',
+    rol: 'brigadista', // Valor por defecto
     descripcion: '',
   });
 
-  // Estados para archivos
+  // Estado separado para el archivo de la hoja de vida
   const [hojaVida, setHojaVida] = useState(null);
+  // Estado separado para el archivo de la foto de perfil
   const [fotoPerfil, setFotoPerfil] = useState(null);
 
-  // ✅ NUEVO - Estado para municipios filtrados
-  const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
-  const [tokenGuardado, setTokenGuardado] = useState(null);
-  const [cargando, setCargando] = useState(false);
 
-  // ✅ NUEVO - Obtener token al montar
-  useEffect(() => {
-    const obtenerToken = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session?.access_token) {
-        setTokenGuardado(data.session.access_token);
-      }
-    };
-    obtenerToken();
-  }, []);
-
-  // ✅ NUEVO - Actualizar municipios cuando cambia departamento
-  useEffect(() => {
-    if (nuevoEmpleado.departamento_id) {
-      const munis = getMunicipiosPorDepartamento(nuevoEmpleado.departamento_id);
-      setMunicipiosFiltrados(munis);
-      console.log(`🔄 Municipios actualizados: ${munis.length}`);
-    } else {
-      setMunicipiosFiltrados([]);
-    }
-    
-    // Resetear municipio
-    setNuevoEmpleado(prev => ({
-      ...prev,
-      municipio_id: ''
-    }));
-  }, [nuevoEmpleado.departamento_id, municipios]);
-
-  // Manejador de cambios
+  // Manejador de cambios de inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNuevoEmpleado((prev) => ({
@@ -558,62 +380,59 @@ export default function NuevoEmpleado() {
     }));
   };
 
-  // Manejador de archivos (Hoja de Vida)
+  // Manejador de cambios de archivo (HOJA DE VIDA)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size <= 5 * 1024 * 1024) {
+    if (file && file.size <= 5 * 1024 * 1024) { // Máximo 5MB
       setHojaVida(file);
     } else {
-      console.error("El archivo excede 5MB");
+      console.error("El archivo excede el tamaño máximo permitido de 5MB.");
       setHojaVida(null);
     }
   };
 
-  // Manejador de archivos (Foto de Perfil)
+  // Manejador de cambios de archivo (FOTO DE PERFIL)
   const handleFileChangeFotoPerfil = (e) => {
     const file = e.target.files[0];
-    if (file && file.size <= 2 * 1024 * 1024) {
+    if (file && file.size <= 5 * 1024 * 1024) { // Máximo 5MB
       setFotoPerfil(file);
     } else {
-      console.error("El archivo excede 2MB");
+      console.error("El archivo excede el tamaño máximo permitido de 5MB.");
       setFotoPerfil(null);
     }
   };
 
-  // Remover archivo (Foto)
+  // Remover archivo (FOTO DE PERFIL)
   const handleRemoveFileFotoPerfil = () => {
     setFotoPerfil(null);
-    const input = document.getElementById('fotoPerfilInput');
-    if (input) input.value = '';
+    document.getElementById('fotoPerfilInput').value = ''; 
   };
 
-  // Remover archivo (Hoja de Vida)
+  // 5. Remover archivo (HOJA DE VIDA)
   const handleRemoveFile = () => {
     setHojaVida(null);
-    const input = document.getElementById('hojaVidaInput');
-    if (input) input.value = '';
+    document.getElementById('hojaVidaInput').value = ''; 
   };
 
-  // Validación y navegación
+  // Lógica de navegación "Siguiente" con validación
   const nextStep = () => {
     let isValid = true;
     setMostrarErrorContraseña(false);
     setMostrarErrorCamposVacios(false);
 
     if (currentStep === 1) {
-      // ✅ ACTUALIZADO - Validar con departamento_id y municipio_id
-      if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || 
-          !nuevoEmpleado.telefono || !nuevoEmpleado.departamento_id || 
-          !nuevoEmpleado.municipio_id) {
+      // Validar campos del Paso 1
+      if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || !nuevoEmpleado.telefono) {
         setMostrarErrorCamposVacios(true);
         isValid = false;
       }
     }
 
     if (currentStep === 2) {
+      // Validar campos del Paso 2
       if (!nuevoEmpleado.correo || !nuevoEmpleado.contraseña || !nuevoEmpleado.confirmarContraseña) {
-        setMostrarErrorCamposVacios(true);
-        isValid = false;
+          setMostrarErrorCamposVacios(true);
+          isValid = false;
       } else if (nuevoEmpleado.contraseña !== nuevoEmpleado.confirmarContraseña) {
         setMostrarErrorContraseña(true);
         isValid = false;
@@ -621,43 +440,46 @@ export default function NuevoEmpleado() {
     }
 
     if (currentStep === 3) {
+      // Validar campos del Paso 3
       if (!nuevoEmpleado.cargo || !nuevoEmpleado.fecha_ingreso || !nuevoEmpleado.rol) {
         setMostrarErrorCamposVacios(true);
         isValid = false;
       }
 
+      // Si es válido y es el último paso -> enviar formulario
       if (isValid) {
+        // Dispara el evento onSubmit del formulario. Esto llamará a handleCrearEmpleado.
         document.getElementById("formNuevoEmpleado").requestSubmit();
-        return;
+        return; // Salir para evitar el avance normal
       }
     }
 
+    // Si es válido y no es el último paso, avanza
     if (isValid && currentStep < totalSteps) {
       setCurrentStep((prev) => prev + 1);
     }
   };
 
-  // Anterior
+
+  // Lógica de navegación "Anterior"
   const prevStep = () => {
     setMostrarErrorCamposVacios(false);
     setMostrarErrorContraseña(false);
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // ✅ ACTUALIZADO - Crear empleado
+  // Manejador de envío final del formulario
+  // ESTA FUNCIÓN SOLO DEBE EJECUTARSE CUANDO nextStep() LA DISPARA EN EL PASO FINAL.
   const handleCrearEmpleado = async (e) => {
     e.preventDefault();
 
     if (currentStep === totalSteps) {
+      const tokenGuardado = localStorage.getItem('token');
+      const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
+
+      // 1. Registro en el servicio de Auth (Autenticación)
+
       try {
-        setCargando(true);
-        const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
-
-        // Obtener nombres
-        const nombreDepto = getNombreDepartamento(nuevoEmpleado.departamento_id);
-        const nombreMunicipio = getNombreMunicipio(nuevoEmpleado.municipio_id);
-
-        // 1️⃣ REGISTRO EN AUTH SERVICE
         const responseAuth = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
           method: "POST",
           headers: {
@@ -667,96 +489,91 @@ export default function NuevoEmpleado() {
           body: JSON.stringify({
             correo: nuevoEmpleado.correo,
             contraseña: nuevoEmpleado.contraseña,
-            // ✅ NUEVO - Enviar metadata con departamento y municipio
-            user_metadata: {
-              nombre_completo: nuevoEmpleado.nombre_completo,
-              cedula: nuevoEmpleado.cedula,
-              telefono: nuevoEmpleado.telefono,
-              departamento_id: nuevoEmpleado.departamento_id,
-              departamento: nombreDepto,
-              municipio_id: nuevoEmpleado.municipio_id,
-              municipio: nombreMunicipio,
-              cargo: nuevoEmpleado.cargo,
-              rol: nuevoEmpleado.rol,
-            },
-            app_metadata: {
-              rol_ifn: nuevoEmpleado.rol,
-            }
           }),
         });
 
         const dataAuth = await responseAuth.json();
 
         if (responseAuth.ok) {
-          console.log("✅ Empleado Registrado en Auth");
-
-          // 2️⃣ REGISTRO EN BRIGADA SERVICE
-          const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL;
-          const formData = new FormData();
-          
-          formData.append("correo", nuevoEmpleado.correo);
-          formData.append("cedula", nuevoEmpleado.cedula);
-          formData.append("nombre_completo", nuevoEmpleado.nombre_completo);
-          formData.append("descripcion", nuevoEmpleado.descripcion);
-          formData.append("rol", nuevoEmpleado.rol);
-          formData.append("telefono", nuevoEmpleado.telefono);
-          formData.append("fecha_ingreso", nuevoEmpleado.fecha_ingreso);
-          formData.append("cargo", nuevoEmpleado.cargo);
-          // ✅ NUEVO - Agregar departamento y municipio
-          formData.append("departamento_id", nuevoEmpleado.departamento_id);
-          formData.append("departamento", nombreDepto);
-          formData.append("municipio_id", nuevoEmpleado.municipio_id);
-          formData.append("municipio", nombreMunicipio);
-          
-          if (hojaVida) formData.append("hoja_de_vida", hojaVida);
-          if (fotoPerfil) formData.append("foto_perfil", fotoPerfil);
-
-          const responseBrigada = await fetch(`${BRIGADA_SERVICE_URL}/registrar`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${tokenGuardado}`,
-            },
-            body: formData,
-          });
-
-          const dataBrigada = await responseBrigada.json();
-
-          if (responseBrigada.ok) {
-            alert("✅ El usuario ha sido creado con éxito");
+            console.log("Empleado Registrado en Auth.");
             
-            // Reset formulario
-            setNuevoEmpleado({
-              nombre_completo: '',
-              cedula: '',
-              telefono: '',
-              region: '',
-              departamento_id: '',
-              municipio_id: '',
-              correo: '',
-              contraseña: '',
-              confirmarContraseña: '',
-              cargo: '',
-              fecha_ingreso: '',
-              rol: 'brigadista',
-              descripcion: '',
-            });
-            setHojaVida(null);
-            setFotoPerfil(null);
-            setCurrentStep(1);
-          } else {
-            alert(`❌ Error en Brigada: ${dataBrigada.message || 'Error desconocido'}`);
-          }
+            //Registro en el servicio de Brigada (Datos completos y archivos)
+            const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL;
+            
+            // Para enviar archivos (File objects) junto con datos 
+            // de formulario, debes usar FormData y NO 'application/json'.
+            const formData = new FormData();
+            formData.append("correo", nuevoEmpleado.correo);
+            formData.append("cedula", nuevoEmpleado.cedula);
+            formData.append("nombre_completo", nuevoEmpleado.nombre_completo);
+            formData.append("descripcion", nuevoEmpleado.descripcion);
+            formData.append("rol", nuevoEmpleado.rol);
+            formData.append("telefono", nuevoEmpleado.telefono);
+            formData.append("fecha_ingreso", nuevoEmpleado.fecha_ingreso);
+            if (hojaVida) {
+                formData.append("hoja_de_vida", hojaVida);
+            }
+            if (fotoPerfil) {
+                formData.append("foto_perfil", fotoPerfil);
+            }
+            
+
+            try {
+              // ${BRIGADA_SERVICE_URL}
+              
+              const responseBrigada = await fetch(`https://fast-api-brigada.vercel.app/registrar`, {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${tokenGuardado}`,
+                  // NO USAR Content-Type: "application/json" cuando se usa FormData
+                },
+                body: formData, // Enviar FormData
+              });
+
+              const dataBrigada = await responseBrigada.json();
+
+              if (responseBrigada.ok) {
+                alert("El usuario ha sido creado con éxito.");
+              } else {
+
+                try {
+
+                  const responseAuthEliminar = await fetch(`${AUTH_SERVICE_URL}/eliminar-usuario`, {
+                    method: "POST",
+                    headers: {
+                      "Authorization": `Bearer ${tokenGuardado}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      uuid: dataAuth.user.id,
+                    }),
+                  });
+
+                  if (responseAuthEliminar.ok) console.log("Elimine automaticamente al usuario del Auth porque no pude crear el usuario en Brigadas.")
+                  else console.log("No pude eliminar al usuario del Auth tras ocurrio el error en brigadas.")
+
+                } catch (err) {
+                  console.error("❌ Error al registrar empleado en brigadas:", err);
+                }
+
+                console.error("❌ Error al registrar empleado en brigadas:", dataBrigada);
+                alert(`Error al registrar en Brigadas: ${dataBrigada.message || 'Error desconocido'}`);
+              }
+            } catch (err) {
+              console.error("❌ Error en la conexión/petición Brigadas:", err);
+              alert("Error de conexión con el servicio de Brigadas.");
+            }
         } else {
-          alert(`❌ Error en Auth: ${dataAuth.message || 'Error desconocido'}`);
+            console.error("❌ Error al registrar empleado en Auth:", dataAuth);
+            alert(`Error al registrar en Auth: ${dataAuth.message || 'Error desconocido'}`);
         }
       } catch (err) {
-        console.error("Error:", err);
-        alert(`Error: ${err.message}`);
-      } finally {
-        setCargando(false);
+        console.error("❌ Error en la conexión/petición Auth:", err);
+        alert("Error de conexión con el servicio de Autenticación.");
       }
     }
   };
+
 
   const steps = [
     { id: 1, title: 'Información Básica', icon: User },
@@ -764,9 +581,12 @@ export default function NuevoEmpleado() {
     { id: 3, title: 'Puesto y Archivos', icon: Settings },
   ];
   
+  // Renderizado Principal
   return (
     <div className="min-h-screen flex items-start justify-center p-4 md:p-12">
+      <script src="https://cdn.tailwindcss.com"></script>
       <div className="w-full max-w-5xl bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-200">
+
         <h1 className="text-4xl font-extrabold text-slate-900 mb-4 flex items-center gap-3">
           <User className="h-8 w-8 text-success" />
           Crear Nuevo Empleado
@@ -774,71 +594,79 @@ export default function NuevoEmpleado() {
 
         <p className="text-slate-600 mb-10">Completa los siguientes <strong>{totalSteps} pasos</strong> para registrar un nuevo colaborador.</p>
 
-        {/* Indicadores de pasos */}
-        <div className="flex w-full items-start justify-between pb-16 relative">
-          {steps.map((step) => (
-            <StepIndicator 
-              key={step.id} 
-              step={step} 
-              currentStep={currentStep} 
-              totalSteps={totalSteps} 
-            />
-          ))}
-        </div>
-
-        {/* Formulario */}
-        <form id="formNuevoEmpleado" onSubmit={handleCrearEmpleado} noValidate>
-          <div className="mt-6 min-h-64">
+        {/* Stepper Container */}
+        <div data-stepper-container className="w-full">
+          {/* Indicadores de pasos */}
+          <div className="flex w-full items-start justify-between pb-16 relative">
             {steps.map((step) => (
-              <div 
+              <StepIndicator 
                 key={step.id} 
-                data-step-content={step.id} 
-                className={`transition-opacity duration-500 ${currentStep === step.id ? 'opacity-100 block' : 'opacity-0 hidden absolute w-full'}`}
-              >
-                <StepContent 
-                  stepId={step.id}
-                  nuevoEmpleado={nuevoEmpleado}
-                  handleChange={handleChange}
-                  hojaVida={hojaVida}
-                  handleFileChange={handleFileChange}
-                  handleRemoveFile={handleRemoveFile}
-                  fotoPerfil={fotoPerfil}
-                  handleFileChangeFotoPerfil={handleFileChangeFotoPerfil}
-                  handleRemoveFileFotoPerfil={handleRemoveFileFotoPerfil}
-                  mostrarErrorContraseña={mostrarErrorContraseña}
-                  mostrarErrorCamposVacios={mostrarErrorCamposVacios}
-                  // ✅ NUEVO - Props para departamentos y municipios
-                  departamentos={departamentos}
-                  municipiosFiltrados={municipiosFiltrados}
-                  loading={loading}
-                  error={error}
-                />
-              </div>
+                step={step} 
+                currentStep={currentStep} 
+                totalSteps={totalSteps} 
+              />
             ))}
           </div>
 
-          {/* Botones de Navegación */}
-          <div className="mt-10 pt-6 flex w-full justify-between gap-4 border-t border-slate-200">
-            <button
-              type="button"
-              onClick={prevStep}
-              disabled={currentStep === 1}
-              className="inline-flex items-center justify-center border align-middle font-semibold text-sm rounded-lg py-3 px-8 transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed bg-white border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-slate-400"
-            >
-              ← Anterior
-            </button>
-            
-            <button
-              type="button"
-              onClick={nextStep}
-              disabled={cargando}
-              className="inline-flex items-center justify-center border align-middle font-semibold text-sm rounded-lg py-3 px-8 shadow-md transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700 hover:border-indigo-700"
-            >
-              {cargando ? "⏳ Procesando..." : currentStep < totalSteps ? 'Siguiente →' : '💾 Guardar Empleado'}
-            </button>
-          </div>
-        </form>
+          {/* Contenido de pasos */}
+          <form id="formNuevoEmpleado" onSubmit={handleCrearEmpleado} noValidate>
+            <div className="mt-6 min-h-64">
+              {steps.map((step) => (
+                <div 
+                  key={step.id} 
+                  data-step-content={step.id} 
+                  // Usamos 'hidden' para ocultar y 'block' para mostrar, 
+                  // manteniendo el estado de los campos.
+                  className={`transition-opacity duration-500 ${currentStep === step.id ? 'opacity-100 block' : 'opacity-0 hidden absolute w-full'}`}
+                >
+                  <StepContent 
+                    stepId={step.id}
+                    nuevoEmpleado={nuevoEmpleado}
+                    handleChange={handleChange}
+                    hojaVida={hojaVida}
+                    handleFileChange={handleFileChange}
+                    handleRemoveFile={handleRemoveFile}
+                    fotoPerfil={fotoPerfil}
+                    handleFileChangeFotoPerfil={handleFileChangeFotoPerfil}
+                    handleRemoveFileFotoPerfil={handleRemoveFileFotoPerfil}
+                    mostrarErrorContraseña={mostrarErrorContraseña}
+                    mostrarErrorCamposVacios={mostrarErrorCamposVacios}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Botones de Navegación */}
+            <div className="mt-10 pt-6 flex w-full justify-between gap-4 border-t border-slate-200">
+              {/* Botón Anterior */}
+              <button
+                type="button"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+                data-stepper-prev
+                className="inline-flex items-center justify-center border align-middle font-semibold text-sm rounded-lg py-3 px-8 transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed bg-white border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-slate-400"
+              >
+                Anterior
+              </button>
+              
+              {/* Botón Siguiente / Finalizar */}
+              <button
+                // Importante: type='button' en todos los pasos excepto el último 
+                // para que solo 'nextStep' controle la validación y el avance.
+                // En el último paso, 'nextStep' llama a requestSubmit(), que dispara 'handleCrearEmpleado'.
+                type={'button'}
+                onClick={nextStep}
+                data-stepper-next
+                className="inline-flex items-center justify-center border align-middle font-semibold text-sm rounded-lg py-3 px-8 shadow-md transition-all duration-300 ease-in disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700 hover:border-indigo-700"
+              >
+                {currentStep < totalSteps ? 'Siguiente' : '💾 Guardar Empleado'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default NuevoEmpleado;
