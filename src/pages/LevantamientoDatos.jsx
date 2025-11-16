@@ -427,7 +427,8 @@ const obtenerColorPorCategoria = (categoria) => {
     console.log('📤 Enviando árbol:', datosArbol)
 
     const response = await fetch(
-      `https://monitoring-backend-eight.vercel.app/api/levantamiento/detecciones-arboles`,
+      `${API_LEVANTAMIENTO}/api/levantamiento/registrar-arbol`,
+
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
