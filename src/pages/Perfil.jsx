@@ -101,8 +101,15 @@ const Perfil = () => {
       if (res.ok) {
         setMensaje("Perfil actualizado exitosamente");
         const data = await res.json();
-        
-        const perfilData = data.data || data.usuario || data; 
+
+        const perfilData = data.user; // viene desde backend
+
+        if (perfilData) {
+          setUsuarioLocal((prev) => ({
+            ...prev,      // mantenemos nombre, correo, cargo, fechas
+            ...perfilData // solo pisamos lo que cambió (descripcion, region, telefono)
+          }));
+        }
         
         setUsuarioLocal(perfilData);
       } else {
