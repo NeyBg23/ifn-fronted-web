@@ -256,13 +256,13 @@ const ConformarBrigada = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-emerald-900 mb-3">Conformar Nueva Brigada</h1>
-          <p className="text-gray-600 text-lg">Crea y asigna roles a los miembros de tu brigada forestal</p>
-        </div>
+    <div className="lista-brigadas">
+      <h1>Conformar Nueva Brigada</h1>
+      <p>Crea y asigna roles a los miembros de tu brigada forestal</p>
 
+      <br />
+      
+      <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -462,7 +462,7 @@ const ConformarBrigada = () => {
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Seleccionar Empleados</h2>
+          <h1>Seleccionar Empleados</h1>
           {empleadosFiltrados.length === 0 ? (
             <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
               <p className="text-gray-500 text-lg">No se encontraron empleados con los filtros aplicados</p>
