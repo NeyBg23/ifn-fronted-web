@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import '../styles/LevantamientoDatos.css'
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 
 //  CONFIGURACIÓN DE APIs
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
@@ -37,6 +40,122 @@ export default function LevantamientoDatos() {
   const [resumen, setResumen] = useState(null)
   const [validacion, setValidacion] = useState(null)
   const [cargandoResumen, setCargandoResumen] = useState(false)
+
+
+// MOSTRAR MAPA CON ÁRBOLES DETECTADOS
+const mostrarMapaArboles = async () => {
+  try {
+    if (!conglomerado || !subparcelaSeleccionada) {
+      alert('Debe seleccionar una subparcela primero');
+      return;
+    }
+
+    // Llamar al backend para detectar árboles
+    const response = await fetch(
+      'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conglomerado_id: conglomerado.id,
+          subparcela_id: subparcelaSeleccionada
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!data.success) {
+      alert('Error: ' + data.error);
+      return;
+    }
+
+    // Crear/mostrar mapa
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) {
+      alert('Contenedor del mapa no encontrado');
+      return;
+    }
+
+    // Limpiar mapa anterior
+    mapContainer.innerHTML = '';
+
+    const coordenadasCentro = [
+      parseFloat(data.arboles?.latitud || conglomerado.latitud),
+      parseFloat(data.arboles?.longitud || conglomerado.longitud)
+    ];
+
+    const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(mapa);
+
+    // Marcador del centro
+    L.circleMarker(coordenadasCentro, {
+      radius: 10,
+      fillColor: '#0066ff',
+      color: '#0033cc',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    })
+      .bindPopup('<b>Centro del Conglomerado</b>')
+      .addTo(mapa);
+
+    // Marcadores de árboles
+    data.arboles.forEach((arbol) => {
+      const color = obtenerColorPorCategoria(arbol.categoria);
+
+      L.circleMarker(
+        [parseFloat(arbol.latitud), parseFloat(arbol.longitud)],
+        {
+          radius: 6,
+          fillColor: color,
+          color: color,
+          weight: 1,
+          opacity: 0.9,
+          fillOpacity: 0.7
+        }
+      )
+        .bindPopup(
+          `<div style="font-family: Arial; font-size: 12px;">
+            <b>🌳 Árbol ${arbol.numero_arbol}</b><br>
+            <b>Categoría:</b> ${arbol.categoria}<br>
+            <b>DAP:</b> ${arbol.dap} cm<br>
+            <b>Altura:</b> ${arbol.altura} m<br>
+            <b>Condición:</b> ${arbol.condicion}<br>
+            <b>Confianza:</b> ${(arbol.confianza * 100).toFixed(0)}%
+          </div>`
+        )
+        .addTo(mapa);
+    });
+
+    // Mostrar/actualizar estadísticas
+    alert(`✅ ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error mostrando mapa: ' + error.message);
+  }
+};
+
+const obtenerColorPorCategoria = (categoria) => {
+  switch (categoria) {
+    case 'FG':
+      return '#cc0000'; // Rojo: Fustal Grande
+    case 'F':
+      return '#ff6600'; // Naranja: Fustal
+    case 'L':
+      return '#ffcc00'; // Amarillo: Latizal
+    case 'B':
+      return '#00cc00'; // Verde: Brinzal
+    default:
+      return '#999999';
+  }
+};
+
+
 
   // ========== CARGAR CONGLOMERADO ==========
   useEffect(() => {
@@ -385,6 +504,8 @@ export default function LevantamientoDatos() {
         </div>
       )}
 
+      // EN LA SECCIÓN SELECTOR SUBPARCELAS, REEMPLAZA TODO ESTO:
+
       {/* SELECTOR SUBPARCELAS */}
       <div style={{
         marginTop: '2rem',
@@ -413,7 +534,38 @@ export default function LevantamientoDatos() {
             </button>
           ))}
         </div>
+
+        {/* BOTÓN MAPA AFUERA DEL MAP */}
+        <button
+          onClick={mostrarMapaArboles}
+          style={{
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#0066ff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            marginTop: '1rem'
+          }}
+        >
+          🗺️ Mostrar Mapa de Árboles Detectados
+        </button>
+
+        {/* CONTENEDOR MAPA (UN SOLO DIV) */}
+        <div
+          id="mapContainer"
+          style={{
+            height: '500px',
+            width: '100%',
+            marginTop: '1rem',
+            border: '2px solid #ccc',
+            borderRadius: '8px',
+            backgroundColor: '#f0f0f0'
+          }}
+        />
       </div>
+
 
       {/* BOTÓN AGREGAR ÁRBOL */}
       <button 
