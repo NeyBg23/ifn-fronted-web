@@ -54,41 +54,70 @@ export default function LevantamientoDatos() {
 
       let data;
 
-      // ✅ VERIFICAR SI EXISTE EN CACHE
+      // ✅ Verificar cache
       if (cacheArboles[subparcelaSeleccionada]) {
         data = cacheArboles[subparcelaSeleccionada];
         console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
       } else {
-        // ✅ SI NO EXISTE EN CACHE, TRAER DEL BACKEND
-        const response = await fetch(
-          'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              conglomerado_id: conglomerado.id,
-              subparcela_id: subparcelaSeleccionada
-            })
-          }
+        // ✅ CAMBIO PRINCIPAL: Usar GET en lugar de POST
+        // Primero intentar obtener los árboles ya guardados
+        const responseGet = await fetch(
+          `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
+          { method: 'GET', headers: { 'Content-Type': 'application/json' } }
         );
 
-        data = await response.json();
-
-        if (!data.success) {
-          alert('Error: ' + data.error);
-          return;
+        let arbolesExistentes = [];
+        if (responseGet.ok) {
+          const dataGet = await responseGet.json();
+          arbolesExistentes = dataGet.data || [];
         }
 
-        // ✅ GUARDAR EN CACHE PARA ESTA SUBPARCELA
+        // ✅ Si no hay árboles, ENTONCES detectar nuevos (una sola vez)
+        if (arbolesExistentes.length === 0) {
+          console.log('🔍 No hay árboles. Detectando nuevos...');
+          
+          const responsePost = await fetch(
+            'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                conglomerado_id: conglomerado.id,
+                subparcela_id: subparcelaSeleccionada
+              })
+            }
+          );
+
+          data = await responsePost.json();
+
+          if (!data.success) {
+            alert('Error: ' + data.error);
+            return;
+          }
+        } else {
+          // ✅ Si YA existen, usarlos
+          console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
+          data = {
+            success: true,
+            arboles: arbolesExistentes,
+            estadisticas: {
+              dap_promedio: (arbolesExistentes.reduce((a, b) => a + (b.dap || 0), 0) / arbolesExistentes.length).toFixed(2),
+              altura_promedio: (arbolesExistentes.reduce((a, b) => a + (b.altura || 0), 0) / arbolesExistentes.length).toFixed(2),
+              vivos: arbolesExistentes.filter(a => a.condicion === 'vivo').length,
+              enfermos: arbolesExistentes.filter(a => a.condicion === 'enfermo').length,
+              muertos: arbolesExistentes.filter(a => a.condicion === 'muerto').length
+            }
+          };
+        }
+
+        // ✅ Guardar en cache
         setCacheArboles(prev => ({
           ...prev,
           [subparcelaSeleccionada]: data
         }));
-        console.log(`💾 Datos guardados en cache para subparcela ${subparcelaSeleccionada}`);
       }
 
-      // ========== REST DEL CÓDIGO (IGUAL AL ANTERIOR) ==========
-
+      // ========== REST DEL CÓDIGO (MAPA) ==========
       const mapContainer = document.getElementById('mapContainer');
       if (!mapContainer) {
         alert('Contenedor del mapa no encontrado');
@@ -178,6 +207,7 @@ export default function LevantamientoDatos() {
       alert('Error mostrando mapa: ' + error.message);
     }
   };
+
 
 
 
