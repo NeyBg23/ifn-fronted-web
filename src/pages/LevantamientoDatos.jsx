@@ -517,22 +517,25 @@ const obtenerColorPorCategoria = (categoria) => {
     <div style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
       <h1>📍 Levantamiento de Datos IFN </h1>
 
-      {/* INFO CONGLOMERADO */}
-      <div style={{ 
-        marginTop: '2rem', 
-        padding: '1.5rem', 
-        backgroundColor: '#e8f5e9', 
-        borderRadius: '8px',
-        border: '3px solid #1B5E20'
-      }}>
-        <h2>✅ Conglomerado Asignado</h2>
-        <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <p><strong>Código:</strong> {conglomerado.codigo}</p>
-          <p><strong>Ubicación:</strong> {conglomerado.ubicacion || 'N/A'}</p>
-          <p><strong>Coordenadas:</strong> {conglomerado.latitud}, {conglomerado.longitud}</p>
-          <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
-        </div>
+    {/* INFO CONGLOMERADO */}
+    <div style={{ 
+      marginTop: '2rem', 
+      padding: '1.5rem', 
+      backgroundColor: '#e8f5e9', 
+      borderRadius: '8px',
+      border: '3px solid #1B5E20'
+    }}>
+      <h2>✅ Conglomerado Asignado</h2>
+      <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <p><strong>Código:</strong> {conglomerado.codigo}</p>
+        <p><strong>Departamento:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.departamento || 'Cargando...'}</span></p>
+        <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.municipio || 'Cargando...'}</span></p>
+        <p><strong>Ubicación:</strong> {conglomerado.ubicacion || 'N/A'}</p>
+        <p><strong>Coordenadas:</strong> {conglomerado.latitud}, {conglomerado.longitud}</p>
+        <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
       </div>
+    </div>
+
 
       {/* RESUMEN GENERAL */}
       {resumen && (
