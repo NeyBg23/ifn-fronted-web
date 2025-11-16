@@ -319,7 +319,6 @@ const obtenerColorPorCategoria = (categoria) => {
     }
   }
 
-  // ========== CARGAR ÁRBOLES DE SUBPARCELA ==========
   const cargarArboles = async (subparcelaId) => {
     try {
       setCargandoArboles(true)
@@ -336,7 +335,8 @@ const obtenerColorPorCategoria = (categoria) => {
         setArboles(data.data || [])
         console.log('✅ Árboles cargados:', data.data)
         
-        // Cargar resumen de subparcela
+        // ✅ SOLO UNA VEZ - NO LLAMAR dos veces
+        // Cargar resumen de subparcela (esto trae el resumen)
         cargarResumenSubparcela(subparcelaId)
       }
       setCargandoArboles(false)
@@ -345,6 +345,7 @@ const obtenerColorPorCategoria = (categoria) => {
       setCargandoArboles(false)
     }
   }
+
 
   // ========== CARGAR RESUMEN CONGLOMERADO ==========
   const cargarResumenConglomerado = async (conglomeradoId) => {
