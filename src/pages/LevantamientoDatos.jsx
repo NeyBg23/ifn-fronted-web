@@ -42,107 +42,103 @@ export default function LevantamientoDatos() {
   const [cargandoResumen, setCargandoResumen] = useState(false)
 
 
-// MOSTRAR MAPA CON ÁRBOLES DETECTADOS
-const mostrarMapaArboles = async () => {
-  try {
-    if (!conglomerado || !subparcelaSeleccionada) {
-      alert('Debe seleccionar una subparcela primero');
-      return;
-    }
+  // MOSTRAR MAPA CON ÁRBOLES DETECTADOS
 
-    const response = await fetch(
-      'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conglomerado_id: conglomerado.id,
-          subparcela_id: subparcelaSeleccionada
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!data.success) {
-      alert('Error: ' + data.error);
-      return;
-    }
-
-    const mapContainer = document.getElementById('mapContainer');
-    if (!mapContainer) {
-      alert('Contenedor del mapa no encontrado');
-      return;
-    }
-
-    mapContainer.innerHTML = '';
-
-    // ✅ SEGURO: Convertir String a número correctamente
-    const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
-    const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
-    
-    const coordenadasCentro = [lat, lng];
-
-    const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 19
-    }).addTo(mapa);
-
-    L.circleMarker(coordenadasCentro, {
-      radius: 10,
-      fillColor: '#0066ff',
-      color: '#0033cc',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.8
-    })
-      .bindPopup('<b>Centro del Conglomerado</b>')
-      .addTo(mapa);
-
-    // ✅ SEGURO: Validar cada árbol antes de plotear
-    data.arboles.forEach((arbol) => {
-      const arbolLat = Number(arbol.latitud);
-      const arbolLng = Number(arbol.longitud);
-      
-      // Saltar si coordenadas son inválidas
-      if (!isFinite(arbolLat) || !isFinite(arbolLng)) {
+  const mostrarMapaArboles = async () => {
+    try {
+      if (!conglomerado || !subparcelaSeleccionada) {
+        alert('Debe seleccionar una subparcela primero');
         return;
       }
 
-      const color = obtenerColorPorCategoria(arbol.categoria);
+      const response = await fetch(...);
+      const data = await response.json();
 
-      L.circleMarker(
-        [arbolLat, arbolLng],
-        {
-          radius: 6,
-          fillColor: color,
-          color: color,
-          weight: 1,
-          opacity: 0.9,
-          fillOpacity: 0.7
-        }
-      )
-        .bindPopup(
-          `<div style="font-family: Arial; font-size: 12px;">
-            <b>🌳 Árbol ${arbol.numero_arbol}</b><br>
-            <b>Categoría:</b> ${arbol.categoria}<br>
-            <b>DAP:</b> ${arbol.dap} cm<br>
-            <b>Altura:</b> ${arbol.altura} m<br>
-            <b>Condición:</b> ${arbol.condicion}<br>
-            <b>Confianza:</b> ${(arbol.confianza * 100).toFixed(0)}%
-          </div>`
-        )
+      if (!data.success) {
+        alert('Error: ' + data.error);
+        return;
+      }
+
+      const mapContainer = document.getElementById('mapContainer');
+      if (!mapContainer) {
+        alert('Contenedor del mapa no encontrado');
+        return;
+      }
+
+      // ✅ DESTRUIR MAPA ANTERIOR SI EXISTE
+      if (window.mapaActual) {
+        window.mapaActual.remove();
+        window.mapaActual = null;
+      }
+
+      // Limpiar contenedor
+      mapContainer.innerHTML = '';
+
+      const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
+      const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
+      const coordenadasCentro = [lat, lng];
+
+      // ✅ GUARDAR MAPA EN VARIABLE GLOBAL
+      const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
+      window.mapaActual = mapa;
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(mapa);
+
+      L.circleMarker(coordenadasCentro, {
+        radius: 10,
+        fillColor: '#0066ff',
+        color: '#0033cc',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8
+      })
+        .bindPopup('<b>Centro del Conglomerado</b>')
         .addTo(mapa);
-    });
 
-    alert(`✅ ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Error mostrando mapa: ' + error.message);
-  }
-};
+      data.arboles.forEach((arbol) => {
+        const arbolLat = Number(arbol.latitud);
+        const arbolLng = Number(arbol.longitud);
+        
+        if (!isFinite(arbolLat) || !isFinite(arbolLng)) {
+          return;
+        }
+
+        const color = obtenerColorPorCategoria(arbol.categoria);
+
+        L.circleMarker(
+          [arbolLat, arbolLng],
+          {
+            radius: 6,
+            fillColor: color,
+            color: color,
+            weight: 1,
+            opacity: 0.9,
+            fillOpacity: 0.7
+          }
+        )
+          .bindPopup(
+            `<div style="font-family: Arial; font-size: 12px;">
+              <b>🌳 Árbol ${arbol.numero_arbol}</b><br>
+              <b>Categoría:</b> ${arbol.categoria}<br>
+              <b>DAP:</b> ${arbol.dap} cm<br>
+              <b>Altura:</b> ${arbol.altura} m<br>
+              <b>Condición:</b> ${arbol.condicion}<br>
+              <b>Confianza:</b> ${(arbol.confianza * 100).toFixed(0)}%
+            </div>`
+          )
+          .addTo(mapa);
+      });
+
+      alert(`✅ ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error mostrando mapa: ' + error.message);
+    }
+  };
+
 
 
 
