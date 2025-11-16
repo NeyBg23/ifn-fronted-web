@@ -81,9 +81,10 @@ const mostrarMapaArboles = async () => {
     mapContainer.innerHTML = '';
 
     const coordenadasCentro = [
-      parseFloat(data.arboles?.latitud || conglomerado.latitud),
-      parseFloat(data.arboles?.longitud || conglomerado.longitud)
+      parseFloat(data.arboles[0]?.latitud || conglomerado.latitud),  // ✅ CORRECTO
+      parseFloat(data.arboles[0]?.longitud || conglomerado.longitud)
     ];
+
 
     const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
 
