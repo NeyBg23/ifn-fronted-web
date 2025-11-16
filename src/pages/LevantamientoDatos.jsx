@@ -428,22 +428,24 @@ const obtenerColorPorCategoria = (categoria) => {
 
     const response = await fetch(
       `${API_LEVANTAMIENTO}/api/levantamiento/registrar-arbol`,
-
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(datosArbol)
       }
     )
 
-    const result = await response.json()
-    
     if (!response.ok) {
-      console.error('❌ Error del servidor:', result)
-      alert(`❌ Error: ${result.error?.message || 'Error desconocido'}`)
+      const errorText = await response.text()
+      console.error('❌ Error del servidor (texto):', errorText)
+      const result = await response.json()
+      alert(`❌ Error: ${result.error || 'Error desconocido'}`)
       setEnviando(false)
       return
     }
+
 
     console.log('✅ Árbol registrado:', result.data)
 
