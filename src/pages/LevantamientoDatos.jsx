@@ -369,31 +369,34 @@ const obtenerColorPorCategoria = (categoria) => {
       setCargandoResumen(false)
     }
   }
+const cargarResumenSubparcela = async (subparcelaId) => {
+  try {
+    const response = await fetch(
+      `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaId}`,
+      { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+    )
 
-  // ========== CARGAR RESUMEN SUBPARCELA ==========
-  const cargarResumenSubparcela = async (subparcelaId) => {
-    try {
-      console.log('🔄 Iniciando resumen-subparcela para:', subparcelaId)
+    if (response.ok) {
+      const data = await response.json()
+      console.log('✅ RESPUESTA COMPLETA:', JSON.stringify(data, null, 2))
+      console.log('🔍 resumen object:', data.resumen)
       
-      const response = await fetch(
-        `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaId}`,
-        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
-      )
-
-      console.log('📡 Respuesta status:', response.status)
-      
-      if (response.ok) {
-        const data = await response.json()
-        console.log('✅ Resumen subparcela completo:', data)
-        console.log('📊 altura_promedio:', data.resumen?.altura_promedio)
-        setResumen(data.resumen)
-      } else {
-        console.error('❌ Error en respuesta:', response.status)
+      // ✅ VERIFICA EXACTAMENTE QUÉ TIENE
+      if (data.resumen) {
+        console.log('📋 Propiedades del resumen:')
+        console.log('  - total_arboles:', data.resumen.total_arboles)
+        console.log('  - diametro_promedio:', data.resumen.diametro_promedio)
+        console.log('  - altura_promedio:', data.resumen.altura_promedio)
+        console.log('  - Todas las keys:', Object.keys(data.resumen))
       }
-    } catch (err) {
-      console.error('❌ Error cargando resumen subparcela:', err)
+      
+      setResumen(data.resumen)
     }
+  } catch (err) {
+    console.error('Error cargando resumen subparcela:', err)
   }
+}
+
 
 
   // ========== CARGAR VALIDACIÓN ==========
@@ -605,7 +608,7 @@ const obtenerColorPorCategoria = (categoria) => {
               <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>DAP Promedio</p>
             </div>
             <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
-              <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen.altura_promedio} m</p>
+              <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen?.altura_promedio || '0'} m</p>
               <p style={{ color: '#666', margin: '0.5rem 0 0 0' }}>Altura Promedio</p>
             </div>
             <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
