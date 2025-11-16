@@ -44,6 +44,7 @@ export default function LevantamientoDatos() {
 
   // MOSTRAR MAPA CON ÁRBOLES DETECTADOS
 
+
   const mostrarMapaArboles = async () => {
     try {
       if (!conglomerado || !subparcelaSeleccionada) {
@@ -51,7 +52,18 @@ export default function LevantamientoDatos() {
         return;
       }
 
-      const response = await fetch(...);
+      const response = await fetch(
+        'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conglomerado_id: conglomerado.id,
+            subparcela_id: subparcelaSeleccionada
+          })
+        }
+      );
+
       const data = await response.json();
 
       if (!data.success) {
@@ -65,28 +77,43 @@ export default function LevantamientoDatos() {
         return;
       }
 
-      // ✅ DESTRUIR MAPA ANTERIOR SI EXISTE
-      if (window.mapaActual) {
-        window.mapaActual.remove();
-        window.mapaActual = null;
-      }
-
-      // Limpiar contenedor
-      mapContainer.innerHTML = '';
-
       const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
       const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
       const coordenadasCentro = [lat, lng];
 
-      // ✅ GUARDAR MAPA EN VARIABLE GLOBAL
-      const mapa = L.map('mapContainer').setView(coordenadasCentro, 15);
-      window.mapaActual = mapa;
+      // ✅ Si el mapa YA existe, solo limpiar capas
+      if (window.mapaActual) {
+        window.mapaActual.setView(coordenadasCentro, 15);
+        // Remover todas las capas excepto tiles
+        window.mapaActual.eachLayer((layer) => {
+          if (layer instanceof L.CircleMarker || layer instanceof L.Popup) {
+            window.mapaActual.removeLayer(layer);
+          }
+        });
+      } else {
+        // ✅ Crear mapa por primera vez
+        window.mapaActual = L.map('mapContainer').setView(coordenadasCentro, 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19
+        }).addTo(window.mapaActual);
+      }
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(mapa);
+      const mapa = window.mapaActual;
 
+      // ✅ Dibujar círculo de la subparcela (15 m de radio = FG)
+      L.circle(coordenadasCentro, {
+        radius: 15, // Radio de 15 metros para Fustal Grande
+        color: '#0033cc',
+        weight: 2,
+        opacity: 0.3,
+        fillOpacity: 0.05
+      })
+        .bindPopup(`<b>Radio Subparcela: 15 m</b><br>Área: 707 m²`)
+        .addTo(mapa);
+
+      // Marcador del centro
       L.circleMarker(coordenadasCentro, {
         radius: 10,
         fillColor: '#0066ff',
@@ -95,9 +122,10 @@ export default function LevantamientoDatos() {
         opacity: 1,
         fillOpacity: 0.8
       })
-        .bindPopup('<b>Centro del Conglomerado</b>')
+        .bindPopup('<b>🎯 Centro de la Subparcela</b>')
         .addTo(mapa);
 
+      // Marcadores de árboles
       data.arboles.forEach((arbol) => {
         const arbolLat = Number(arbol.latitud);
         const arbolLng = Number(arbol.longitud);
