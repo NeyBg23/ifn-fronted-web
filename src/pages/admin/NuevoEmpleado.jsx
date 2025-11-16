@@ -478,8 +478,9 @@ const NuevoEmpleado = () => {
       const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
       // 1. Registro en el servicio de Auth (Autenticación)
+
       try {
-        let response = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
+        const responseAuth = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${tokenGuardado}`,
@@ -491,9 +492,9 @@ const NuevoEmpleado = () => {
           }),
         });
 
-        let data = await response.json();
-        
-        if (response.ok) {
+        const dataAuth = await responseAuth.json();
+
+        if (responseAuth.ok) {
             console.log("Empleado Registrado en Auth.");
             
             //Registro en el servicio de Brigada (Datos completos y archivos)
@@ -518,7 +519,9 @@ const NuevoEmpleado = () => {
             
 
             try {
-              response = await fetch(`${BRIGADA_SERVICE_URL}/registrar`, {
+              // ${BRIGADA_SERVICE_URL}
+              
+              const responseBrigada = await fetch(`https://fast-api-brigada.vercel.app/registrar`, {
                 method: "POST",
                 headers: {
                   "Authorization": `Bearer ${tokenGuardado}`,
@@ -527,22 +530,43 @@ const NuevoEmpleado = () => {
                 body: formData, // Enviar FormData
               });
 
-              data = await response.json();
+              const dataBrigada = await responseBrigada.json();
 
-              if (response.ok) {
+              if (responseBrigada.ok) {
                 alert("El usuario ha sido creado con éxito.");
                 // Aquí podrías redirigir o limpiar el formulario
               } else {
-                console.error("❌ Error al registrar empleado en brigadas:", data);
-                alert(`Error al registrar en Brigadas: ${data.message || 'Error desconocido'}`);
+
+                try {
+
+                  const responseAuthEliminar = await fetch(`${AUTH_SERVICE_URL}/eliminar-usuario`, {
+                    method: "POST",
+                    headers: {
+                      "Authorization": `Bearer ${tokenGuardado}`,
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      uuid: dataAuth.user.id,
+                    }),
+                  });
+
+                  if (responseAuthEliminar.ok) console.log("Elimine automaticamente al usuario del Auth porque no pude crear el usuario en Brigadas.")
+                  else console.log("No pude eliminar al usuario del Auth tras ocurrio el error en brigadas.")
+
+                } catch (err) {
+                  console.error("❌ Error al registrar empleado en brigadas:", err);
+                }
+
+                console.error("❌ Error al registrar empleado en brigadas:", dataBrigada);
+                alert(`Error al registrar en Brigadas: ${dataBrigada.message || 'Error desconocido'}`);
               }
             } catch (err) {
               console.error("❌ Error en la conexión/petición Brigadas:", err);
               alert("Error de conexión con el servicio de Brigadas.");
             }
         } else {
-            console.error("❌ Error al registrar empleado en Auth:", data);
-            alert(`Error al registrar en Auth: ${data.message || 'Error desconocido'}`);
+            console.error("❌ Error al registrar empleado en Auth:", dataAuth);
+            alert(`Error al registrar en Auth: ${dataAuth.message || 'Error desconocido'}`);
         }
       } catch (err) {
         console.error("❌ Error en la conexión/petición Auth:", err);
