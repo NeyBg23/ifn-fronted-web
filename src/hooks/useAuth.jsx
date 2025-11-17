@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext, useMemo } from 'react';
+import { useState, useEffect, useContext, createContext, useMemo } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -13,11 +13,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // Inicia en TRUE para esperar la verificación
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
+  const user = useAuth()
 
   // Función auxiliar para limpiar el estado y el almacenamiento local
   const clearAuth = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
     setToken(null);
     setUsuario(null);
     setRol(null);
@@ -26,7 +25,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const checkAuthAndFetchUser = async () => {
-      const tokenGuardado = localStorage.getItem('token');
+      const tokenGuardado = user.token;
       
       if (tokenGuardado) {
         try {
@@ -48,8 +47,6 @@ export function AuthProvider({ children }) {
           setUsuario(usuarioBrigada);
           setRol(usuarioBrigada.rol || null);
 
-          // Actualizar localStorage con el objeto de usuario fresco
-          localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
         
         } catch (err) {
           // Si hay error (401, 403, 500), forzamos un logout limpio
@@ -70,7 +67,6 @@ export function AuthProvider({ children }) {
 
 
 const login = async (email, password, hcaptchaToken) => {
-  const tokenGuardado = localStorage.getItem('token');
   try {
     setLoading(true);
     setError(null);
@@ -80,7 +76,7 @@ const login = async (email, password, hcaptchaToken) => {
       `${AUTH_SERVICE_URL}/login`,
       {
         headers: {
-          'Authorization': `Bearer ${tokenGuardado}`,
+          'Authorization': `Bearer ${user.token}`,
           'Content-Type': 'application/json'
         },
         email,
@@ -105,10 +101,6 @@ const login = async (email, password, hcaptchaToken) => {
 
     // 4Extraer usuario brigada correctamente
     const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
-
-    // 5Guardar token y usuario en local storage
-    localStorage.setItem('token', nuevoToken);
-    localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
 
     // Actualizar estados en React
     setToken(nuevoToken);
