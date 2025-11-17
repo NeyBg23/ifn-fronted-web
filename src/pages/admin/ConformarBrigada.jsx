@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import Modal from "../components/modal";
 
 const ConformarBrigada = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -13,6 +14,7 @@ const ConformarBrigada = () => {
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const location = useLocation();
   const conglomeradoId = location.state?.conglomerado;
 
@@ -213,15 +215,15 @@ const ConformarBrigada = () => {
       });
 
       if (response.ok) {
-        alert("¡Brigada creada exitosamente!");
-        /*
+        setModalOpen(true);
+
         setAsignaciones([]);
         setNombreBrigada("");
         setDescripcion("");
         setRegion("");
         setDepartamento("");
         setMunicipio("");
-        */
+
       } else {
         alert("Error al crear la brigada");
       }
@@ -570,6 +572,12 @@ const ConformarBrigada = () => {
           </button>
         </div>
       </div>
+
+      <Modal
+        show={modalOpen}
+        onClose={() => setModalOpen(false)}
+        mensaje="¡Brigada creada exitosamente!"
+      />
     </div>
   );
 };

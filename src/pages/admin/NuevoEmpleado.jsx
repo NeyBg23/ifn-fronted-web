@@ -525,7 +525,6 @@ const NuevoEmpleado = () => {
                 method: "POST",
                 headers: {
                   "Authorization": `Bearer ${tokenGuardado}`,
-                  // NO USAR Content-Type: "application/json" cuando se usa FormData
                 },
                 body: formData, // Enviar FormData
               });
