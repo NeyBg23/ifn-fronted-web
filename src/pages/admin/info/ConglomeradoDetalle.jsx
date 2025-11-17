@@ -210,7 +210,7 @@ const ConglomeradoDetalle = () => {
                             <p className="text-emerald-50">Gestiona tus brigadas directamente desde este conglomerado</p>
                         </div>
                         <button
-                            onClick={() => navigate(`/admin/brigadas/crear-nueva`)}
+                            onClick={() => navigate(`/admin/brigadas/crear-nueva`, { state: { conglomerado: idconglomerado } })}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-600 rounded-xl hover:bg-emerald-50 transition-all duration-200 shadow-lg hover:shadow-xl font-bold whitespace-nowrap"
                         >
                             Crear Nueva Brigada

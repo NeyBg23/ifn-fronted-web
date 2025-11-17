@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const ConformarBrigada = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -12,6 +13,8 @@ const ConformarBrigada = () => {
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
+  const location = useLocation();
+  const conglomeradoId = location.state?.conglomerado;
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
@@ -183,43 +186,44 @@ const ConformarBrigada = () => {
       return;
     }
 
-    if (contarRol("jefe") === 0) {
+    if (contarRol("jefe_brigada") === 0) {
       alert("Debes asignar al menos un Jefe de Brigada");
       return;
     }
 
-    if (contarRol("brigadista") === 0) {
-      alert("Debes asignar al menos un Brigadista");
-      return;
-    }
-
-    const session = JSON.parse(localStorage.getItem("session") || "{}");
+    const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${API_URL}/api/brigadas`, {
+
+      const response = await fetch(`http://127.0.0.1:8001/crear-brigada`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          nombre: nombreBrigada,
+          nombreBrigada,
           descripcion,
           region,
           departamento,
           municipio,
-          asignaciones
+          asignaciones,
+          conglomeradoId
         })
       });
 
+      console.log(response)
+
       if (response.ok) {
         alert("¡Brigada creada exitosamente!");
+        /*
         setAsignaciones([]);
         setNombreBrigada("");
         setDescripcion("");
         setRegion("");
         setDepartamento("");
         setMunicipio("");
+        */
       } else {
         alert("Error al crear la brigada");
       }
@@ -231,26 +235,26 @@ const ConformarBrigada = () => {
 
   const getRolLabel = (rol) => {
     switch (rol) {
-      case "jefe":
+      case "jefe_brigada":
         return "Jefe de Brigada";
       case "brigadista":
         return "Brigadista";
       case "coinvestigador":
         return "Co-Investigador";
-      case "apoyo":
+      case "tecnico_auxiliar":
         return "Apoyo Técnico";
     }
   };
 
   const getRolColor = (rol) => {
     switch (rol) {
-      case "jefe":
+      case "jefe_brigada":
         return { icon: Shield, color: "text-emerald-600", bg: "bg-emerald-100", badge: "bg-emerald-600" };
       case "brigadista":
         return { icon: Users, color: "text-blue-600", bg: "bg-blue-100", badge: "bg-blue-600" };
       case "coinvestigador":
         return { icon: Briefcase, color: "text-cyan-600", bg: "bg-cyan-100", badge: "bg-cyan-600" };
-      case "apoyo":
+      case "tecnico_auxiliar":
         return { icon: UserCheck, color: "text-amber-600", bg: "bg-amber-100", badge: "bg-amber-600" };
     }
   };
@@ -261,7 +265,7 @@ const ConformarBrigada = () => {
       <p>Crea y asigna roles a los miembros de tu brigada forestal</p>
 
       <br />
-      
+
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2">
@@ -379,7 +383,7 @@ const ConformarBrigada = () => {
                       <Shield size={18} className="text-emerald-100" />
                       <span className="text-xs font-medium text-emerald-50">Jefe de Brigada</span>
                     </div>
-                    <div className="text-2xl font-bold text-white">{contarRol("jefe")}</div>
+                    <div className="text-2xl font-bold text-white">{contarRol("jefe_brigada")}</div>
                   </div>
                 </div>
 
@@ -409,7 +413,7 @@ const ConformarBrigada = () => {
                       <UserCheck size={18} className="text-amber-100" />
                       <span className="text-xs font-medium text-amber-50">Apoyo Técnico</span>
                     </div>
-                    <div className="text-2xl font-bold text-white">{contarRol("apoyo")}</div>
+                    <div className="text-2xl font-bold text-white">{contarRol("tecnico_auxiliar")}</div>
                   </div>
                 </div>
 
@@ -473,7 +477,6 @@ const ConformarBrigada = () => {
                 const roles = getRolesEmpleado(empleado.id);
                 const tieneAlgunRol = roles.length > 0;
                 const urlFotoPerfil = empleado.foto_url;
-                console.log(urlFotoPerfil)
 
                 return (
                   <div key={empleado.id} className={`bg-white rounded-xl border-2 transition-all ${tieneAlgunRol ? 'border-emerald-400 shadow-md' : 'border-gray-200 shadow-sm hover:shadow-md'}`}>
@@ -529,10 +532,10 @@ const ConformarBrigada = () => {
 
                       <div className="flex gap-2">
                         {[
-                          { rol: "jefe", icon: Shield },
+                          { rol: "jefe_brigada", icon: Shield },
                           { rol: "brigadista", icon: Users },
                           { rol: "coinvestigador", icon: Briefcase },
-                          { rol: "apoyo", icon: UserCheck }
+                          { rol: "tecnico_auxiliar", icon: UserCheck }
                         ].map(({ rol, icon: Icon }) => (
                           <button
                             key={rol}
