@@ -95,8 +95,6 @@ const Perfil = () => {
         })
       });
 
-      console.log(res)
-
       if (res.ok) {
         setMensaje("Perfil actualizado exitosamente");
         const data = await res.json();

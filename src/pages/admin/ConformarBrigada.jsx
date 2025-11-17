@@ -212,8 +212,6 @@ const ConformarBrigada = () => {
         })
       });
 
-      console.log(response)
-
       if (response.ok) {
         alert("¡Brigada creada exitosamente!");
         /*
