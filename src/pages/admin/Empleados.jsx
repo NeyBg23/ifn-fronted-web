@@ -45,8 +45,8 @@ export default function Empleados() {
         {/* Encabezado */}
         <div className="mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <h1 className="text-4xl font-bold text-gray-800">Empleados</h1>
             <img src={empleado_imagen} alt="Empleado" style={{ width: 60 }} />
+            <h1 className="text-4xl font-bold text-gray-800">Empleados</h1>
           </div>
           <p className="text-center text-gray-600 text-lg">
             Aquí puedes ver y gestionar todos los empleados existentes.
