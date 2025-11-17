@@ -1,18 +1,19 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
 
 const BrigadaDetalle = () => {
   const { idbrigada } = useParams(); // 🧭 obtiene el parámetro de la URL
   const navigate = useNavigate();
   const [brigada, setBrigada] = useState(null);
+  const user = useAuth()
 
   useEffect(() => {
     const fetchBrigada = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
       const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
       const res = await fetch(`${API_URL}/api/brigadas/${idbrigada}`, {
-        headers: { Authorization: `Bearer ${session?.access_token}` },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
 
       const data = await res.json();

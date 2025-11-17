@@ -4,6 +4,7 @@ import {
   User, Settings, CheckCircle, CreditCard, LockKeyhole, FileText, Upload, FileUp, X,
   PhoneCall,
 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 // --- COMPONENTE StepIndicator ---
 // Componente para el indicador de paso (barra superior)
@@ -473,7 +474,7 @@ const NuevoEmpleado = () => {
     e.preventDefault();
 
     if (currentStep === totalSteps) {
-      const tokenGuardado = localStorage.getItem('token');
+      const user = useAuth()
       const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
       // 1. Registro en el servicio de Auth (Autenticación)
@@ -482,7 +483,7 @@ const NuevoEmpleado = () => {
         const responseAuth = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${tokenGuardado}`,
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

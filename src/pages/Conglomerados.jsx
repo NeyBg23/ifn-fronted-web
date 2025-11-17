@@ -4,12 +4,14 @@ import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/Brigadas.css";
+import { useAuth } from "../hooks/useAuth";
 
 const Conglomerados = () => {
   const navigate = useNavigate();
   const [conglomerados, setConglomerado] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
+  const user = useAuth()
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
@@ -17,11 +19,11 @@ const Conglomerados = () => {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
     const fetchData = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
-      if (!session) return alert("¡Necesitas login! 🔑");
+      const token = user.token;
+      if (!token) return alert("¡Necesitas login! 🔑");
 
       const resConglomerados = await fetch(`${API_URL}/api/conglomerados`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const dataConglomerados = await resConglomerados.json();
       setConglomerado(dataConglomerados.data || []);

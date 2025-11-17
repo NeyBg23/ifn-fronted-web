@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import Modal from "../components/modal";
+import { useAuth } from "../../hooks/useAuth";
 
 const ConformarBrigada = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -17,6 +18,7 @@ const ConformarBrigada = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const location = useLocation();
   const conglomeradoId = location.state?.conglomerado;
+  const user = useAuth()
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
@@ -72,12 +74,12 @@ const ConformarBrigada = () => {
 
   useEffect(() => {
     const fetchEmpleados = async () => {
-      const session = JSON.parse(localStorage.getItem("session") || "{}");
-      if (!session.access_token) return;
+      const token = user.token;
+      if (!token) return;
 
       try {
         const res = await fetch(`${API_URL}/api/empleados`, {
-          headers: { Authorization: `Bearer ${session.access_token}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
@@ -88,7 +90,7 @@ const ConformarBrigada = () => {
             const nombreArchivo = encodeURIComponent(emp.hoja_vida_url.split("/").pop());
             try {
               const resSigned = await fetch(`${API_URL}/api/hoja-vida/${nombreArchivo}`, {
-                headers: { Authorization: `Bearer ${session.access_token}` },
+                headers: { Authorization: `Bearer ${token}` },
               });
               const signedData = await resSigned.json();
 

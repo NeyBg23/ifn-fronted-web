@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
 
 const EmpleadoDetalle = () => {
   const { idempleado } = useParams();
@@ -7,16 +8,16 @@ const EmpleadoDetalle = () => {
   const [empleado, setEmpleado] = useState(null);
   const [signedUrl, setSignedUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const user = useAuth()
 
   useEffect(() => {
     const fetchEmpleado = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
       const API_URL =
         import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
       try {
         const res = await fetch(`${API_URL}/api/empleados/${idempleado}`, {
-          headers: { Authorization: `Bearer ${session?.access_token}` },
+          headers: { Authorization: `Bearer ${user.token}` },
         });
 
         const data = await res.json();
@@ -32,7 +33,7 @@ const EmpleadoDetalle = () => {
           const resSigned = await fetch(
             `${API_URL}/api/hoja-vida/${nombreArchivo}`,
             {
-              headers: { Authorization: `Bearer ${session?.access_token}` },
+              headers: { Authorization: `Bearer ${user}` },
             }
           );
 

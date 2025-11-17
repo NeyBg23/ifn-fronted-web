@@ -197,11 +197,10 @@ const ConglomeradoDetalle = () => {
             return;
         }
 
-        const session = JSON.parse(localStorage.getItem("session"));
         const informeNuevo = {
             id: Date.now(),
             titulo: nuevoInforme.titulo,
-            nombre_autor: session?.user?.nombre_completo || "Usuario Actual",
+            nombre_autor: user.usuario.nombre_completo || "Usuario Actual",
             fecha: new Date().toISOString()
         };
 

@@ -20,11 +20,11 @@ const Brigadas = () => {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
     const fetchData = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
-      if (!session) return alert("¡Necesitas login! 🔑");
+      const token = user.token;
+      if (!token) return alert("¡Necesitas login! 🔑");
 
       const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const dataBrigadas = await resBrigadas.json();
       setBrigadas(dataBrigadas.data || []);
@@ -33,11 +33,8 @@ const Brigadas = () => {
   }, []);
 
   const brigadasFiltradas = brigadas.filter((brigada) => {
-    const coincideNombre = brigada.nombre
-      ?.toLowerCase()
-      .includes(filtroNombre.toLowerCase());
-    const coincideRegion =
-      filtroRegion === "" || brigada.region === filtroRegion;
+    const coincideNombre = brigada.nombre?.toLowerCase().includes(filtroNombre.toLowerCase());
+    const coincideRegion = filtroRegion === "" || brigada.region === filtroRegion;
 
     return coincideNombre && coincideRegion;
   });

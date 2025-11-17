@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../../styles/Brigadas.css";
 import empleado_imagen from "../../img/empleado.png";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Empleados() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Empleados() {
   const [filtroCorreo, setFiltroCorreo] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
+  const user = useAuth()
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
@@ -21,21 +23,21 @@ export default function Empleados() {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
     (async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
-      if (!session) return console.error("¡Necesitas login! 🔑");
+      const token = user.token;
+      if (!token) return console.error("¡Necesitas login! 🔑");
       const res = await fetch(`${API_URL}/api/empleados`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       setEmpleados(data.data || []);
     })();
   }, [API_URL]);
 
-  const empleadosFiltrados = empleados.filter(emp => {
-    const n = emp.nombre_completo.toLowerCase().includes(filtroNombre.toLowerCase());
-    const c = emp.correo.toLowerCase().includes(filtroCorreo.toLowerCase());
-    const ced = emp.cedula?.toLowerCase().includes(filtroCedula.toLowerCase());
-    const r = !filtroRegion || emp.region === filtroRegion;
+  const empleadosFiltrados = empleados.filter(empleado => {
+    const n = empleado.nombre_completo.toLowerCase().includes(filtroNombre.toLowerCase());
+    const c = empleado.correo.toLowerCase().includes(filtroCorreo.toLowerCase());
+    const ced = empleado.cedula.toLowerCase().includes(filtroCedula.toLowerCase());
+    const r = !filtroRegion || empleado.region === filtroRegion;
     return n && c && ced && r;
   });
 

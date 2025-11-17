@@ -109,14 +109,13 @@ const login = async (email, password, hcaptchaToken) => {
     // 5Guardar token y usuario en local storage
     localStorage.setItem('token', nuevoToken);
     localStorage.setItem('usuario', JSON.stringify(usuarioBrigada));
-    localStorage.setItem("session", JSON.stringify(response.data.session));
 
     // Actualizar estados en React
     setToken(nuevoToken);
     setUsuario(usuarioBrigada);
     setRol(usuarioBrigada.rol || null);
 
-    console.log('✅ Login exitoso - Rol:', usuarioBrigada.rol);
+    console.log('Login exitoso - Rol:', usuarioBrigada.rol);
 
     return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
   } catch (err) {
@@ -132,16 +131,13 @@ const login = async (email, password, hcaptchaToken) => {
   }
 }
 
-
   const logout = () => {
     clearAuth();
-    console.log('✅ Usuario desconectado');
+    console.log('Usuario desconectado');
   };
 
   const tieneRol = (rolRequerido) => {
-    if (typeof rolRequerido === 'string') {
-      return rol === rolRequerido;
-    }
+    if (typeof rolRequerido === 'string') return rol === rolRequerido;
     return rolRequerido.includes(rol);
   };
 
