@@ -168,7 +168,7 @@ const Brigadas = () => {
                           </div>
                           <div className="flex-1">
                             <p className="text-xs font-semibold text-emerald-700 mb-1">Región</p>
-                            <p className="text-sm text-gray-700">{brigada.region}</p>
+                            <p className="text-sm text-gray-700">{brigada.region || "No Asignada"}</p>
                           </div>
                         </div>
 
