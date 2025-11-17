@@ -23,13 +23,33 @@ const Brigadas = () => {
       const token = user.token;
       if (!token) return alert("¡Necesitas login! 🔑");
 
-      const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      {
+        user.usuario.rol === "admin" ? (
+          (async()=> {
+            const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas`, {
+              method: "GET",
+              headers: { 
+                Authorization: `Bearer ${token}` 
+              }
+            });
 
-      const dataBrigadas = await resBrigadas.json();
-      setBrigadas(dataBrigadas.data || []);
+            const dataBrigadas = await resBrigadas.json();
+            setBrigadas(dataBrigadas.data || []);
+          })()
+        ) : (
+          (async()=> {
+            const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas-usuario/${user.usuario.id}`, {
+              method: "GET",
+              headers: { 
+                Authorization: `Bearer ${token}` 
+              }
+            });
+
+            const dataBrigadas = await resBrigadas.json();
+            setBrigadas(dataBrigadas.data || []);
+          })()
+        )
+      }
     };
     fetchData();
   }, []);
@@ -51,9 +71,20 @@ const Brigadas = () => {
               <span className="text-3xl">🌳</span>
               Brigadas del Bosque
             </h1>
-            <p className="text-gray-600 text-lg">
-              Aquí puedes ver y gestionar todas las brigadas existentes.
-            </p>
+
+            {
+              user.usuario.rol === "admin" ? (
+                <p className="text-gray-600 text-lg">
+                  Aquí puedes ver y gestionar todas las brigadas existentes.
+                </p>
+
+              ) : (
+                <p className="text-gray-600 text-lg">
+                  Aquí puedes ver todas las brigadas a las que perteneces.
+                </p>
+              )
+            }
+
           </div>
 
           {/* Sección de Filtros */}
@@ -132,7 +163,7 @@ const Brigadas = () => {
                 {brigadasFiltradas.map((brigada) => (
                   <div
                     key={brigada.id}
-                    className="bg-gradient-to-br from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
+                    className="bg-gradient-to-br justify-items-centerfrom-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
                   >
                     {/* Header del Card */}
                     <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
