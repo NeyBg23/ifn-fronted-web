@@ -38,6 +38,7 @@ export function ProtectedRoute({ component: Component, requiredRole = null, requ
   }
 
   // Validar rol si es requerido
+
   if (requiredRole) {
     if (rol !== requiredRole) {
       console.warn(`⚠️ Rol requerido: ${requiredRole}, rol actual: ${rol}`);

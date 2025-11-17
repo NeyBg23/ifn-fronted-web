@@ -110,7 +110,7 @@ const Conglomerados = () => {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 cursor-pointer gap-6">
               {conglomeradosFiltradas.map((conglomerado) => (
                 <div
                   key={conglomerado.id}
@@ -181,7 +181,7 @@ const Conglomerados = () => {
 
                     <div className="pt-4 border-t border-emerald-100">
                       <button
-                        onClick={() => navigate(`/admin/conglomerados/${conglomerado.id}`)}
+                        onClick={() => navigate(`/${user.usuario.rol === "admin" ? "admin" : "user"}/conglomerados/${conglomerado.id}`)}
                         className="w-full px-4 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

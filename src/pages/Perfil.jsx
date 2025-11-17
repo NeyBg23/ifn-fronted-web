@@ -142,10 +142,16 @@ const Perfil = () => {
       <div className="row justify-content-center">
         <div className="col-lg-10">
 
-          <div className="lista-brigadas">
-            <h1 className='font-bold'>Perfil de Usuario</h1>
-            <p className='text-muted'>Aquí puedes ver y editar tu información personal.</p>
-          </div>
+          {/* Encabezado */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-800">
+              <span className="text-5xl">🌳</span>
+              Perfil de Usuario
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Aquí puedes ver y editar tu información personal.
+            </p>
+        </div>
 
           {mensaje && (
             <div className={`alert ${mensaje.includes("Error") ? "alert-danger" : "alert-success"} alert-dismissible fade show`}>

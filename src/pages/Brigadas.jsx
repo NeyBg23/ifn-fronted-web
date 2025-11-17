@@ -68,7 +68,7 @@ const Brigadas = () => {
           {/* Encabezado */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800">
-              <span className="text-3xl">🌳</span>
+              <span className="text-5xl">🌳</span>
               Brigadas del Bosque
             </h1>
 
@@ -159,11 +159,11 @@ const Brigadas = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 cursor-pointer gap-6">
                 {brigadasFiltradas.map((brigada) => (
                   <div
                     key={brigada.id}
-                    className="bg-gradient-to-br justify-items-centerfrom-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
+                    className="bg-gradient-to-br from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
                   >
                     {/* Header del Card */}
                     <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
@@ -226,7 +226,10 @@ const Brigadas = () => {
 
                       <div className="pt-4 border-t border-emerald-100">
                         <button
-                          onClick={() => navigate(`/admin/brigadas/${brigada.id}`)}
+                          onClick={() => {
+                              navigate(`/${user.usuario.rol === "admin" ? "admin" : "user"}/brigadas/${brigada.id}`)
+                            }
+                          }
                           className="w-full px-4 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
