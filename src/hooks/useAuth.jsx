@@ -3,124 +3,115 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Variables de Entorno
 const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:4000';
 const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
-  const [rol, setRol] = useState(null);
-  const [loading, setLoading] = useState(true); // Inicia en TRUE para esperar la verificación
-  const [token, setToken] = useState(null);
+  // Inicializa a partir de localStorage para no perder sesión tras recarga
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [usuario, setUsuario] = useState(() => {
+    const usuarioGuardado = localStorage.getItem("usuario");
+    return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
+  });
+  const [rol, setRol] = useState(() => usuario ? usuario.rol || null : null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Función auxiliar para limpiar el estado y el almacenamiento local
+
+  // Limpia estados y localStorage para logout
   const clearAuth = () => {
     setToken(null);
     setUsuario(null);
     setRol(null);
     setError(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
   };
 
   useEffect(() => {
+    // Cuando la app inicia o el token cambia, refresca usuario si hay token
     const checkAuthAndFetchUser = async () => {
-      const tokenGuardado = localStorage.getItem("token");
-      
-      if (tokenGuardado) {
+      if (token) {
         try {
-          
-          // INTENTAR OBTENER DATOS FRESCOS DEL SERVIDOR CON EL TOKEN GUARDADO
-          console.log('🔄 Revalidando token y obteniendo datos de usuario...');
-          
           const brigResponse = await axios.get(
             `${BRIGADA_SERVICE_URL}/api/usuarios/me`,
             {
               headers: {
-                Authorization: `Bearer ${tokenGuardado}`
+                Authorization: `Bearer ${token}`
               }
             }
           );
-          
           const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
-          
-          // 2. ESTABLECER ESTADOS CON DATOS DEL SERVIDOR (Rol fresco)
-          setToken(tokenGuardado);
           setUsuario(usuarioBrigada);
           setRol(usuarioBrigada.rol || null);
 
-        
+          // Actualiza usuario localStorage si cambió (mantén sincronizado)
+          localStorage.setItem("usuario", JSON.stringify(usuarioBrigada));
         } catch (err) {
-          // Si hay error (401, 403, 500), forzamos un logout limpio
           console.error('Token inválido, expirado o error en el Backend (500). Forzando logout.', err);
           clearAuth();
         }
       } else {
-        // No hay token guardado, asegurar que los estados están limpios
         clearAuth();
       }
-      
-      // 3. 🛑 SIEMPRE poner FALSE al final del chequeo
       setLoading(false);
     };
 
     checkAuthAndFetchUser();
-  }, []); // Dependencia vacía para ejecutarse solo al montar
+  }, [token]); // Se ejecuta cuando el token cambia
 
+  // LOGIN: actualiza estado y persistencia local
+  const login = async (email, password, hcaptchaToken) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-const login = async (email, password, hcaptchaToken) => {
-  try {
-    setLoading(true);
-    setError(null);
-
-    // 1️Login en Auth Service (Incluyendo el token de hCaptcha)
-    const response = await axios.post(
-      `${AUTH_SERVICE_URL}/login`,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+      // 🚨 No pongas Authorization en login, aún no tienes token
+      const response = await axios.post(
+        `${AUTH_SERVICE_URL}/login`,
+        {
+          email,
+          password,
+          hcaptchaToken
         },
-        email,
-        password,
-        hcaptchaToken
-      },
-    );
-
-    // Obtener correctamente el token
-    const nuevoToken = response.data.session.access_token;
-    if (!nuevoToken) throw new Error('No se recibió token del Auth Service');
-    
-    // Consultar usuario y rol en Brigada
-    const brigResponse = await axios.get(
-      `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
-      {
-        headers: {
-          Authorization: `Bearer ${nuevoToken}`
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    );
+      );
 
-    // 4Extraer usuario brigada correctamente
-    const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
+      const nuevoToken = response.data.session.access_token;
+      if (!nuevoToken) throw new Error('No se recibió token del Auth Service');
 
-    // Actualizar estados en React
-    setToken(nuevoToken);
-    setUsuario(usuarioBrigada);
-    setRol(usuarioBrigada.rol || null);
+      // Obtiene el usuario desde el backend de brigada
+      const brigResponse = await axios.get(
+        `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
+        {
+          headers: {
+            Authorization: `Bearer ${nuevoToken}`
+          }
+        }
+      );
+      const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
 
-    console.log('Login exitoso - Rol:', usuarioBrigada.rol);
+      // Guarda en estado React Y localStorage
+      setToken(nuevoToken);
+      setUsuario(usuarioBrigada);
+      setRol(usuarioBrigada.rol || null);
 
-    return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
-  } catch (err) {
+      localStorage.setItem("token", nuevoToken);
+      localStorage.setItem("usuario", JSON.stringify(usuarioBrigada));
 
-    const mensaje = err.response?.data?.detail || err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
-    setError(mensaje);
-    clearAuth(); 
-    
-    console.error('❌ Error en login:', err);
-    return { success: false, message: mensaje };
-  } finally {
-    setLoading(false);
-  }
-}
+      return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
+    } catch (err) {
+      const mensaje = err.response?.data?.detail || err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
+      setError(mensaje);
+      clearAuth(); 
+      return { success: false, message: mensaje };
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logout = () => {
     clearAuth();
@@ -129,10 +120,9 @@ const login = async (email, password, hcaptchaToken) => {
 
   const tieneRol = (rolRequerido) => {
     if (typeof rolRequerido === 'string') return rol === rolRequerido;
-    return rolRequerido.includes(rol);
+    return Array.isArray(rolRequerido) && rolRequerido.includes(rol);
   };
 
-  // Memorizar el objeto de valor del contexto con useMemo
   const value = useMemo(() => ({
     usuario,
     rol,
@@ -144,7 +134,7 @@ const login = async (email, password, hcaptchaToken) => {
     tieneRol,
     autenticado: !!usuario,
     estaAutenticado: !!token
-  }), [usuario, rol, token, loading, error]); // Dependencias
+  }), [usuario, rol, token, loading, error]);
 
   return (
     <AuthContext.Provider value={value}>
