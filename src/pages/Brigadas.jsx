@@ -23,9 +23,11 @@ const Brigadas = () => {
       const token = user.token;
       if (!token) return alert("¡Necesitas login! 🔑");
 
-      const resBrigadas = await fetch(`${API_URL}/api/brigadas`, {
+      const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas`, {
+        method: "GET",
         headers: { Authorization: `Bearer ${token}` }
       });
+
       const dataBrigadas = await resBrigadas.json();
       setBrigadas(dataBrigadas.data || []);
     };

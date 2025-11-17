@@ -70,7 +70,7 @@ const Perfil = () => {
     };
     
     cargarPerfil();
-  }, [token, API_URL]); // Depender del token para re-ejecutar si cambia
+  }, [token]); // Depender del token para re-ejecutar si cambia
 
   const handleGuardar = async () => {
     if (!token) return setMensaje("No autenticado. No se puede guardar.");
