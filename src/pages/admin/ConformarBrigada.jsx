@@ -466,7 +466,11 @@ const ConformarBrigada = () => {
         </div>
 
         <div>
+          
           <h1>Seleccionar Empleados</h1>
+          <p>Solo saldran los empleados con estado "Disponible"</p>
+
+          <br />
           {empleadosFiltrados.length === 0 ? (
             <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
               <p className="text-gray-500 text-lg">No se encontraron empleados con los filtros aplicados</p>
@@ -474,86 +478,88 @@ const ConformarBrigada = () => {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {empleadosFiltrados.map((empleado) => {
-                const roles = getRolesEmpleado(empleado.id);
-                const tieneAlgunRol = roles.length > 0;
-                const urlFotoPerfil = empleado.foto_url;
+                if (empleado.estado === "Disponible") {
+                  const roles = getRolesEmpleado(empleado.id);
+                  const tieneAlgunRol = roles.length > 0;
+                  const urlFotoPerfil = empleado.foto_url;
 
-                return (
-                  <div key={empleado.id} className={`bg-white rounded-xl border-2 transition-all ${tieneAlgunRol ? 'border-emerald-400 shadow-md' : 'border-gray-200 shadow-sm hover:shadow-md'}`}>
-                    <div className="p-5">
-                      <div className="flex items-start gap-3 mb-4">
+                  return (
+                    <div key={empleado.id} className={`bg-white rounded-xl border-2 transition-all ${tieneAlgunRol ? 'border-emerald-400 shadow-md' : 'border-gray-200 shadow-sm hover:shadow-md'}`}>
+                      <div className="p-5">
+                        <div className="flex items-start gap-3 mb-4">
 
-                          {
-                            urlFotoPerfil ?
-                              <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
-                                  <img src={urlFotoPerfil} alt="Foto" className="w-full h-full object-cover rounded-full"/>
+                            {
+                              urlFotoPerfil ?
+                                <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
+                                    <img src={urlFotoPerfil} alt="Foto" className="w-full h-full object-cover rounded-full"/>
+                                </div>
+                              :
+                              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
+                                {empleado.nombre_completo?.charAt(0) || '?'}
                               </div>
-                            :
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
-                              {empleado.nombre_completo?.charAt(0) || '?'}
-                            </div>
-                          }
+                            }
 
 
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate">{empleado.nombre_completo}</h3>
-                          <p className="text-xs text-gray-500 truncate">{empleado.cedula}</p>
-                          <p className="text-xs text-gray-500 mt-1">{empleado.region}</p>
-                        </div>
-                      </div>
-
-                      {roles.length > 0 && (
-                        <div className="mb-4 pb-4 border-b border-gray-200">
-                          <p className="text-xs font-semibold text-emerald-600 mb-2 uppercase tracking-wide">Roles asignados</p>
-                          <div className="flex flex-wrap gap-2">
-                            {roles.map((rol) => (
-                              <span key={rol} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white ${getRolColor(rol).badge}`}>
-                                {getRolLabel(rol)}
-                              </span>
-                            ))}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900 truncate">{empleado.nombre_completo}</h3>
+                            <p className="text-xs text-gray-500 truncate">{empleado.cedula}</p>
+                            <p className="text-xs text-gray-500 mt-1">{empleado.region}</p>
                           </div>
                         </div>
-                      )}
 
-                      {empleado.signedUrl ? (
-                        <a
-                          href={empleado.signedUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition"
-                        >
-                          Descargar hoja de vida
-                        </a>
-                      ) : (
-                        <div className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-lg">
-                          Sin hoja de vida
-                        </div>
-                      )}
+                        {roles.length > 0 && (
+                          <div className="mb-4 pb-4 border-b border-gray-200">
+                            <p className="text-xs font-semibold text-emerald-600 mb-2 uppercase tracking-wide">Roles asignados</p>
+                            <div className="flex flex-wrap gap-2">
+                              {roles.map((rol) => (
+                                <span key={rol} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white ${getRolColor(rol).badge}`}>
+                                  {getRolLabel(rol)}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
 
-                      <div className="flex gap-2">
-                        {[
-                          { rol: "jefe_brigada", icon: Shield },
-                          { rol: "brigadista", icon: Users },
-                          { rol: "coinvestigador", icon: Briefcase },
-                          { rol: "tecnico_auxiliar", icon: UserCheck }
-                        ].map(({ rol, icon: Icon }) => (
-                          <button
-                            key={rol}
-                            className={`flex-1 p-2 rounded-lg font-medium transition ${
-                              tieneRol(empleado.id, rol)
-                                ? `${getRolColor(rol).badge} text-white`
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                            onClick={() => toggleRol(empleado.id, rol)}
-                            title={getRolLabel(rol)}
+                        {empleado.signedUrl ? (
+                          <a
+                            href={empleado.signedUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition"
                           >
-                            <Icon size={16} className="mx-auto" />
-                          </button>
-                        ))}
+                            Descargar hoja de vida
+                          </a>
+                        ) : (
+                          <div className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-lg">
+                            Sin hoja de vida
+                          </div>
+                        )}
+
+                        <div className="flex gap-2">
+                          {[
+                            { rol: "jefe_brigada", icon: Shield },
+                            { rol: "brigadista", icon: Users },
+                            { rol: "coinvestigador", icon: Briefcase },
+                            { rol: "tecnico_auxiliar", icon: UserCheck }
+                          ].map(({ rol, icon: Icon }) => (
+                            <button
+                              key={rol}
+                              className={`flex-1 p-2 rounded-lg font-medium transition ${
+                                tieneRol(empleado.id, rol)
+                                  ? `${getRolColor(rol).badge} text-white`
+                                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              }`}
+                              onClick={() => toggleRol(empleado.id, rol)}
+                              title={getRolLabel(rol)}
+                            >
+                              <Icon size={16} className="mx-auto" />
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
+                  );
+                }
               })}
             </div>
           )}
