@@ -23,7 +23,7 @@ const EmpleadoDetalle = () => {
 
         setEmpleado(data?.data || null);
 
-        // ✅ Si el empleado tiene hoja de vida, generamos el signed URL
+        //  Si el empleado tiene hoja de vida, generamos el signed URL
         if (data?.data?.hoja_vida_url) {
           const nombreArchivo = encodeURIComponent(
             data.data.hoja_vida_url.split("/").pop()

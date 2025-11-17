@@ -95,7 +95,7 @@ export default function LevantamientoDatos() {
             return;
           }
         } else {
-          // ✅ Si YA existen, usarlos
+          //  Si YA existen, usarlos
           console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
           data = {
             success: true,
@@ -260,7 +260,7 @@ const obtenerColorPorCategoria = (categoria) => {
           setConglomerado(data.conglomerado)
           console.log('✅ Conglomerado cargado:', data.conglomerado)
 
-          // ✅ NUEVO: Traer departamento y municipio del backend
+          //  NUEVO: Traer departamento y municipio del backend
           try {
             const backendResponse = await fetch(
               `${API_LEVANTAMIENTO}/api/levantamiento/conglomerado/${data.conglomerado.id}`
@@ -334,7 +334,7 @@ const obtenerColorPorCategoria = (categoria) => {
         setArboles(data.data || [])
         console.log('✅ Árboles cargados:', data.data)
         
-        // ✅ LLAMAR resumen
+        //  LLAMAR resumen
         console.log(' Llamando cargarResumenSubparcela para:', subparcelaId)
         await cargarResumenSubparcela(subparcelaId)
       }
@@ -381,7 +381,7 @@ const cargarResumenSubparcela = async (subparcelaId) => {
       console.log('✅ RESPUESTA COMPLETA:', JSON.stringify(data, null, 2))
       console.log('🔍 resumen object:', data.resumen)
       
-      // ✅ VERIFICA EXACTAMENTE QUÉ TIENE
+      //  VERIFICA EXACTAMENTE QUÉ TIENE
       if (data.resumen) {
         console.log('📋 Propiedades del resumen:')
         console.log('  - total_arboles:', data.resumen.total_arboles)
