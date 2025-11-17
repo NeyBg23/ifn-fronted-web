@@ -26,20 +26,20 @@ const EmpleadoDetalle = () => {
 
         //  Si el empleado tiene hoja de vida, generamos el signed URL
         if (data?.data?.hoja_vida_url) {
-          const nombreArchivo = encodeURIComponent(
-            data.data.hoja_vida_url.split("/").pop()
-          );
+          const nombreArchivo = data.data.hoja_vida_url.split("/").pop();
 
           const resSigned = await fetch(
-            `${API_URL}/api/hoja-vida/${nombreArchivo}`,
+            `https://fast-api-brigada.vercel.app/hoja-vida/${nombreArchivo}`,
             {
-              headers: { Authorization: `Bearer ${user}` },
+              method: "GET",
+              headers: { Authorization: `Bearer ${user.token}` },
             }
           );
 
           const signedData = await resSigned.json();
-          if (signedData?.signedUrl) {
-            setSignedUrl(signedData.signedUrl);
+
+          if (signedData?.signedURL) {
+            setSignedUrl(signedData.signedURL);
           }
         }
       } catch (error) {
@@ -57,14 +57,6 @@ const EmpleadoDetalle = () => {
 
   return (
     <div className="container mt-4">
-      <button
-        type="button"
-        className="btn btn-outline-danger"
-        onClick={() => navigate(-1)}
-      >
-        ⬅️ Volver
-      </button>
-
       <h2>Empleado: {empleado.nombre_completo}</h2>
       <p><strong>Correo:</strong> {empleado.correo || "No asignado"}</p>
       <p><strong>Región:</strong> {empleado.region}</p>
@@ -87,6 +79,19 @@ const EmpleadoDetalle = () => {
       ) : (
         <p className="text-muted mt-3">No tiene hoja de vida cargada.</p>
       )}
+
+      <br />
+      <br />
+
+      <button 
+        onClick={() => navigate(-1)}
+        className="inline-flex items-center gap-2 px-4 py-2 bg-white text-red-600 border-2 border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Volver
+      </button>
     </div>
   );
 };

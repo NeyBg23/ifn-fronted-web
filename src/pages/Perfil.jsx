@@ -1,7 +1,7 @@
 // Para la animación de aparición de izquierda a su posición fija
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield, Save, ArrowLeftToLine } from "lucide-react";
 import { useAuth } from "../hooks/useAuth"; 
@@ -9,7 +9,7 @@ import { useAuth } from "../hooks/useAuth";
 const Perfil = () => {
   // OBTENER EL USUARIO Y EL TOKEN DEL CONTEXTO
   const { usuario: authUsuario, token } = useAuth(); 
-
+  const navigate = useNavigate();
   // para guardar la respuesta fresca del servidor y forzar la re-renderización del perfil.
   const [usuarioLocal, setUsuarioLocal] = useState(authUsuario); 
   const [loading, setLoading] = useState(true);
@@ -311,15 +311,18 @@ const Perfil = () => {
 
 
           <div className="flex justify-content-center gap-3">
-            <button
-              className="btn btn-danger"
-              onClick={() => window.history.back()}
+
+
+            <button 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-red-600 border-2 border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
             >
-              <div className="flex">
-                <ArrowLeftToLine size={27} className="me-2" />
-                Volver
-              </div>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Volver
             </button>
+
             <button
               style={{ boxShadow: '0 0 10px 1px #1B5E20' }}
               className="btn btn-success btn-lg"
