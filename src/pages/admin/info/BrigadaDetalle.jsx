@@ -28,7 +28,7 @@ const BrigadaDetalle = () => {
             const formData = new FormData();
             formData.append("brigada_id", idbrigada);
 
-            const res = await fetch(`http://127.0.0.1:8001/brigada-brigadista`, {
+            const res = await fetch(`https://fast-api-brigada.vercel.app/brigada-brigadista`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user.token}` },
                 body: formData
