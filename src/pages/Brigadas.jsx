@@ -108,7 +108,6 @@ const Brigadas = () => {
                 <h3>{brigada.nombre}</h3>
                 <p>Responsable: {brigada.jefe_brigada || "No asignado"}</p>
                 <p>Región: {brigada.region}</p>
-                <p>Miembros: 5</p>
                 <p>Estado: <span className={`status-${brigada.estado.toLowerCase()}`}>
                   {brigada.estado}
                 </span></p>
