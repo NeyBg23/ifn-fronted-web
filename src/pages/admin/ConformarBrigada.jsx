@@ -195,15 +195,13 @@ const ConformarBrigada = () => {
       return;
     }
 
-    const token = localStorage.getItem("token");
-
     try {
 
       const response = await fetch(`https://fast-api-brigada.vercel.app/crear-brigada`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${user.token}`
         },
         body: JSON.stringify({
           nombreBrigada,

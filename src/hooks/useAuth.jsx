@@ -13,8 +13,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // Inicia en TRUE para esperar la verificación
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
-  const user = useAuth()
-
   // Función auxiliar para limpiar el estado y el almacenamiento local
   const clearAuth = () => {
     setToken(null);
@@ -25,12 +23,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const checkAuthAndFetchUser = async () => {
-      const tokenGuardado = user.token;
+      const tokenGuardado = localStorage.getItem("token");
       
       if (tokenGuardado) {
         try {
+          
           // INTENTAR OBTENER DATOS FRESCOS DEL SERVIDOR CON EL TOKEN GUARDADO
           console.log('🔄 Revalidando token y obteniendo datos de usuario...');
+          
           const brigResponse = await axios.get(
             `${BRIGADA_SERVICE_URL}/api/usuarios/me`,
             {
@@ -76,7 +76,6 @@ const login = async (email, password, hcaptchaToken) => {
       `${AUTH_SERVICE_URL}/login`,
       {
         headers: {
-          'Authorization': `Bearer ${user.token}`,
           'Content-Type': 'application/json'
         },
         email,
