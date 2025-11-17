@@ -70,7 +70,7 @@ const BrigadaDetalle = () => {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm font-semibold text-emerald-700 mb-1">Ubicación</p>
-                                        <p className="text-gray-700">{brigada.departamento}, {brigada.municipio}</p>
+                                        <p className="text-gray-700">{brigada.departamento && brigada.municipio ? `${brigada.departamento}, ${brigada.municipio}`: "No Asignada"}</p>
                                     </div>
                                 </div>
                                 
@@ -82,7 +82,7 @@ const BrigadaDetalle = () => {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm font-semibold text-emerald-700 mb-1">Región</p>
-                                        <p className="text-gray-700">{brigada.region}</p>
+                                        <p className="text-gray-700">{brigada.region || "No Asignada"}</p>
                                     </div>
                                 </div>
                             </div>
