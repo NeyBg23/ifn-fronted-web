@@ -59,7 +59,7 @@ const BrigadaDetalle = () => {
                         </h2>
                     </div>
                     <div className="p-6">
-                        <div className="flex flex-row  justify-center gap-20">
+                        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-20">
                             <div className="space-y-4">
                                 <div className="flex items-start gap-3">
                                     <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
