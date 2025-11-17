@@ -73,7 +73,7 @@ const ConglomeradoDetalle = () => {
     };
     const fetchComentarios = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8001/comentarios/${idconglomerado}`, {
+        const res = await fetch(`https://fast-api-brigada.vercel.app/comentarios/${idconglomerado}`, {
             headers: { Authorization: `Bearer ${user.token}` },
         });
 
@@ -162,7 +162,7 @@ const ConglomeradoDetalle = () => {
             if (imagenComentario) formData.append('imagen', imagenComentario); 
             
 
-            const response = await fetch(`http://127.0.0.1:8001/generar-comentario`, {
+            const response = await fetch(`https://fast-api-brigada.vercel.app/generar-comentario`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${user.token}`
@@ -239,7 +239,7 @@ const ConglomeradoDetalle = () => {
     const handleEliminarComentario = async (id) => {
         if (window.confirm("¿Estás seguro de eliminar este comentario?")) {
             try {
-                const res = await fetch(`http://127.0.0.1:8001/comentario/${id}`, {
+                const res = await fetch(`https://fast-api-brigada.vercel.app/comentario/${id}`, {
                     method: "DELETE",
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
