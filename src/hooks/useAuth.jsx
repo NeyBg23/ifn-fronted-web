@@ -85,14 +85,17 @@ export function AuthProvider({ children }) {
 
       // Obtiene el usuario desde el backend de brigada
       const brigResponse = await axios.get(
-        `${BRIGADA_SERVICE_URL}/api/usuarios/me`, 
+        `https://fast-api-brigada.vercel.app/usuarios/${response.data.user.email}`, 
         {
           headers: {
             Authorization: `Bearer ${nuevoToken}`
           }
         }
       );
-      const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
+
+      console.log(brigResponse)
+
+      const usuarioBrigada = brigResponse.data;
 
       // Guarda en estado React Y localStorage
       setToken(nuevoToken);
@@ -122,6 +125,12 @@ export function AuthProvider({ children }) {
     if (typeof rolRequerido === 'string') return rol === rolRequerido;
     return Array.isArray(rolRequerido) && rolRequerido.includes(rol);
   };
+
+
+  // Lo que hice fue guardarlo en React para obtener en si toda la información
+  // que necesito en una sola variable y llamar en cualquier archivo
+
+  // El localStorage lo deje para que se quede la sesión guardada
 
   const value = useMemo(() => ({
     usuario,
