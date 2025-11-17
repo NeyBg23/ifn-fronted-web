@@ -93,8 +93,6 @@ export function AuthProvider({ children }) {
         }
       );
 
-      console.log(brigResponse)
-
       const usuarioBrigada = brigResponse.data;
 
       // Guarda en estado React Y localStorage
