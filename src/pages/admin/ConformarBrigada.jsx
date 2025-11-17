@@ -195,7 +195,7 @@ const ConformarBrigada = () => {
 
     try {
 
-      const response = await fetch(`http://127.0.0.1:8001/crear-brigada`, {
+      const response = await fetch(`https://fast-api-brigada.vercel.app/crear-brigada`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
