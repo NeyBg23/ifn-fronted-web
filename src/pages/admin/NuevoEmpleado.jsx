@@ -405,7 +405,6 @@ const NuevoEmpleado = () => {
   // Remover archivo (FOTO DE PERFIL)
   const handleRemoveFileFotoPerfil = () => {
     setFotoPerfil(null);
-    document.getElementById('fotoPerfilInput').value = ''; 
   };
 
   // 5. Remover archivo (HOJA DE VIDA)

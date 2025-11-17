@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
+import { Upload, FileUp, FileText, X } from "lucide-react";
 
 const ConglomeradoDetalle = () => {
     const { idconglomerado } = useParams();
@@ -17,14 +19,19 @@ const ConglomeradoDetalle = () => {
         titulo: "",
         archivo: null
     });
+    const [imagenComentario, setImagenComentario] = useState(null)
+    const user = useAuth();
+
+    useEffect(() => {
+        fetchComentarios();
+  }, [idconglomerado]);
 
     useEffect(() => {
         const fetchConglomerado = async () => {
-            const session = JSON.parse(localStorage.getItem("session"));
             const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
             const res = await fetch(`${API_URL}/api/conglomerados/${idconglomerado}`, {
-                headers: { Authorization: `Bearer ${session?.access_token}` },
+                headers: { Authorization: `Bearer ${user.token}` },
             });
 
             const data = await res.json();
@@ -32,21 +39,6 @@ const ConglomeradoDetalle = () => {
         };
 
         fetchConglomerado();
-
-        setComentarios([
-            {
-                id: 1,
-                contenido: "Trabajo completado exitosamente",
-                fecha_creacion: new Date().toISOString(),
-                usuario_nombre: "Carlos Pinto"
-            },
-            {
-                id: 2,
-                contenido: "Este conglomerado necesita revisión de equipos",
-                fecha_creacion: new Date().toISOString(),
-                usuario_nombre: "Ferney Beltran"
-            }
-        ]);
 
         setInformes([
             {
@@ -70,30 +62,129 @@ const ConglomeradoDetalle = () => {
         ]);
     }, [idconglomerado]);
 
-    const handleAgregarComentario = () => {
-        nuevoComentario = nuevoComentario.trim();
-        if (nuevoComentario === "") {
-            alert("El comentario no puede estar vacío");
-            return;
-        } else if (nuevoComentario.length < 15) {
-            alert("El comentario no tener menos de 15 caracteres.");
-            return;
+    // Manejador de cambios de archivo
+    const handleFileChangeFotoPerfil = (e) => {
+        const file = e.target.files[0];
+        if (file && file.size <= 5 * 1024 * 1024) setImagenComentario(file);
+        else {
+            console.error("El archivo excede el tamaño máximo permitido de 5MB.");
+            setImagenComentario(null);
         }
+    };
+    const fetchComentarios = async () => {
 
-        const session = JSON.parse(localStorage.getItem("session"));
-        const nuevoComent = {
-            id: Date.now(),
-            contenido: nuevoComentario,
-            fecha_creacion: new Date().toISOString(),
-            usuario_nombre: session?.user?.nombre_completo || "Usuario Actual"
-        };
+        const res = await fetch(`http://127.0.0.1:8001/comentarios/${idconglomerado}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+        });
 
-        setComentarios([...comentarios, nuevoComent]);
-        setAlerta(true);
-        setNuevoComentario("");
-        setShowModalComentario(false);
-        
-        setTimeout(() => setAlerta(false), 3000);
+        const data = await res.json();
+        setComentarios(data.data);
+    };
+
+    // Remover archivo 
+    const handleRemoveFileFotoPerfil = () => {
+        setImagenComentario(null);
+    };
+
+    const FileUpload = ({ 
+        file, 
+        handleFileChange, 
+        handleRemoveFile, 
+        id, 
+        label, 
+        accept, 
+        maxSizeMB = 5 
+    }) => {
+        return (
+            <div className="flex flex-col">
+                <label className="mb-2 font-semibold text-slate-700 flex items-center">
+                    <Upload size={20} className="mr-2 text-success" /> {label} (máx {maxSizeMB}MB)
+                </label>
+                
+                {!file ? (
+                    <div
+                        className="border-2 border-dashed border-slate-300 p-6 text-center bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-150"
+                        onClick={() => document.getElementById(id).click()}
+                    >
+
+                    <input
+                        type="file"
+                        id={id}
+                        accept={accept}
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
+
+                    <FileUp size={40} className="text-indigo-600 mx-auto mb-2" />
+
+                    <p className="font-medium text-slate-700">Haz clic para adjuntar archivo</p>
+
+                    <small className="text-slate-500">{accept.split(',').join(', ')}</small>
+                    </div>
+
+                ) : (
+                    <div className="flex items-center justify-between p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+                        <div className="flex items-center gap-3">
+                            <FileText size={24} className="text-indigo-600" />
+                            <div>
+                            <p className="mb-0 font-semibold text-slate-800">{file.name}</p>
+                            <small className="text-slate-600">{(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                            </div>
+                        </div>
+                        <button 
+                            type="button" 
+                            onClick={handleRemoveFile}
+                            className="p-1 rounded-full text-red-600 hover:bg-red-100 transition"
+                            aria-label="Eliminar archivo"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+
+    const handleAgregarComentario = async () => {
+        const contenido = nuevoComentario.trim();
+        if (contenido === "") return alert("El comentario no puede estar vacío");
+        else if (contenido.length < 15) return alert("El comentario no tener menos de 15 caracteres.");
+
+        try {
+            const formData = new FormData();
+
+            formData.append("usuario_id", user.usuario.id)
+            formData.append("usuario_cedula", user.usuario.cedula)
+            formData.append("conglomeradoId", idconglomerado)
+            formData.append("contenido", contenido)
+
+            if (imagenComentario) formData.append('imagen', imagenComentario); 
+            
+
+            const response = await fetch(`http://127.0.0.1:8001/generar-comentario`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                fetchComentarios();
+                setAlerta(true);
+                setNuevoComentario("");
+                setShowModalComentario(false);
+                setImagenComentario(null)
+                
+                setTimeout(() => setAlerta(false), 3000);0
+            } else {
+                alert("Error al generar el comentario");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error de conexión");
+        }
     };
 
     const handleAgregarInforme = () => {
@@ -145,9 +236,20 @@ const ConglomeradoDetalle = () => {
         setTextoEdicion("");
     };
 
-    const handleEliminarComentario = (id) => {
+    const handleEliminarComentario = async (id) => {
         if (window.confirm("¿Estás seguro de eliminar este comentario?")) {
-            setComentarios(comentarios.filter((com) => com.id !== id));
+            try {
+                const res = await fetch(`http://127.0.0.1:8001/comentario/${id}`, {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${user.token}` },
+                });
+
+                const data = await res.json();
+
+                if (data.ok) setComentarios(comentarios.filter((com) => com.id !== id));
+            } catch (err) {
+                console.log(err)
+            }
         }
     };
 
@@ -357,8 +459,29 @@ const ConglomeradoDetalle = () => {
                                                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                                                     <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                                                 </svg>
-                                                                {comentario.usuario_nombre}
+                                                                {comentario.usuario_id}
                                                             </span>
+
+                                                            <br />
+
+                                                            {comentario.imagen_url ? (
+                                                                <a
+                                                                    href={comentario.imagen_url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition"
+                                                                >
+                                                                    Ver Imagen
+                                                                </a>
+                                                            ) : (
+                                                                <div className="block w-full mb-4 px-3 py-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-lg">
+                                                                    Sin Imagen
+                                                                </div>
+                                                            )}
+
+
+                                                            <br />
+
                                                             <span className="text-xs text-gray-500">
                                                                 📅 {formatearFecha(comentario.fecha_creacion)}
                                                             </span>
@@ -528,6 +651,7 @@ const ConglomeradoDetalle = () => {
                                 value={nuevoComentario}
                                 onChange={(e) => setNuevoComentario(e.target.value)}
                             />
+
                             <div className="flex justify-between items-center mt-2">
                                 <small className="text-gray-500">
                                     Caracteres: <span className={nuevoComentario.length < 15 ? "text-red-500 font-bold" : "text-emerald-600 font-bold"}>{nuevoComentario.length}</span>
@@ -536,6 +660,20 @@ const ConglomeradoDetalle = () => {
                                     <small className="text-red-500 font-medium">Mínimo 15 caracteres</small>
                                 )}
                             </div>
+
+                            <br />
+
+                            {/* Para adjuntar una imagen */}
+                            <FileUpload
+                                id="imagenComentarioInput"
+                                label="Imagen de Interes (JPG, PNG)"
+                                accept=".jpg,.jpeg,.png"
+                                file={imagenComentario}
+                                handleFileChange={handleFileChangeFotoPerfil}
+                                handleRemoveFile={handleRemoveFileFotoPerfil}
+                            />
+
+
                         </div>
                         <div className="px-6 py-4 bg-gray-50 flex gap-3 justify-end rounded-b-2xl">
                             <button 
