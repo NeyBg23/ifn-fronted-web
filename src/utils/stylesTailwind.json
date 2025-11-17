@@ -1,0 +1,176 @@
+{
+  "layout": {
+    "container": {
+      "description": "Contenedor centrado y con ancho máximo adaptable.",
+      "example": "<div class=\"container\">...</div>"
+    },
+    "flex": {
+      "description": "Habilita Flexbox.",
+      "example": "<div class=\"flex\">...</div>"
+    },
+    "flex-col": {
+      "description": "Organiza hijos del flex en columna vertical.",
+      "example": "<div class=\"flex flex-col\">...</div>"
+    },
+    "flex-row": {
+      "description": "Organiza hijos del flex en fila horizontal.",
+      "example": "<div class=\"flex flex-row\">...</div>"
+    },
+    "grid": {
+      "description": "Habilita CSS Grid.",
+      "example": "<div class=\"grid grid-cols-2\">...</div>"
+    },
+    "grid-cols-3": {
+      "description": "Define 3 columnas en grid.",
+      "example": "<div class=\"grid grid-cols-3\">...</div>"
+    },
+    "justify-center": {
+      "description": "Centra horizontalmente los elementos del flex/grid.",
+      "example": "<div class=\"flex justify-center\">...</div>"
+    },
+    "items-center": {
+      "description": "Centra verticalmente los elementos del flex/grid.",
+      "example": "<div class=\"flex items-center\">...</div>"
+    },
+    "gap-4": {
+      "description": "Espaciado entre elementos hijos.",
+      "example": "<div class=\"flex gap-4\">...</div>"
+    },
+    "space-y-4": {
+      "description": "Espaciado vertical entre hijos.",
+      "example": "<div class=\"space-y-4\">...</div>"
+    },
+    "space-x-2": {
+      "description": "Espaciado horizontal entre hijos.",
+      "example": "<div class=\"space-x-2\">...</div>"
+    },
+    "w-full": {
+      "description": "El elemento ocupa todo el ancho disponible.",
+      "example": "<div class=\"w-full\">...</div>"
+    },
+    "h-screen": {
+      "description": "Altura igual a la pantalla completa.",
+      "example": "<div class=\"h-screen\">...</div>"
+    }
+  },
+  "padding_margin": {
+    "p-4": {
+      "description": "Padding interno de 1rem en todos los lados.",
+      "example": "<div class=\"p-4\">...</div>"
+    },
+    "px-2": {
+      "description": "Padding horizontal de 0.5rem.",
+      "example": "<div class=\"px-2\">...</div>"
+    },
+    "py-1": {
+      "description": "Padding vertical de 0.25rem.",
+      "example": "<div class=\"py-1\">...</div>"
+    },
+    "m-3": {
+      "description": "Margin externo de 0.75rem.",
+      "example": "<div class=\"m-3\">...</div>"
+    },
+    "mx-auto": {
+      "description": "Margin horizontal automático para centrar el bloque.",
+      "example": "<div class=\"mx-auto\">...</div>"
+    }
+  },
+  "background_colors": {
+    "bg-blue-500": {
+      "description": "Fondo azul, intensidad media.",
+      "example": "<div class=\"bg-blue-500\">...</div>"
+    },
+    "bg-gray-100": {
+      "description": "Fondo gris muy claro.",
+      "example": "<div class=\"bg-gray-100\">...</div>"
+    },
+    "bg-emerald-100": {
+      "description": "Fondo verde esmeralda claro.",
+      "example": "<div class=\"bg-emerald-100\">...</div>"
+    },
+    "bg-red-100": {
+      "description": "Fondo rojo muy claro.",
+      "example": "<div class=\"bg-red-100\">...</div>"
+    }
+  },
+  "borders": {
+    "border": {
+      "description": "Borde de 1px sólido.",
+      "example": "<div class=\"border\">...</div>"
+    },
+    "border-2": {
+      "description": "Borde de 2px.",
+      "example": "<div class=\"border-2\">...</div>"
+    },
+    "rounded-lg": {
+      "description": "Esquinas redondeadas grandes.",
+      "example": "<div class=\"rounded-lg\">...</div>"
+    },
+    "border-gray-200": {
+      "description": "Color de borde gris claro.",
+      "example": "<div class=\"border border-gray-200\">...</div>"
+    }
+  },
+  "text": {
+    "text-center": {
+      "description": "Texto alineado al centro.",
+      "example": "<div class=\"text-center\">...</div>"
+    },
+    "text-left": {
+      "description": "Texto alineado a la izquierda.",
+      "example": "<div class=\"text-left\">...</div>"
+    },
+    "text-lg": {
+      "description": "Texto tamaño grande.",
+      "example": "<div class=\"text-lg\">...</div>"
+    },
+    "text-sm": {
+      "description": "Texto tamaño pequeño.",
+      "example": "<div class=\"text-sm\">...</div>"
+    },
+    "text-emerald-600": {
+      "description": "Texto color verde esmeralda oscuro.",
+      "example": "<div class=\"text-emerald-600\">...</div>"
+    },
+    "font-bold": {
+      "description": "Texto en negrita.",
+      "example": "<span class=\"font-bold\">...</span>"
+    },
+    "font-semibold": {
+      "description": "Texto con seminegrita.",
+      "example": "<span class=\"font-semibold\">...</span>"
+    }
+  },
+  "shadows": {
+    "shadow": {
+      "description": "Sombra suave.",
+      "example": "<div class=\"shadow\">...</div>"
+    },
+    "shadow-md": {
+      "description": "Sombra mediana.",
+      "example": "<div class=\"shadow-md\">...</div>"
+    },
+    "shadow-lg": {
+      "description": "Sombra grande.",
+      "example": "<div class=\"shadow-lg\">...</div>"
+    }
+  },
+  "others": {
+    "transition-all": {
+      "description": "Ajusta todos los estilos de transición en cambios.",
+      "example": "<div class=\"transition-all\">...</div>"
+    },
+    "duration-200": {
+      "description": "Transición de 200ms.",
+      "example": "<div class=\"transition-all duration-200\">...</div>"
+    },
+    "hover:bg-gray-50": {
+      "description": "Cambia el fondo en hover.",
+      "example": "<div class=\"hover:bg-gray-50\">...</div>"
+    },
+    "cursor-pointer": {
+      "description": "Convierte el cursor en mano (puntero).",
+      "example": "<div class=\"cursor-pointer\">...</div>"
+    }
+  }
+}
