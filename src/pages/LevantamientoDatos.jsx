@@ -45,7 +45,7 @@ export default function LevantamientoDatos() {
 
   // MOSTRAR MAPA CON ÁRBOLES DETECTADOS
 
-  const mostrarMapaArboles = async () => {
+const mostrarMapaArboles = async () => {
     try {
       if (!conglomerado || !subparcelaSeleccionada) {
         alert('Debe seleccionar una subparcela primero');
@@ -54,13 +54,11 @@ export default function LevantamientoDatos() {
 
       let data;
 
-      //  Verificar cache
+      // Verificar cache
       if (cacheArboles[subparcelaSeleccionada]) {
         data = cacheArboles[subparcelaSeleccionada];
         console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
       } else {
-        //  CAMBIO PRINCIPAL: Usar GET en lugar de POST
-        // Primero intentar obtener los árboles ya guardados
         const responseGet = await fetch(
           `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
           { method: 'GET', headers: { 'Content-Type': 'application/json' } }
@@ -72,7 +70,6 @@ export default function LevantamientoDatos() {
           arbolesExistentes = dataGet.data || [];
         }
 
-        //  Si no hay árboles, ENTONCES detectar nuevos (una sola vez)
         if (arbolesExistentes.length === 0) {
           console.log('🔍 No hay árboles. Detectando nuevos...');
           
@@ -95,7 +92,6 @@ export default function LevantamientoDatos() {
             return;
           }
         } else {
-          //  Si YA existen, usarlos
           console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
           data = {
             success: true,
@@ -110,22 +106,21 @@ export default function LevantamientoDatos() {
           };
         }
 
-        //  Guardar en cache
         setCacheArboles(prev => ({
           ...prev,
           [subparcelaSeleccionada]: data
         }));
       }
 
-      // ========== REST DEL CÓDIGO (MAPA) ==========
+      // ========== MAPA ==========
       const mapContainer = document.getElementById('mapContainer');
       if (!mapContainer) {
         alert('Contenedor del mapa no encontrado');
         return;
       }
 
-      const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
-      const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
+      const lat = Number(data.arboles?.latitud ?? conglomerado.latitud);
+      const lng = Number(data.arboles?.longitud ?? conglomerado.longitud);
       const coordenadasCentro = [lat, lng];
 
       if (window.mapaActual) {
@@ -167,7 +162,8 @@ export default function LevantamientoDatos() {
         .bindPopup('<b>🎯 Centro de la Subparcela</b>')
         .addTo(mapa);
 
-      data.arboles.forEach((arbol) => {
+      // ✅ CAMBIO: .slice(0, 20) para dibujar solo 20
+      data.arboles.slice(0, 20).forEach((arbol) => {
         const arbolLat = Number(arbol.latitud);
         const arbolLng = Number(arbol.longitud);
         
@@ -201,12 +197,22 @@ export default function LevantamientoDatos() {
           .addTo(mapa);
       });
 
-      alert(` ${data.arboles.length} árboles detectados\n\nDAP promedio: ${data.estadisticas.dap_promedio} cm\nAltura promedio: ${data.estadisticas.altura_promedio} m\n\nVivos: ${data.estadisticas.vivos}, Enfermos: ${data.estadisticas.enfermos}`);
+      // ✅ ACTUALIZAR ALERT
+      const arboles20 = data.arboles.slice(0, 20);
+      alert(`${arboles20.length} árboles mostrados en el mapa
+
+DAP promedio: ${data.estadisticas.dap_promedio} cm
+Altura promedio: ${data.estadisticas.altura_promedio} m
+
+Vivos: ${data.estadisticas.vivos}
+Enfermos: ${data.estadisticas.enfermos}
+Muertos: ${data.estadisticas.muertos}`);
+
     } catch (error) {
       console.error('Error:', error);
       alert('Error mostrando mapa: ' + error.message);
     }
-  };
+};
 
 
 
