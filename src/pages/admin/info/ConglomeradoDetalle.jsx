@@ -305,18 +305,32 @@ const ConglomeradoDetalle = () => {
 
                 {/* Crear brigada */}
                 <div className="mb-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-xl p-6 text-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="text-center md:text-left">
-                            <h3 className="text-xl font-bold mb-2">¿Listo para crear una nueva brigada?</h3>
-                            <p className="text-emerald-50">Gestiona tus brigadas directamente desde este conglomerado</p>
-                        </div>
-                        <button
-                            onClick={() => navigate(`/admin/brigadas/crear-nueva`, { state: { conglomerado: idconglomerado } })}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-600 rounded-xl hover:bg-emerald-50 transition-all duration-200 shadow-lg hover:shadow-xl font-bold whitespace-nowrap"
-                        >
-                            Crear Nueva Brigada
-                        </button>
-                    </div>
+
+                    {
+                        true ? (
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="text-center md:text-left">
+                                    <h3 className="text-xl font-bold mb-2">¿Listo para crear una nueva brigada?</h3>
+                                    <p className="text-emerald-50">Gestiona tus brigadas directamente desde este conglomerado</p>
+                                </div>
+
+                                <button
+                                    onClick={() => navigate(`/admin/brigadas/crear-nueva`, { state: { conglomerado: idconglomerado } })}
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-600 rounded-xl hover:bg-emerald-50 transition-all duration-200 shadow-lg hover:shadow-xl font-bold whitespace-nowrap"
+                                >
+                                    Crear Nueva Brigada
+                                </button>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="text-center md:text-left">
+                                    <h3 className="text-xl font-bold mb-2">¿Listo para crear una nueva brigada?</h3>
+                                    <p className="text-emerald-50">Gestiona tus brigadas directamente desde este conglomerado</p>
+                                </div>
+                            </div>
+                        )
+                    }
+
                 </div>
 
                 {/* Información del conglomerado */}
