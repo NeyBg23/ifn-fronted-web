@@ -119,8 +119,11 @@ const mostrarMapaArboles = async () => {
         return;
       }
 
-      const lat = Number(data.arboles?.latitud ?? conglomerado.latitud);
-      const lng = Number(data.arboles?.longitud ?? conglomerado.longitud);
+    // ✅ CORRECTO - Acceder al PRIMER árbol del array
+    const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
+    const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
+       
+
       const coordenadasCentro = [lat, lng];
 
       if (window.mapaActual) {
