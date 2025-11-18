@@ -46,163 +46,177 @@ export default function LevantamientoDatos() {
   // MOSTRAR MAPA CON ÁRBOLES DETECTADOS
 
 const mostrarMapaArboles = async () => {
-    try {
-      if (!conglomerado || !subparcelaSeleccionada) {
-        alert('Debe seleccionar una subparcela primero');
-        return;
+  try {
+    if (!conglomerado || !subparcelaSeleccionada) {
+      alert('Debe seleccionar una subparcela primero');
+      return;
+    }
+
+    let data;
+
+    // Verificar cache
+    if (cacheArboles[subparcelaSeleccionada]) {
+      data = cacheArboles[subparcelaSeleccionada];
+      console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
+    } else {
+      // GET para obtener árboles guardados
+      const responseGet = await fetch(
+        `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
+        { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      );
+
+      let arbolesExistentes = [];
+      if (responseGet.ok) {
+        const dataGet = await responseGet.json();
+        arbolesExistentes = dataGet.data || [];
       }
 
-      let data;
-
-      // Verificar cache
-      if (cacheArboles[subparcelaSeleccionada]) {
-        data = cacheArboles[subparcelaSeleccionada];
-        console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
-      } else {
-        const responseGet = await fetch(
-          `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
-          { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+      // Si no hay árboles, detectar nuevos
+      if (arbolesExistentes.length === 0) {
+        console.log('🔍 No hay árboles. Detectando nuevos...');
+        
+        const responsePost = await fetch(
+          'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              conglomerado_id: conglomerado.id,
+              subparcela_id: subparcelaSeleccionada
+            })
+          }
         );
 
-        let arbolesExistentes = [];
-        if (responseGet.ok) {
-          const dataGet = await responseGet.json();
-          arbolesExistentes = dataGet.data || [];
+        data = await responsePost.json();
+
+        if (!data.success) {
+          alert('Error: ' + data.error);
+          return;
         }
-
-        if (arbolesExistentes.length === 0) {
-          console.log('🔍 No hay árboles. Detectando nuevos...');
-          
-          const responsePost = await fetch(
-            'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                conglomerado_id: conglomerado.id,
-                subparcela_id: subparcelaSeleccionada
-              })
-            }
-          );
-
-          data = await responsePost.json();
-
-          if (!data.success) {
-            alert('Error: ' + data.error);
-            return;
+      } else {
+        console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
+        data = {
+          success: true,
+          arboles: arbolesExistentes,
+          estadisticas: {
+            dap_promedio: (arbolesExistentes.reduce((a, b) => a + (b.dap || 0), 0) / arbolesExistentes.length).toFixed(2),
+            altura_promedio: (arbolesExistentes.reduce((a, b) => a + (b.altura || 0), 0) / arbolesExistentes.length).toFixed(2),
+            vivos: arbolesExistentes.filter(a => a.condicion === 'vivo').length,
+            enfermos: arbolesExistentes.filter(a => a.condicion === 'enfermo').length,
+            muertos: arbolesExistentes.filter(a => a.condicion === 'muerto').length
           }
-        } else {
-          console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
-          data = {
-            success: true,
-            arboles: arbolesExistentes,
-            estadisticas: {
-              dap_promedio: (arbolesExistentes.reduce((a, b) => a + (b.dap || 0), 0) / arbolesExistentes.length).toFixed(2),
-              altura_promedio: (arbolesExistentes.reduce((a, b) => a + (b.altura || 0), 0) / arbolesExistentes.length).toFixed(2),
-              vivos: arbolesExistentes.filter(a => a.condicion === 'vivo').length,
-              enfermos: arbolesExistentes.filter(a => a.condicion === 'enfermo').length,
-              muertos: arbolesExistentes.filter(a => a.condicion === 'muerto').length
-            }
-          };
-        }
-
-        setCacheArboles(prev => ({
-          ...prev,
-          [subparcelaSeleccionada]: data
-        }));
+        };
       }
 
-      // ========== MAPA ==========
-      const mapContainer = document.getElementById('mapContainer');
-      if (!mapContainer) {
-        alert('Contenedor del mapa no encontrado');
+      // Guardar en cache
+      setCacheArboles(prev => ({
+        ...prev,
+        [subparcelaSeleccionada]: data
+      }));
+    }
+
+    // ========== VERIFICACIÓN CRÍTICA ==========
+    // ✅ VERIFICAR QUE data Y arboles EXISTEN
+    if (!data || !data.arboles || data.arboles.length === 0) {
+      console.error('❌ Error: No hay datos de árboles', data);
+      alert('Error: No se obtuvieron datos de árboles');
+      return;
+    }
+
+    console.log('✅ Datos verificados:');
+    console.log('Total árboles:', data.arboles.length);
+    console.log('Primer árbol:', data.arboles);
+
+    // ========== MAPA ==========
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) {
+      alert('Contenedor del mapa no encontrado');
+      return;
+    }
+
+    // ✅ USAR optional chaining para seguridad
+    const lat = Number(data?.arboles?.latitud ?? conglomerado.latitud);
+    const lng = Number(data?.arboles?.longitud ?? conglomerado.longitud);
+    const coordenadasCentro = [lat, lng];
+
+    console.log('📍 Centro del mapa:', coordenadasCentro);
+
+    if (window.mapaActual) {
+      window.mapaActual.setView(coordenadasCentro, 15);
+      window.mapaActual.eachLayer((layer) => {
+        if (layer instanceof L.CircleMarker || layer instanceof L.Circle) {
+          window.mapaActual.removeLayer(layer);
+        }
+      });
+    } else {
+      window.mapaActual = L.map('mapContainer').setView(coordenadasCentro, 15);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(window.mapaActual);
+    }
+
+    const mapa = window.mapaActual;
+
+    L.circle(coordenadasCentro, {
+      radius: 15,
+      color: '#0033cc',
+      weight: 2,
+      opacity: 0.3,
+      fillOpacity: 0.05
+    })
+      .bindPopup(`<b>Radio Subparcela: 15 m</b><br>Área: 707 m²`)
+      .addTo(mapa);
+
+    L.circleMarker(coordenadasCentro, {
+      radius: 10,
+      fillColor: '#0066ff',
+      color: '#0033cc',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    })
+      .bindPopup('<b>🎯 Centro de la Subparcela</b>')
+      .addTo(mapa);
+
+    // ✅ Dibujar solo 20 árboles
+    data.arboles.slice(0, 20).forEach((arbol) => {
+      const arbolLat = Number(arbol.latitud);
+      const arbolLng = Number(arbol.longitud);
+      
+      if (!isFinite(arbolLat) || !isFinite(arbolLng)) {
         return;
       }
 
-    // ✅ CORRECTO - Acceder al PRIMER árbol del array
-    const lat = Number(data.arboles[0]?.latitud ?? conglomerado.latitud);
-    const lng = Number(data.arboles[0]?.longitud ?? conglomerado.longitud);
-       
+      const color = obtenerColorPorCategoria(arbol.categoria);
 
-      const coordenadasCentro = [lat, lng];
-
-      if (window.mapaActual) {
-        window.mapaActual.setView(coordenadasCentro, 15);
-        window.mapaActual.eachLayer((layer) => {
-          if (layer instanceof L.CircleMarker || layer instanceof L.Circle) {
-            window.mapaActual.removeLayer(layer);
-          }
-        });
-      } else {
-        window.mapaActual = L.map('mapContainer').setView(coordenadasCentro, 15);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors',
-          maxZoom: 19
-        }).addTo(window.mapaActual);
-      }
-
-      const mapa = window.mapaActual;
-
-      L.circle(coordenadasCentro, {
-        radius: 15,
-        color: '#0033cc',
-        weight: 2,
-        opacity: 0.3,
-        fillOpacity: 0.05
-      })
-        .bindPopup(`<b>Radio Subparcela: 15 m</b><br>Área: 707 m²`)
-        .addTo(mapa);
-
-      L.circleMarker(coordenadasCentro, {
-        radius: 10,
-        fillColor: '#0066ff',
-        color: '#0033cc',
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.8
-      })
-        .bindPopup('<b>🎯 Centro de la Subparcela</b>')
-        .addTo(mapa);
-
-      // ✅ CAMBIO: .slice(0, 20) para dibujar solo 20
-      data.arboles.slice(0, 20).forEach((arbol) => {
-        const arbolLat = Number(arbol.latitud);
-        const arbolLng = Number(arbol.longitud);
-        
-        if (!isFinite(arbolLat) || !isFinite(arbolLng)) {
-          return;
+      L.circleMarker(
+        [arbolLat, arbolLng],
+        {
+          radius: 6,
+          fillColor: color,
+          color: color,
+          weight: 1,
+          opacity: 0.9,
+          fillOpacity: 0.7
         }
-
-        const color = obtenerColorPorCategoria(arbol.categoria);
-
-        L.circleMarker(
-          [arbolLat, arbolLng],
-          {
-            radius: 6,
-            fillColor: color,
-            color: color,
-            weight: 1,
-            opacity: 0.9,
-            fillOpacity: 0.7
-          }
+      )
+        .bindPopup(
+          `<div style="font-family: Arial; font-size: 12px;">
+            <b>🌳 Árbol ${arbol.numero_arbol}</b><br>
+            <b>Categoría:</b> ${arbol.categoria}<br>
+            <b>DAP:</b> ${arbol.dap} cm<br>
+            <b>Altura:</b> ${arbol.altura} m<br>
+            <b>Condición:</b> ${arbol.condicion}<br>
+            <b>Confianza:</b> ${(arbol.confianza * 100).toFixed(0)}%
+          </div>`
         )
-          .bindPopup(
-            `<div style="font-family: Arial; font-size: 12px;">
-              <b>🌳 Árbol ${arbol.numero_arbol}</b><br>
-              <b>Categoría:</b> ${arbol.categoria}<br>
-              <b>DAP:</b> ${arbol.dap} cm<br>
-              <b>Altura:</b> ${arbol.altura} m<br>
-              <b>Condición:</b> ${arbol.condicion}<br>
-              <b>Confianza:</b> ${(arbol.confianza * 100).toFixed(0)}%
-            </div>`
-          )
-          .addTo(mapa);
-      });
+        .addTo(mapa);
+    });
 
-      // ✅ ACTUALIZAR ALERT
-      const arboles20 = data.arboles.slice(0, 20);
-      alert(`${arboles20.length} árboles mostrados en el mapa
+    const arboles20 = data.arboles.slice(0, 20);
+    alert(`${arboles20.length} árboles mostrados en el mapa
 
 DAP promedio: ${data.estadisticas.dap_promedio} cm
 Altura promedio: ${data.estadisticas.altura_promedio} m
@@ -211,10 +225,10 @@ Vivos: ${data.estadisticas.vivos}
 Enfermos: ${data.estadisticas.enfermos}
 Muertos: ${data.estadisticas.muertos}`);
 
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error mostrando mapa: ' + error.message);
-    }
+  } catch (error) {
+    console.error('❌ Error:', error);
+    alert('Error mostrando mapa: ' + error.message);
+  }
 };
 
 
