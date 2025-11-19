@@ -134,9 +134,11 @@ const mostrarMapaArboles = async () => {
       return;
     }
 
-    // ✅ USAR optional chaining para seguridad
-    const lat = Number(data?.arboles?.latitud ?? conglomerado.latitud);
-    const lng = Number(data?.arboles?.longitud ?? conglomerado.longitud);
+    //  USAR optional chaining para seguridad
+
+    const lat = Number(data?.arboles?.[0]?.latitud ?? conglomerado.latitud);
+    const lng = Number(data?.arboles?.[0]?.longitud ?? conglomerado.longitud);
+
     const coordenadasCentro = [lat, lng];
 
     console.log('📍 Centro del mapa:', coordenadasCentro);
@@ -590,7 +592,7 @@ const cargarResumenSubparcela = async (subparcelaId) => {
         <p><strong>Departamento:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.departamento || 'Cargando...'}</span></p>
         <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.municipio || 'Cargando...'}</span></p>
         <p><strong>Ubicación:</strong> {conglomerado.ubicacion || 'N/A'}</p>
-        <p><strong>Coordenadas:</strong> {conglomerado.latitud}, {conglomerado.longitud}</p>
+        <p><strong>Coordenadas:</strong> Lat: {conglomerado?.latitud?.toFixed(6)}, Long: {conglomerado?.longitud?.toFixed(6)}</p>
         <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
       </div>
     </div>
