@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import HCaptcha from '@hcaptcha/react-hcaptcha'; // Importamos hCaptcha
+import HCaptcha from "@hcaptcha/react-hcaptcha"; // Importamos hCaptcha
 import arbolColombiano from "../img/arbolColombiano.png"
 const HCATCHA_SITE_KEY = "58942e22-4f6c-463c-a4b0-e80c6ace7692"; 
 
