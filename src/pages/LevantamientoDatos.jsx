@@ -204,11 +204,12 @@ export default function LevantamientoDatos() {
         .addTo(mapa);
 
       // ✅ Dibujar árboles con coordenadas CALCULADAS
+      // ✅ Dibujar árboles con coordenadas CALCULADAS desde el CENTRO DE LA SUBPARCELA
       data.arboles.slice(0, 20).forEach((arbol) => {
         // Calcular coordenadas a partir de azimut y distancia
         const [arbolLat, arbolLng] = calcularCoordenadas(
-          Number(conglomerado.latitud) || 4.6097,
-          Number(conglomerado.longitud) || -74.0817,
+          coordenadasCentro[0],  // ✅ Centro real de la SUBPARCELA
+          coordenadasCentro[1],
           arbol.azimut || 0,
           arbol.distancia || 100
         );
