@@ -140,10 +140,26 @@ export default function LevantamientoDatos() {
       }
 
       // Centro del mapa: conglomerado
-      const coordenadasCentro = [
-        Number(conglomerado.latitud) || 4.6097,
-        Number(conglomerado.longitud) || -74.0817
-      ];
+      //const coordenadasCentro = [
+        //Number(conglomerado.latitud) || 4.6097,
+        //Number(conglomerado.longitud) || -74.0817
+      //];
+
+      const obtenerCentroSubparcela = () => {
+        // ✅ Mapeo con UUIDs reales a coordenadas
+        const centros = {
+          '8c7e0893-8800-403c-bb5d-403bec4f3e27': [4.790639, -73.829806],  // SP1 Centro
+          '1b12b55c-9986-4989-b5fe-ca2fc33bfccc': [4.792437, -73.829806],  // SP2 Norte
+          '2d7738f2-f995-479d-9d19-801e91091821': [4.790639, -73.827394],  // SP3 Este
+          'aef3af41-312b-42b1-a1a3-ec5fb87ef41f': [4.788841, -73.829806],  // SP4 Sur
+          '63fe16cb-6c44-4708-b592-aa9e2eebe78e': [4.790639, -73.832218]   // SP5 Oeste
+        };
+        return centros[subparcelaSeleccionada] || [4.790639, -73.829806];
+      };
+
+
+      // ✅ Asigna correctamente el centro según subparcela seleccionada
+      const coordenadasCentro = obtenerCentroSubparcela();
 
       // Inicializar o actualizar mapa
       if (window.mapaActual) {
@@ -163,6 +179,7 @@ export default function LevantamientoDatos() {
 
       const mapa = window.mapaActual;
 
+
       // Dibujar radio de subparcela (15m)
       L.circle(coordenadasCentro, {
         radius: 15,
@@ -176,7 +193,7 @@ export default function LevantamientoDatos() {
 
       // Dibujar centro
       L.circleMarker(coordenadasCentro, {
-        radius: 10,
+        radius: 6,
         fillColor: '#0066ff',
         color: '#0033cc',
         weight: 2,
@@ -314,15 +331,45 @@ const obtenerColorPorCategoria = (categoria) => {
   // ========== CARGAR SUBPARCELAS ==========
   const cargarSubparcelas = async (conglomeradoId) => {
     try {
-      // Aquí se cargarían desde el backend si existiera el endpoint
-      // Por ahora, se crean 5 subparcelas estándar del IFN
+      // ✅ UUIDs reales de las subparcelas en Supabase
       const subparcelas_temp = [
-        { id: 'sp1', numero: 1, nombre: 'Subparcela 1 (Centro)' },
-        { id: 'sp2', numero: 2, nombre: 'Subparcela 2 (Norte)' },
-        { id: 'sp3', numero: 3, nombre: 'Subparcela 3 (Este)' },
-        { id: 'sp4', numero: 4, nombre: 'Subparcela 4 (Sur)' },
-        { id: 'sp5', numero: 5, nombre: 'Subparcela 5 (Oeste)' }
+        { 
+          id: '8c7e0893-8800-403c-bb5d-403bec4f3e27', 
+          numero: 1, 
+          nombre: 'Subparcela 1 (Centro)',
+          latitud: 4.790639,
+          longitud: -73.829806
+        },
+        { 
+          id: '1b12b55c-9986-4989-b5fe-ca2fc33bfccc', 
+          numero: 2, 
+          nombre: 'Subparcela 2 (Norte)',
+          latitud: 4.792437,
+          longitud: -73.829806
+        },
+        { 
+          id: '2d7738f2-f995-479d-9d19-801e91091821', 
+          numero: 3, 
+          nombre: 'Subparcela 3 (Este)',
+          latitud: 4.790639,
+          longitud: -73.827394
+        },
+        { 
+          id: 'aef3af41-312b-42b1-a1a3-ec5fb87ef41f', 
+          numero: 4, 
+          nombre: 'Subparcela 4 (Sur)',
+          latitud: 4.788841,
+          longitud: -73.829806
+        },
+        { 
+          id: '63fe16cb-6c44-4708-b592-aa9e2eebe78e', 
+          numero: 5, 
+          nombre: 'Subparcela 5 (Oeste)',
+          latitud: 4.790639,
+          longitud: -73.832218
+        }
       ]
+
       setSubparcelas(subparcelas_temp)
       if (subparcelas_temp.length > 0) {
         setSubparcelaSeleccionada(subparcelas_temp[0].id)
