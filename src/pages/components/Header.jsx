@@ -3,7 +3,7 @@ import { useAuth } from '../../hooks/useAuth.jsx';
 import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList, Leaf } from "lucide-react";
 import { useState } from 'react';
 import arbolColombiano from "../../img/arbolColombiano.png";
-import Modal from './modal.jsx';
+import Modal from './Modal.jsx';
 
 export default function Header() {
   const navigate = useNavigate();
