@@ -574,14 +574,15 @@ const cargarResumenSubparcela = async (subparcelaId) => {
     }}>
       <h2>✅ Conglomerado Asignado</h2>
       <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <p><strong>Código:</strong> {conglomerado.codigo}</p>
-        <p><strong>Departamento:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.departamento || 'Cargando...'}</span></p>
-        <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado.municipio || 'Cargando...'}</span></p>
-        <p><strong>Ubicación:</strong> {conglomerado.ubicacion || 'N/A'}</p>
-        <p><strong>Coordenadas:</strong> Lat: {conglomerado?.latitud?.toFixed(6)}, Long: {conglomerado?.longitud?.toFixed(6)}</p>
+        <p><strong>Código:</strong> {conglomerado?.codigo || 'N/A'}</p>
+        <p><strong>Departamento:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado?.departamento || 'Cundinamarca'}</span></p>
+        <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado?.municipio || 'Cargando (zona de prueba)'}</span></p>
+        <p><strong>Ubicación:</strong> {conglomerado?.ubicacion || 'Zona de prueba cerca de Bogotá'}</p>
+        <p><strong>Coordenadas:</strong> Lat: {conglomerado?.latitud ? conglomerado.latitud.toFixed(6) : '4.609700'}, Long: {conglomerado?.longitud ? conglomerado.longitud.toFixed(6) : '-74.081700'}</p>
         <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
       </div>
     </div>
+
 
 
       {/* RESUMEN GENERAL */}
