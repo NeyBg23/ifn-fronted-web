@@ -149,20 +149,111 @@ const BrigadaDetalle = () => {
                         </div>
                     </div>
 
-                    <div className="p-6">
+                    <br />
+
+
+                    <div className="flex flex-col md:flex-row p-3 justify-center gap-10 md:gap-20">
                         {empleados && empleados?.length > 0 ? (
-                            empleados.map((empleado) => {
+                            empleados.map((emp) => {
                                 return (
-                                    <div key={empleado.id}>
-                                        <h2>Empleado {empleado.usuario.nombre_completo}</h2>
+                                    <div 
+                                    key={emp.usuario_id} 
+                                    className="bg-gradient-to-br cursor-pointer w-100 from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
+                                    >
+                                    {/* Header del Card */}
+                                    <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
+                                        <h3 className="text-lg font-bold text-white truncate">
+                                        {emp.usuario.nombre_completo}
+                                        </h3>
+                                    </div>
+
+                                    {/* Body del Card */}
+                                    <div className="p-6 space-y-4">
+                                        {/* Información Principal */}
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-1">Correo</p>
+                                                    <p className="text-sm text-gray-700 truncate">{emp.usuario.correo}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v10a2 2 0 002 2h5m0-12V4a2 2 0 012-2h4a2 2 0 012 2v4m0 0h5a2 2 0 012 2v10a2 2 0 01-2 2h-5m0 0V9a2 2 0 012-2" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-1">Cédula</p>
+                                                    <p className="text-sm text-gray-700">{emp.usuario.cedula || "No asignada"}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-1">Región</p>
+                                                    <p className="text-sm text-gray-700">{emp.usuario.region}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.934-8.899-2.645m16.334-12A23.931 23.931 0 0112 3c-3.183 0-6.22.934-8.899 2.645m0 0v.006v.015v.02m8.899-2.645h.008v.008h-.008v-.008m0 0c3.183 0 6.22.934 8.899 2.645m-16.334 0l-.005-.006L3.102 7.645" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-1">Cargo</p>
+                                                    <p className="text-sm text-gray-700">{emp.usuario.cargo || "No asignado"}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-semibold text-emerald-700 mb-1">Descripción</p>
+                                                    <p className="text-sm text-gray-700 line-clamp-2">{emp.usuario.descripcion}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-4 border-t border-emerald-100">
+                                        <button
+                                            onClick={() => navigate(`/admin/empleados/${emp.usuario_id}`)}
+                                            className="w-full px-4 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            Ver Empleado
+                                        </button>
+                                        </div>
+                                    </div>
                                     </div>
                                 )
                             })
                             ) : (
-                                <h1>No hay Empleado</h1>
+                                <h1 className="">No hay Empleados</h1>
                             )
                         }
                     </div>
+                    <br />
                 </div>
             </div>
 
