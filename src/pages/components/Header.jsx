@@ -17,7 +17,7 @@ export default function Header() {
     setTimeout(()=> {
       logout();
       navigate("/");
-    }, 5000)
+    }, 3000)
   };
 
   return (
@@ -27,12 +27,12 @@ export default function Header() {
         show={modalOpen}
         titulo="¡Hasta luego!"
         onClose={() => setModalOpen(false)}
-        mensaje="La sesión se cerrara en 5 segundos."
+        mensaje="La sesión se cerrara en 3 segundos..."
       />
 
       <nav className="navbar fixed-top navbar-dark" style={{ backgroundColor: '#1b5e20', boxShadow: '0 12px 5px rgba(16, 209, 42, 0.1)' }}>
         <div className="container-fluid">
-          <a className="navbar-brand flex gap-3 space-y-1" href="/admin">
+          <a className="navbar-brand flex gap-3 space-y-1" href={ user.rol === "admin" ? "/admin" : "/user"}>
             <img src={arbolColombiano} alt="arbol" className='w-10'/>
             <p className='font-bold'>Inventario Forestal Nacional</p>
           </a>
@@ -60,14 +60,7 @@ export default function Header() {
               <h3 className="offcanvas-title text-white container flex" id="offcanvasDarkNavbarLabel">
                 <User size={25} className="me-2" />
                 {
-                  user.rol === "admin" ?
-                  (
-                    "Panel Administrativo"
-                  ) : 
-                  (
-                    "Panel Brigadista"
-
-                  )
+                  user.rol === "admin" ? "Panel Administrativo" : "Panel Brigadista"
                 }
               </h3>
               <button
