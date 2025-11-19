@@ -152,7 +152,7 @@ const BrigadaDetalle = () => {
                     <br />
 
 
-                    <div className="flex flex-col md:flex-row p-3 justify-center gap-10 md:gap-20">
+                    <div className="flex flex-col md:flex-row p-5 justify-center gap-2 md:gap-20">
                         {empleados && empleados?.length > 0 ? (
                             empleados.map((emp) => {
                                 return (
