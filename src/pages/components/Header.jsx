@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth.jsx';
 import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList, Leaf } from "lucide-react";
 import { useState } from 'react';
 import Modal from "./Modal.jsx";
+import arbolColombiano from "../../img/arbolColombiano.png";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function Header() {
 
   return (
     <div className="admin-layout-container">
+      {console.log(arbolColombiano)}
       <Modal
         show={modalOpen}
         titulo="¡Hasta luego!"
@@ -29,8 +31,8 @@ export default function Header() {
       />
       <nav className="navbar fixed-top navbar-dark" style={{ backgroundColor: '#1b5e20', boxShadow: '0 12px 5px rgba(16, 209, 42, 0.1)' }}>
         <div className="container-fluid">
-          <a className="navbar-brand flex gap-2" href="/admin">
-            <i className="fas fa-tree text-3xl text-green-500"></i>
+          <a className="navbar-brand flex gap-3" href="/admin">
+            <img src={arbolColombiano} alt="arbol" className='w-10'/>
             <p className='font-bold'>Inventario Forestal Nacional</p>
           </a>
           <button

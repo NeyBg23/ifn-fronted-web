@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import HCaptcha from '@hcaptcha/react-hcaptcha'; // Importamos hCaptcha
-
+import HCaptcha from "@hcaptcha/react-hcaptcha"; // Importamos hCaptcha
+import arbolColombiano from "../img/arbolColombiano.png"
 const HCATCHA_SITE_KEY = "58942e22-4f6c-463c-a4b0-e80c6ace7692"; 
 
 function Login() {
@@ -76,7 +76,7 @@ function Login() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-5">
-                <i className="fas fa-tree text-3xl text-green-500"></i>
+                <img src={arbolColombiano} alt="arbol" className='w-10'/>
                 <h1 className="text-2xl font-bold text-white">Inventario Forestal Nacional</h1>
               </div>
               <p className="text-green-100">República de Colombia</p>
