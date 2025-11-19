@@ -3,7 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from "./components/Login";
 import NoAutorizado from "./pages/NoAutorizado";
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
-import HomeAdmin from "./pages/admin/Home";
+import Home from "./pages/Home.jsx";
 import Brigadas from "./pages/Brigadas.jsx";
 import Conglomerados from "./pages/Conglomerados.jsx";
 import Empleados from "./pages/admin/Empleados";
@@ -13,7 +13,6 @@ import EmpleadoDetalle from "./pages/admin/info/EmpleadoDetalle";
 import ConglomeradoDetalle from "./pages/admin/info/ConglomeradoDetalle";
 import ConformarBrigada from "./pages/admin/ConformarBrigada";
 import ScrollToTop from "./pages/ScrollTop.jsx";
-import HomeUser from "./pages/user/Home";
 import "./styles/App.css";
 import UserLayout from "./pages/user/UserLayout.jsx";
 import NuevoEmpleado from "./pages/admin/NuevoEmpleado.jsx";
@@ -34,7 +33,7 @@ function App() {
             <ProtectedRoute component={AdminLayout} requiredRole="admin" />
         }>
           {/* Estas rutas están anidadas DENTRO de AdminLayout */}
-          <Route index element={<HomeAdmin />} />
+          <Route index element={<Home />} />
           
           <Route path="perfil" element={<Perfil />}/>
 
@@ -55,7 +54,7 @@ function App() {
         <Route path="/user/*" element={
           <ProtectedRoute component={UserLayout}/>
         }>
-          <Route index element={<HomeUser />} /> 
+          <Route index element={<Home />} /> 
           <Route path="perfil" element={<Perfil /> } 
           
           />
