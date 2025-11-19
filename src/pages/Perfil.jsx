@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield, Save, ArrowLeftToLine } from "lucide-react";
 import { useAuth } from "../hooks/useAuth"; 
+import { Regiones, Departamentos } from "../utils/ubicacion.json"
 
 const Perfil = () => {
   // OBTENER EL USUARIO Y EL TOKEN DEL CONTEXTO
@@ -163,6 +164,9 @@ const Perfil = () => {
               ></button>
             </div>
           )}
+
+
+          {console.log(Regiones)}
 
           <div className="flex flex-col md:flex-row">
 

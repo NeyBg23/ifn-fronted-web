@@ -3,6 +3,7 @@ import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-re
 import { useLocation } from "react-router-dom";
 import Modal from "../components/modal";
 import { useAuth } from "../../hooks/useAuth";
+import { Regiones, Departamentos } from "../../utils/ubicacion.json"
 
 const ConformarBrigada = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -21,56 +22,6 @@ const ConformarBrigada = () => {
   const user = useAuth()
 
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
-
-  const regionesDepartamentos = {
-    "Amazonía": {
-      departamentos: ["Amazonas", "Caquetá", "Guainía", "Guaviare", "Putumayo", "Vaupés", "Vichada"]
-    },
-    "Caribe": {
-      departamentos: ["Atlántico", "Bolívar", "Cesar", "Córdoba", "La Guajira", "Magdalena", "Sucre"]
-    },
-    "Andina": {
-      departamentos: ["Antioquia", "Boyacá", "Caldas", "Cauca", "Cundinamarca", "Huila", "Nariño", "Quindío", "Risaralda", "Santander", "Tolima", "Valle del Cauca"]
-    },
-    "Orinoquía": {
-      departamentos: ["Arauca", "Casanare", "Meta"]
-    }
-  };
-
-  const departamentosYMunicipios = {
-    "": [],
-    "Amazonas": ["Leticia", "Puerto Nariño"],
-    "Antioquia": ["Medellín", "Bello", "Envigado", "Itagüí"],
-    "Arauca": ["Arauca", "Arauquita", "Fortul"],
-    "Atlántico": ["Barranquilla", "Soledad", "Malambo"],
-    "Bolívar": ["Cartagena", "Turbaco", "Santa Rosa de Lima"],
-    "Boyacá": ["Tunja", "Duitama", "Sogamoso"],
-    "Caldas": ["Manizales", "Villamaría", "Neira"],
-    "Caquetá": ["Florencia", "La Montañita"],
-    "Casanare": ["Yopal", "Aguazul"],
-    "Cauca": ["Popayán", "Puracé", "Piamonte"],
-    "Cesar": ["Valledupar", "Chiriguaná"],
-    "Chocó": ["Quibdó", "Istmina"],
-    "Córdoba": ["Montería", "Cereté"],
-    "Cundinamarca": ["Bogotá", "Soacha", "Fusagasugá"],
-    "Guainía": ["Inírida"],
-    "Guaviare": ["San José del Guaviare"],
-    "Huila": ["Neiva", "Pitalito"],
-    "La Guajira": ["Riohacha", "Maicao"],
-    "Magdalena": ["Santa Marta", "Ciénaga"],
-    "Meta": ["Villavicencio", "Acacías"],
-    "Nariño": ["Pasto", "Ipiales"],
-    "Norte de Santander": ["Cúcuta", "Ocaña"],
-    "Putumayo": ["Mocoa", "Puerto Caicedo"],
-    "Quindío": ["Armenia"],
-    "Risaralda": ["Pereira", "Dosquebradas"],
-    "Santander": ["Bucaramanga", "Floridablanca"],
-    "Sucre": ["Sincelejo", "Colosó"],
-    "Tolima": ["Ibagué", "Espinal"],
-    "Valle del Cauca": ["Cali", "Palmira"],
-    "Vaupés": ["Mitú"],
-    "Vichada": ["Puerto Carreño"]
-  };
 
   useEffect(() => {
     const fetchEmpleados = async () => {
@@ -121,7 +72,7 @@ const ConformarBrigada = () => {
 
   const getDepartamentosPorRegion = () => {
     if (!region) return [];
-    return regionesDepartamentos[region]?.departamentos || [];
+    return Regiones[region]?.departamentos || [];
   };
 
   const handleRegionChange = (newRegion) => {
@@ -337,7 +288,7 @@ const ConformarBrigada = () => {
                       disabled={!departamento}
                     >
                       <option value="">Seleccionar municipio</option>
-                      {departamento && departamentosYMunicipios[departamento]?.map((mun) => (
+                      {departamento && Departamentos[departamento]?.map((mun) => (
                         <option key={mun} value={mun}>{mun}</option>
                       ))}
                     </select>
