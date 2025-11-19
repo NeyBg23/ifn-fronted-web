@@ -290,7 +290,8 @@ const obtenerColorPorCategoria = (categoria) => {
           // ✅ BRIGADA devuelve TODO lo que necesitamos
           setConglomerado(data.conglomerado)
           console.log('✅ Árboles cargados:', data.data)
-          console.log(' Llamando cargarResumenSubparcela para:', subparcelaId)
+          console.log(' Llamando cargarResumenSubparcela para:', subparcelaSeleccionada
+)
 
           // Cargar subparcelas
           cargarSubparcelas(data.conglomerado.id)
@@ -332,13 +333,13 @@ const obtenerColorPorCategoria = (categoria) => {
     }
   }
 
-  const cargarArboles = async (subparcelaId) => {
+  const cargarArboles = async (subparcelaSeleccionada) => {
     try {
-      console.log(' Iniciando cargarArboles para:', subparcelaId)
+      console.log(' Iniciando cargarArboles para:', subparcelaSeleccionada)
       setCargandoArboles(true)
       
       const response = await fetch(
-        `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaId}`,
+        `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
         { method: 'GET', headers: { 'Content-Type': 'application/json' } }
       )
 
@@ -348,8 +349,8 @@ const obtenerColorPorCategoria = (categoria) => {
         console.log('✅ Árboles cargados:', data.data)
         
         //  LLAMAR resumen
-        console.log(' Llamando cargarResumenSubparcela para:', subparcelaId)
-        await cargarResumenSubparcela(subparcelaId)
+        console.log(' Llamando cargarResumenSubparcela para:', subparcelaSeleccionada)
+        await cargarResumenSubparcela(subparcelaSeleccionada)
       }
       setCargandoArboles(false)
     } catch (err) {
@@ -384,10 +385,11 @@ const obtenerColorPorCategoria = (categoria) => {
   }
 
   // ========== CARGAR RESUMEN SUBPARCELA ==========
-  const cargarResumenSubparcela = async (subparcelaId) => {
+  const cargarResumenSubparcela = async (subparcelaSeleccionada
+) => {
     try {
       const response = await fetch(
-        `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaId}`,
+        `${API_LEVANTAMIENTO}/api/levantamiento/resumen-subparcela/${subparcelaSeleccionada}`,
         { method: 'GET', headers: { 'Content-Type': 'application/json' } }
       )
 
@@ -521,9 +523,9 @@ const obtenerColorPorCategoria = (categoria) => {
 
 
   // ========== CAMBIAR SUBPARCELA ==========
-  const cambiarSubparcela = (subparcelaId) => {
-    setSubparcelaSeleccionada(subparcelaId)
-    cargarArboles(subparcelaId)
+  const cambiarSubparcela = (subparcelaSeleccionada) => {
+    setSubparcelaSeleccionada(subparcelaSeleccionada)
+    cargarArboles(subparcelaSeleccionada)
   }
 
   // ========== RENDERIZADO ==========
