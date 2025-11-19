@@ -165,9 +165,6 @@ const Perfil = () => {
             </div>
           )}
 
-
-          {console.log(Regiones)}
-
           <div className="flex flex-col md:flex-row">
 
             <div data-aos="fade-right" className="card mb-4">

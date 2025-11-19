@@ -22,12 +22,14 @@ export default function Header() {
 
   return (
     <div className="admin-layout-container">
+
       <Modal
         show={modalOpen}
         titulo="¡Hasta luego!"
         onClose={() => setModalOpen(false)}
         mensaje="La sesión se cerrara en 5 segundos."
       />
+
       <nav className="navbar fixed-top navbar-dark" style={{ backgroundColor: '#1b5e20', boxShadow: '0 12px 5px rgba(16, 209, 42, 0.1)' }}>
         <div className="container-fluid">
           <a className="navbar-brand flex gap-3 space-y-1" href="/admin">
@@ -57,7 +59,16 @@ export default function Header() {
             <div className="offcanvas-header">
               <h3 className="offcanvas-title text-white container flex" id="offcanvasDarkNavbarLabel">
                 <User size={25} className="me-2" />
-                Panel Administrativo
+                {
+                  user.rol === "admin" ?
+                  (
+                    "Panel Administrativo"
+                  ) : 
+                  (
+                    "Panel Brigadista"
+
+                  )
+                }
               </h3>
               <button
                 type="button"
