@@ -22,7 +22,6 @@ export default function Header() {
 
   return (
     <div className="admin-layout-container">
-      {console.log(arbolColombiano)}
       <Modal
         show={modalOpen}
         titulo="¡Hasta luego!"
@@ -31,7 +30,7 @@ export default function Header() {
       />
       <nav className="navbar fixed-top navbar-dark" style={{ backgroundColor: '#1b5e20', boxShadow: '0 12px 5px rgba(16, 209, 42, 0.1)' }}>
         <div className="container-fluid">
-          <a className="navbar-brand flex gap-3" href="/admin">
+          <a className="navbar-brand flex gap-3 space-y-1" href="/admin">
             <img src={arbolColombiano} alt="arbol" className='w-10'/>
             <p className='font-bold'>Inventario Forestal Nacional</p>
           </a>
