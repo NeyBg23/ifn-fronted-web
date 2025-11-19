@@ -1,21 +1,32 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList, Leaf } from "lucide-react";
-
+import { useState } from 'react';
+import Modal from "./Modal.jsx";
 
 export default function Header() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const user = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    alert("Se ha cerrado sesión correctamente.");
-    navigate("/");
+  const handleLogout = async () => {
+    setModalOpen(true)
+
+    setTimeout(()=> {
+      logout();
+      navigate("/");
+    }, 5000)
   };
 
   return (
     <div className="admin-layout-container">
+      <Modal
+        show={modalOpen}
+        titulo="¡Hasta luego!"
+        onClose={() => setModalOpen(false)}
+        mensaje="La sesión se cerrara en 5 segundos."
+      />
       <nav className="navbar fixed-top navbar-dark" style={{ backgroundColor: '#1b5e20', boxShadow: '0 12px 5px rgba(16, 209, 42, 0.1)' }}>
         <div className="container-fluid">
           <a className="navbar-brand flex gap-2" href="/admin">

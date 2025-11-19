@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import Modal from "../components/modal";
+import Modal from "../components/Modal";
 import { useAuth } from "../../hooks/useAuth";
 import { Regiones, Departamentos } from "../../utils/ubicacion.json"
 
@@ -141,10 +141,8 @@ const ConformarBrigada = () => {
       return;
     }
 
-    if (contarRol("jefe_brigada") === 0) {
-      alert("Debes asignar al menos un Jefe de Brigada");
-      return;
-    }
+    if (contarRol("jefe_brigada") === 0) return alert("Debes asignar al menos un Jefe de Brigada");
+    
 
     try {
 
@@ -532,6 +530,7 @@ const ConformarBrigada = () => {
 
       <Modal
         show={modalOpen}
+        titulo="¡Éxito!"
         onClose={() => setModalOpen(false)}
         mensaje="¡Brigada creada exitosamente!"
       />
