@@ -44,7 +44,7 @@ const Home = () => {
       <br />
       <br />
 
-      <div className="container shadow-2xl">
+      <div className="container">
         {/* Carrusel */}
         <div id="react-carousel" className="relative w-full shadow-2xl rounded-xl">
 
