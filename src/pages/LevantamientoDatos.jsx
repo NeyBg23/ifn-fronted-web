@@ -178,7 +178,7 @@ export default function LevantamientoDatos() {
 
       // Dibujar centro
       L.circleMarker(coordenadasCentro, {
-        radius: 10,
+        radius: 6,
         fillColor: '#0066ff',
         color: '#0033cc',
         weight: 2,
