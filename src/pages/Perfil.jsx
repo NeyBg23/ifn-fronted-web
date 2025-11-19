@@ -164,97 +164,99 @@ const Perfil = () => {
             </div>
           )}
 
-          <div data-aos="fade-right" className="card mb-4">
-            <div className="card-header bg-light">
-              <h5 className="mb-0">Información Personal</h5>
-              <small className="text-muted">Estos campos no pueden ser editados</small>
-            </div>
-            
-            <br />
-            
-            <div className="card-body">
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <User size={18} className="me-2" /> Nombre Completo
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={usuario.nombre_completo || ""}
-                    disabled
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <Mail size={18} className="me-2" />
-                    Correo Electrónico
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    value={usuario.correo || ""}
-                    disabled
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <Briefcase size={18} className="me-2" />
-                    Cargo
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={usuario.cargo || "Sin cargo"}
-                    disabled
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <Shield size={18} className="me-2" />
-                    Rol
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={usuario.rol || "Sin rol"}
-                    disabled
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <Calendar size={18} className="me-2" />
-                    Fecha de Ingreso
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formatearFecha(usuario.fecha_ingreso)}
-                    disabled
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label fw-bold flex">
-                    <Calendar size={18} className="me-2" />
-                    Fecha de Creación
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formatearFecha(usuario.created_at)}
-                    disabled
-                    readOnly
-                  />
+          <div className="flex flex-col md:flex-row">
+
+            <div data-aos="fade-right" className="card mb-4">
+              <div className="card-header bg-light">
+                <h5 className="mb-0">Información Personal</h5>
+                <small className="text-muted">Estos campos no pueden ser editados</small>
+              </div>
+              
+              <br />
+              
+              <div className="card-body">
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <User size={18} className="me-2" /> Nombre Completo
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={usuario.nombre_completo || ""}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <Mail size={18} className="me-2" />
+                      Correo Electrónico
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      value={usuario.correo || ""}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <Briefcase size={18} className="me-2" />
+                      Cargo
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={usuario.cargo || "Sin cargo"}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <Shield size={18} className="me-2" />
+                      Rol
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={usuario.rol || "Sin rol"}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <Calendar size={18} className="me-2" />
+                      Fecha de Ingreso
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formatearFecha(usuario.fecha_ingreso)}
+                      disabled
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold flex">
+                      <Calendar size={18} className="me-2" />
+                      Fecha de Creación
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formatearFecha(usuario.created_at)}
+                      disabled
+                      readOnly
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-          </div>
+            </div>
 
             <div data-aos="fade-left" className="card mb-4">
               <div className="card-header bg-success text-white">
@@ -314,11 +316,9 @@ const Perfil = () => {
                 </div>
               </div>
             </div>
-
+          </div>
 
           <div className="flex justify-content-center gap-3">
-
-
             <button 
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 px-4 py-2 bg-white text-red-600 border-2 border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
