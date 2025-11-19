@@ -158,12 +158,27 @@ export default function LevantamientoDatos() {
       };
 
 
-      // Inicializar o actualizar mapa
       // ✅ Asigna correctamente el centro según subparcela seleccionada
       const coordenadasCentro = obtenerCentroSubparcela();
 
+      // Inicializar o actualizar mapa
+      if (window.mapaActual) {
+        window.mapaActual.setView(coordenadasCentro, 15);
+        window.mapaActual.eachLayer((layer) => {
+          if (layer instanceof L.CircleMarker || layer instanceof L.Circle) {
+            window.mapaActual.removeLayer(layer);
+          }
+        });
+      } else {
+        window.mapaActual = L.map('mapContainer').setView(coordenadasCentro, 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19
+        }).addTo(window.mapaActual);
+      }
 
       const mapa = window.mapaActual;
+
 
       // Dibujar radio de subparcela (15m)
       L.circle(coordenadasCentro, {
