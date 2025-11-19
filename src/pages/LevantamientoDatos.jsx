@@ -280,43 +280,15 @@ const obtenerColorPorCategoria = (categoria) => {
 
         const data = await response.json()
         if (data.conglomerado) {
-          // ✅ GUARDAR PRIMERO CON DATOS DE BRIGADA
+          // ✅ BRIGADA devuelve TODO lo que necesitamos
           setConglomerado(data.conglomerado)
-          console.log('✅ Conglomerado de brigada:', data.conglomerado)
-
-          // ✅ LUEGO traer datos adicionales de monitoring
-          try {
-            const backendResponse = await fetch(
-              `${API_LEVANTAMIENTO}/api/levantamiento/conglomerado/${data.conglomerado.id}`
-            )
-            
-            if (backendResponse.ok) {
-              const backendData = await backendResponse.json()
-              console.log('📥 Respuesta completa del backend:', backendData)
-              
-              // ✅ DATOS pueden venir en backendData.data O en backendData directamente
-              const congData = backendData.data || backendData
-              
-              // ✅ ACTUALIZAR con todos los datos del backend
-              setConglomerado(prev => ({
-                ...prev,
-                departamento: congData.departamento || prev.departamento,
-                municipio: congData.municipio || prev.municipio,
-                latitud: congData.latitud || prev.latitud,
-                longitud: congData.longitud || prev.longitud
-              }))
-              console.log('✅ Datos actualizados:', {
-                departamento: congData.departamento,
-                municipio: congData.municipio,
-                latitud: congData.latitud,
-                longitud: congData.longitud
-              })
-            }
-          } catch (err) {
-            console.log('⚠️ No se pudo traer datos del backend:', err.message)
-            console.log('💡 Usando datos de brigada-informe')
-            // Los datos ya están en conglomerado
-          }
+          console.log('✅ Conglomerado cargado:', {
+            codigo: data.conglomerado.codigo,
+            departamento: data.conglomerado.departamento,
+            municipio: data.conglomerado.municipio,
+            latitud: data.conglomerado.latitud,
+            longitud: data.conglomerado.longitud
+          })
 
           // Cargar subparcelas
           cargarSubparcelas(data.conglomerado.id)
@@ -333,6 +305,7 @@ const obtenerColorPorCategoria = (categoria) => {
 
     cargarConglomeradoBrigadista()
   }, [])
+
 
 
   // ========== CARGAR SUBPARCELAS ==========
