@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import { User, UserRoundCog, LogOut, IdCardLanyard, Earth, ClipboardList, Leaf } from "lucide-react";
 import { useState } from 'react';
-import Modal from "./Modal.jsx";
 import arbolColombiano from "../../img/arbolColombiano.png";
 
 export default function Header() {
