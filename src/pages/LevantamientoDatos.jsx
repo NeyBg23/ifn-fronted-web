@@ -57,7 +57,7 @@ const mostrarMapaArboles = async () => {
     // Verificar cache
     if (cacheArboles[subparcelaSeleccionada]) {
       data = cacheArboles[subparcelaSeleccionada];
-      console.log(`📦 Usando datos en cache para subparcela ${subparcelaSeleccionada}`);
+      
     } else {
       // GET para obtener árboles guardados
       const responseGet = await fetch(
@@ -73,7 +73,7 @@ const mostrarMapaArboles = async () => {
 
       // Si no hay árboles, detectar nuevos
       if (arbolesExistentes.length === 0) {
-        console.log('🔍 No hay árboles. Detectando nuevos...');
+        
         
         const responsePost = await fetch(
           'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
@@ -94,7 +94,7 @@ const mostrarMapaArboles = async () => {
           return;
         }
       } else {
-        console.log(`✅ Usando ${arbolesExistentes.length} árboles guardados`);
+        
         data = {
           success: true,
           arboles: arbolesExistentes,
@@ -118,14 +118,12 @@ const mostrarMapaArboles = async () => {
     // ========== VERIFICACIÓN CRÍTICA ==========
     // ✅ VERIFICAR QUE data Y arboles EXISTEN
     if (!data || !data.arboles || data.arboles.length === 0) {
-      console.error('❌ Error: No hay datos de árboles', data);
+      
       alert('Error: No se obtuvieron datos de árboles');
       return;
     }
 
-    console.log('✅ Datos verificados:');
-    console.log('Total árboles:', data.arboles.length);
-    console.log('Primer árbol:', data.arboles);
+    
 
     // ========== MAPA ==========
     const mapContainer = document.getElementById('mapContainer');
@@ -282,10 +280,11 @@ const obtenerColorPorCategoria = (categoria) => {
 
         const data = await response.json()
         if (data.conglomerado) {
+          // ✅ GUARDAR PRIMERO CON DATOS DE BRIGADA
           setConglomerado(data.conglomerado)
-          console.log('✅ Conglomerado cargado:', data.conglomerado)
+          console.log('✅ Conglomerado de brigada:', data.conglomerado)
 
-          //  NUEVO: Traer departamento y municipio del backend
+          // ✅ LUEGO traer datos adicionales de monitoring
           try {
             const backendResponse = await fetch(
               `${API_LEVANTAMIENTO}/api/levantamiento/conglomerado/${data.conglomerado.id}`
@@ -293,16 +292,30 @@ const obtenerColorPorCategoria = (categoria) => {
             
             if (backendResponse.ok) {
               const backendData = await backendResponse.json()
-              // Actualizar con datos del backend
+              console.log('📥 Respuesta completa del backend:', backendData)
+              
+              // ✅ DATOS pueden venir en backendData.data O en backendData directamente
+              const congData = backendData.data || backendData
+              
+              // ✅ ACTUALIZAR con todos los datos del backend
               setConglomerado(prev => ({
                 ...prev,
-                departamento: backendData.data?.departamento,
-                municipio: backendData.data?.municipio
+                departamento: congData.departamento || prev.departamento,
+                municipio: congData.municipio || prev.municipio,
+                latitud: congData.latitud || prev.latitud,
+                longitud: congData.longitud || prev.longitud
               }))
-              console.log('✅ Departamento y municipio actualizados')
+              console.log('✅ Datos actualizados:', {
+                departamento: congData.departamento,
+                municipio: congData.municipio,
+                latitud: congData.latitud,
+                longitud: congData.longitud
+              })
             }
           } catch (err) {
-            console.log('Info: No se pudo traer departamento/municipio')
+            console.log('⚠️ No se pudo traer datos del backend:', err.message)
+            console.log('💡 Usando datos de brigada-informe')
+            // Los datos ya están en conglomerado
           }
 
           // Cargar subparcelas
@@ -438,7 +451,7 @@ const cargarResumenSubparcela = async (subparcelaId) => {
         console.log('✅ Validación:', data)
       }
     } catch (err) {
-      console.error('Error en validación:', err)
+      
     }
   }
 
@@ -485,7 +498,7 @@ const cargarResumenSubparcela = async (subparcelaId) => {
       observaciones: arbolForm.observaciones || ''
     }
 
-    console.log('📤 Enviando árbol:', datosArbol)
+    
 
     const response = await fetch(
       `${API_LEVANTAMIENTO}/api/levantamiento/registrar-arbol`,
@@ -501,10 +514,10 @@ const cargarResumenSubparcela = async (subparcelaId) => {
     if (!response.ok) {
       try {
         const result = await response.json()
-        console.error('❌ Error del servidor:', result)
+        
         alert(`❌ Error: ${result.error || 'Error desconocido'}`)
       } catch (e) {
-        console.error('❌ Error sin JSON')
+        
         alert('❌ Error registrando árbol')
       }
       setEnviando(false)
@@ -516,7 +529,7 @@ const cargarResumenSubparcela = async (subparcelaId) => {
 
 
 
-    console.log('✅ Árbol registrado:', result.data)
+    
 
     setArbolForm({
       numero_arbol: '',
@@ -533,8 +546,8 @@ const cargarResumenSubparcela = async (subparcelaId) => {
     alert('✅ Árbol registrado exitosamente')
     
   } catch (err) {
-    console.error('❌ Error:', err)
-    alert('❌ Error registrando árbol')
+    
+    
   } finally {
     setEnviando(false)
   }
