@@ -1,66 +1,90 @@
+// Importa la librería de animaciones AOS
 import AOS from "aos";
+// Importa los estilos CSS de AOS
 import "aos/dist/aos.css";
 
+// Importa el hook useNavigate para navega entre páginas con React Router
 import { useNavigate } from "react-router-dom";
+// Importa hooks para manejar estado y efectos secundarios en componentes funcionales
 import { useState, useEffect } from "react";
+// Importa los estilos personalizados para la página de Brigadas
 import "../styles/Brigadas.css";
+// Importa el hook personalizado para autenticación
 import { useAuth } from "../hooks/useAuth.jsx";
 
+// Componente principal de la página Brigadas
 const Brigadas = () => {
+  // Obtener el usuario autenticado desde el contexto de autenticación
   const user = useAuth();
+  // Hook para programáticamente cambiar de página
   const navigate = useNavigate();
+  // Estado que indica la ruta actual (por defecto es 'Brigadas')
   const [ruta, setRuta] = useState("Brigadas");
+  // Estado que almacena el listado de brigadas obtenidas
   const [brigadas, setBrigadas] = useState([]);
+  // Estado para el filtro de nombre de brigada
   const [filtroNombre, setFiltroNombre] = useState("");
+  // Estado para el filtro de región de brigada
   const [filtroRegion, setFiltroRegion] = useState("");
 
+  // URL del API, definida por variable de entorno o localhost por defecto
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
+  // useEffect para ejecutar al cargar el componente
   useEffect(() => {
+    // Inicializa las animaciones de AOS (con duración y opciones)
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
+    // Función asincrónica para obtener las brigadas desde la API
     const fetchData = async () => {
-      const token = user.token;
-      if (!token) return alert("¡Necesitas login! 🔑");
+      const token = user.token; // Obtiene el token JWT del usuario
+      if (!token) return alert("¡Necesitas login! 🔑"); // Si no hay token, muestra alerta
 
       {
+        // Evalúa el rol del usuario para decidir la API que consulta
         user.usuario.rol === "admin" ? (
-          (async()=> {
+          // Si es administrador, obtiene todas las brigadas
+          (async()=>{
             const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas`, {
               method: "GET",
               headers: { 
-                Authorization: `Bearer ${token}` 
+                Authorization: `Bearer ${token}` // Autenticación con token
               }
             });
 
             const dataBrigadas = await resBrigadas.json();
-            setBrigadas(dataBrigadas.data || []);
+            setBrigadas(dataBrigadas.data || []); // Actualiza el estado con los datos recibidos
           })()
         ) : (
-          (async()=> {
+          // Si no es admin, obtiene solo las brigadas del usuario
+          (async()=>{
             const resBrigadas = await fetch(`https://fast-api-brigada.vercel.app/brigadas-usuario/${user.usuario.id}`, {
               method: "GET",
               headers: { 
-                Authorization: `Bearer ${token}` 
+                Authorization: `Bearer ${token}` // Autenticación con token
               }
             });
 
             const dataBrigadas = await resBrigadas.json();
-            setBrigadas(dataBrigadas.data || []);
+            setBrigadas(dataBrigadas.data || []); // Actualiza el estado con los datos recibidos
           })()
         )
       }
     };
-    fetchData();
-  }, []);
+    fetchData(); // Llama a la función fetchData al montar el componente
+  }, []); // Solo una vez, al montar
 
+  // Filtra las brigadas usando los filtros de nombre y región
   const brigadasFiltradas = brigadas.filter((brigada) => {
+    // Verifica si el nombre incluye el filtro de nombre (ignorando mayúsculas/minúsculas)
     const coincideNombre = brigada.nombre?.toLowerCase().includes(filtroNombre.toLowerCase());
+    // Verifica si la región coincide o si no se está filtrando región
     const coincideRegion = filtroRegion === "" || brigada.region === filtroRegion;
 
     return coincideNombre && coincideRegion;
   });
 
+  // Renderizado del componente
   return (
     <div className="lista-brigadas">
       {ruta === "Brigadas" && (
@@ -73,6 +97,7 @@ const Brigadas = () => {
             </h1>
 
             {
+              // Mensaje personalizado según el rol del usuario
               user.usuario.rol === "admin" ? (
                 <p className="text-gray-600 text-lg">
                   Aquí puedes ver y gestionar todas las brigadas existentes.
@@ -91,6 +116,7 @@ const Brigadas = () => {
           <div className="mb-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100">
             <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-5">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                {/* Ícono filtro */}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
@@ -107,6 +133,7 @@ const Brigadas = () => {
                     className="w-full px-4 py-3 border-2 border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                     placeholder="Buscar por nombre..."
                     value={filtroNombre}
+                    // Actualiza estado al escribir
                     onChange={(e) => setFiltroNombre(e.target.value)}
                   />
                 </div>
@@ -116,6 +143,7 @@ const Brigadas = () => {
                     id="filtroRegion"
                     className="w-full px-4 py-3 border-2 border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                     value={filtroRegion}
+                    // Actualiza estado al seleccionar
                     onChange={(e) => setFiltroRegion(e.target.value)}
                   >
                     <option value="">Todas las regiones</option>
@@ -146,6 +174,7 @@ const Brigadas = () => {
 
           {/* Grid de Brigadas */}
           <div data-aos="fade-up">
+            {/* Si no hay brigadas filtradas, muestra mensaje */}
             {brigadasFiltradas.length === 0 ? (
               <div className="bg-white rounded-2xl shadow-xl border border-emerald-100 p-16">
                 <div className="text-center">
@@ -159,6 +188,7 @@ const Brigadas = () => {
                 </div>
               </div>
             ) : (
+              // Si existen brigadas, las muestra en una grilla
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 cursor-pointer gap-6">
                 {brigadasFiltradas.map((brigada) => (
                   <div
@@ -227,6 +257,7 @@ const Brigadas = () => {
                       <div className="pt-4 border-t border-emerald-100">
                         <button
                           onClick={() => {
+                              // Navega a la página de detalles de la brigada según rol
                               navigate(`/${user.usuario.rol === "admin" ? "admin" : "user"}/brigadas/${brigada.id}`)
                             }
                           }
@@ -251,4 +282,5 @@ const Brigadas = () => {
   );
 };
 
+// Exporta el componente para usarlo en otras partes de la app
 export default Brigadas;
