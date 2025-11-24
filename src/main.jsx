@@ -1,17 +1,36 @@
-import { StrictMode } from 'react' // Importa StrictMode para ayudar a detectar problemas en la aplicación
-import { createRoot } from 'react-dom/client' // Importa createRoot para renderizar la aplicación en el DOM
-import { AuthProvider } from './hooks/useAuth.jsx';// Importa el proveedor de autenticación // ← Asegura que toda la app tenga acceso al contexto de autenticación // este lo cree yo cuando hice el archivo useAuth.jsx
-import App from './App.jsx'
-import Footer from './pages/components/Footer.jsx';
+import { StrictMode } from 'react' 
+// Importa StrictMode de React para activar verificaciones y advertencias adicionales,
+// ayudando a detectar efectos secundarios no deseados durante el desarrollo.
 
+import { createRoot } from 'react-dom/client' 
+// Importa la función createRoot, el método moderno y recomendado de React 18+
+// para inicializar y renderizar la aplicación en el DOM.
+
+import { AuthProvider } from './hooks/useAuth.jsx';
+// Importa el componente de Context Provider personalizado (AuthProvider). 
+// Este componente gestiona y proporciona el estado de autenticación (usuario, login, logout)
+// a cualquier componente anidado que use el hook useAuth.
+
+import App from './App.jsx'
+// Importa el componente principal de la aplicación.
+
+import Footer from './pages/components/Footer.jsx';
+// Importa el componente Footer que contiene la información de pie de página.
+
+// Usa createRoot para vincular la aplicación al elemento DOM con id 'root'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-
-    {/* AuthProvider envuelve toda la app para proporcionar contexto de autenticación */}
+    {/*       El AuthProvider envuelve toda la aplicación (<App /> y <Footer />).
+      Esto asegura que todos los componentes dentro de <AuthProvider>
+      puedan acceder a los datos y funciones de autenticación (Context API).
+    */}
     <AuthProvider>
       <App />
 
-      { /* Agregé el Footer aquí para que aparezca en todas las páginas */ }
+      { /*         El componente Footer se renderiza aquí, fuera de <App />,
+        para asegurar que aparezca fijo al final de la página,
+        independientemente de la ruta que esté cargando <App />.
+      */ }
       <Footer />
     </AuthProvider>
   </StrictMode>,
