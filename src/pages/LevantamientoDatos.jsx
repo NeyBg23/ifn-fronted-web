@@ -618,8 +618,8 @@ const obtenerColorPorCategoria = (categoria) => {
       <div style={{ marginTop: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
         <p><strong>Código:</strong> {conglomerado?.codigo || 'N/A'}</p>
         <p><strong>Departamento:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado?.departamento || 'Cundinamarca'}</span></p>
-        <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado?.municipio || 'Cargando (zona de prueba)'}</span></p>
-        <p><strong>Ubicación:</strong> {conglomerado?.ubicacion || 'Zona de prueba cerca de Bogotá'}</p>
+        <p><strong>Municipio:</strong> <span style={{color: '#1B5E20', fontWeight: 'bold'}}>{conglomerado?.municipio || 'sopo)'}</span></p>
+        <p><strong>Ubicación:</strong> {conglomerado?.ubicacion || '4.7906390 + -73.8298060  '}</p>
         <p><strong>Coordenadas:</strong> Lat: {conglomerado?.latitud ? conglomerado.latitud.toFixed(6) : '4.609700'}, Long: {conglomerado?.longitud ? conglomerado.longitud.toFixed(6) : '-74.081700'}</p>
         <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
       </div>
