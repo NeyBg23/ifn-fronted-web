@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import "../styles/Home.css";
 
+// Definición de las imágenes del carrusel
 const images = [
   "https://snmf.cnf.gob.mx/wp-content/uploads/2022/05/Taladro-de-pressler.jpg",
   "https://infona.gov.py/wp-content/uploads/2024/05/inventario-1-scaled.jpeg",
@@ -8,33 +9,35 @@ const images = [
   "https://media.licdn.com/dms/image/v2/D4E12AQEoqzBYIpNq_Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1731328919965?e=2147483647&v=beta&t=kFTMuMcvYH2uiEkNCRsASMp8xGkpazN0v3ZFoT7PTx0",
 ];
 
+// Componente principal Home
 const Home = () => {
-  // Estado para ver en donde esta la imagen actual (0, 1, 2, ...)
+  // Estado para el índice de la imagen actual del carrusel
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Para cambiar a la siguiente imagen
+  // Pasa a la siguiente imagen del carrusel
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % images.length);
   };
 
-  // Para cambiar a la anterior imagen
+  // Pasa a la anterior imagen del carrusel
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
   };
   
-  // Para ir a una imagen en especifco
+  // Cambia a una imagen específica (por su índice)
   const goToSlide = (index) => {
     setCurrentSlide(index);
   };
 
+  // Cambia automáticamente la imagen cada 5 segundos
   useEffect(() => {
-    // Para que vaya cambiando la imagen cada 5 segundos
     const interval = setInterval(nextSlide, 5000);
     
-    // Función de limpieza: detiene el intervalo cuando el componente se desmonta
+    // Limpia el intervalo cuando el componente se desmonta
     return () => clearInterval(interval);
   }, []);
 
+  // Render de la página principal
   return (
     <div className="lista-brigadas">
 
@@ -65,7 +68,7 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Navegación, para saber en que punto esta y eso*/}
+          {/* Navegación, puntos de estado del carrusel */}
           <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
             {images.map((_, index) => (
               <button
@@ -88,6 +91,7 @@ const Home = () => {
             onClick={prevSlide}
           >
             <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-black/30 group-hover:bg-black/50 transition-all">
+              {/* Ícono SVG Flecha Izquierda */}
               <svg className="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7"/></svg>
               <span className="sr-only">Anterior</span>
             </span>
@@ -100,6 +104,7 @@ const Home = () => {
             onClick={nextSlide}
           >
             <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-black/30 group-hover:bg-black/50 transition-all">
+              {/* Ícono SVG Flecha Derecha */}
               <svg className="w-5 h-5 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7"/></svg>
               <span className="sr-only">Siguiente</span>
             </span>

@@ -1,30 +1,41 @@
 // Para la animación de aparición de izquierda a su posición fija
 import AOS from "aos";
 import "aos/dist/aos.css";
+// Importa el hook para navegación de rutas con React Router
 import { useNavigate } from "react-router-dom";
+// Hooks de estado, efecto y de función memoizada
 import { useState, useEffect, useCallback } from "react";
+// Importa iconos desde lucide-react
 import { User, Mail, Briefcase, MapPin, Phone, Calendar, FileText, Shield, Save, ArrowLeftToLine } from "lucide-react";
+// Importa el hook personalizado de autenticación
 import { useAuth } from "../hooks/useAuth"; 
+// Importa ubicaciones en formato JSON
 import { Regiones, Departamentos } from "../utils/ubicacion.json"
 
+// Componente principal de Perfil
 const Perfil = () => {
-  // OBTENER EL USUARIO Y EL TOKEN DEL CONTEXTO
+  // Obtener el usuario y token del contexto de autenticación
   const { usuario: authUsuario, token } = useAuth(); 
+  // Hook para navegar entre páginas de la app
   const navigate = useNavigate();
-  // para guardar la respuesta fresca del servidor y forzar la re-renderización del perfil.
+  // Estado para guardar la respuesta del servidor (usuario "fresco")
   const [usuarioLocal, setUsuarioLocal] = useState(authUsuario); 
+  // Estado de carga inicial
   const [loading, setLoading] = useState(true);
+  // Estado para saber si está guardando los cambios
   const [guardando, setGuardando] = useState(false);
+  // Estado para mostrar mensajes informativos/errores
   const [mensaje, setMensaje] = useState("");
 
-  // Estados para los campos editables
+  // Estados individuales para los campos editables
   const [descripcion, setDescripcion] = useState("");
   const [region, setRegion] = useState("");
   const [telefono, setTelefono] = useState("");
 
+  // API base URL desde variable de entorno o por defecto
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
-  // Función de formato
+  // Función para formatear fecha usando el hook useCallback (evita redefinirse)
   const formatearFecha = useCallback((fecha) => {
     if (!fecha) return "No disponible";
     return new Date(fecha).toLocaleDateString("es-ES", {
@@ -34,13 +45,16 @@ const Perfil = () => {
     });
   }, []);
 
+  // useEffect para cargar el perfil al montar el componente
   useEffect(() => {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
+    // Función asíncrona para obtener perfil del usuario desde la API
     const cargarPerfil = async () => {
       if (!token) return setLoading(false);
 
       try {
+        // Consulta al backend para obtener datos actualizados
         const res = await fetch(`https://fast-api-brigada.vercel.app/usuarios/${usuarioLocal.correo}`, {
           method: "GET",
           headers: {
@@ -51,11 +65,10 @@ const Perfil = () => {
 
         if (res.ok) {
           const data = await res.json();
-          
+          // Extraer datos de la respuesta y actualizar campos
           const perfilData = data.user.data?.[0] || {};
-          
           setUsuarioLocal(perfilData);
-          // Inicializar los campos editables con los datos obtenidos
+          // Inicializar los campos editables
           setDescripcion(perfilData.descripcion || "");
           setRegion(perfilData.region || "");
           setTelefono(perfilData.telefono || "");
@@ -71,8 +84,9 @@ const Perfil = () => {
     };
     
     cargarPerfil();
-  }, [token]); // Depender del token para re-ejecutar si cambia
+  }, [token]); // Se reejecuta solo si el token cambia
 
+  // Handler para guardar los cambios de perfil
   const handleGuardar = async () => {
     if (!token) return setMensaje("No autenticado. No se puede guardar.");
 
@@ -82,6 +96,7 @@ const Perfil = () => {
     try {
       const correo = usuarioLocal.correo
 
+      // Llama al endpoint para actualizar datos de usuario
       const res = await fetch(`https://fast-api-brigada.vercel.app/usuario-actualizar`, {
         method: "PUT",
         headers: {
@@ -114,9 +129,10 @@ const Perfil = () => {
     }
   };
 
-  // Usar usuarioLocal para mostrar los datos
+  // Utiliza usuarioLocal para mostrar datos en pantalla
   const usuario = usuarioLocal;
 
+  // Si está cargando, muestra spinner
   if (loading) {
     return (
       <div className="container py-5">
@@ -129,7 +145,7 @@ const Perfil = () => {
     );
   }
 
-  // Si no hay usuarioLocal (y loading es false), es porque el token es inválido o el backend falló
+  // Si no hay usuario válido, muestra alerta
   if (!usuario) {
     return (
       <div className="container py-5">
@@ -138,6 +154,7 @@ const Perfil = () => {
     );
   }
 
+  // Renderizado del perfil
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -154,6 +171,7 @@ const Perfil = () => {
             </p>
         </div>
 
+          {/* Mensaje de éxito/error */}
           {mensaje && (
             <div className={`alert ${mensaje.includes("Error") ? "alert-danger" : "alert-success"} alert-dismissible fade show`}>
               {mensaje}
@@ -167,14 +185,13 @@ const Perfil = () => {
 
           <div className="flex flex-col md:flex-row">
 
+            {/* Card de información personal no editable */}
             <div data-aos="fade-right" className="card mb-4">
               <div className="card-header bg-light">
                 <h5 className="mb-0">Información Personal</h5>
                 <small className="text-muted">Estos campos no pueden ser editados</small>
               </div>
-              
               <br />
-              
               <div className="card-body">
                 <div className="row g-3">
                   <div className="col-md-6">
@@ -256,9 +273,9 @@ const Perfil = () => {
                   </div>
                 </div>
               </div>
-
             </div>
 
+            {/* Card de información editable */}
             <div data-aos="fade-left" className="card mb-4">
               <div className="card-header bg-success text-white">
                 <h5 className="mb-0">Información Editable</h5>
@@ -319,6 +336,7 @@ const Perfil = () => {
             </div>
           </div>
 
+          {/* Botones de acción principales */}
           <div className="flex justify-content-center gap-3">
             <button 
               onClick={() => navigate(-1)}
