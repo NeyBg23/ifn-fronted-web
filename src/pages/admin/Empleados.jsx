@@ -1,30 +1,34 @@
-import AOS from "aos";
-import "aos/dist/aos.css";
+import AOS from "aos";                   // Animación de aparición en scroll
+import "aos/dist/aos.css";                // Estilos de animación de AOS
 
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import "../../styles/Brigadas.css";
-import empleado_imagen from "../../img/empleado.png";
-import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom"; // Hook para navegación de rutas
+import { useState, useEffect } from "react";    // Hooks de estado y efecto de React
+import "../../styles/Brigadas.css";             // Estilos propios para la página
+import empleado_imagen from "../../img/empleado.png"; // Imagen por defecto para empleados
+import { useAuth } from "../../hooks/useAuth";        // Hook de autenticación personalizada
 
 export default function Empleados() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Para cambiar rutas
 
+  // Estado de empleados y filtros
   const [empleados, setEmpleados] = useState([]);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroCorreo, setFiltroCorreo] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
-  const user = useAuth()
+  const user = useAuth();
 
+  // Dirección base del API (en entorno de desarrollo o producción)
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
+  // Efecto al montar: inicializa animación y carga la lista de empleados
   useEffect(() => {
     AOS.init({ duration: 900, easing: "ease-out", once: true });
 
     (async () => {
       const token = user.token;
       if (!token) return console.error("¡Necesitas login! 🔑");
+      // Fetch de empleados desde el backend
       const res = await fetch(`${API_URL}/api/empleados`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -33,7 +37,9 @@ export default function Empleados() {
     })();
   }, [API_URL]);
 
+  // Aplica filtros sobre empleados según datos introducidos por el usuario
   const empleadosFiltrados = empleados.filter(empleado => {
+    // Coincidencia por nombre, correo, cédula y región
     const n = empleado.nombre_completo.toLowerCase().includes(filtroNombre.toLowerCase());
     const c = empleado.correo.toLowerCase().includes(filtroCorreo.toLowerCase());
     const ced = empleado.cedula.toLowerCase().includes(filtroCedula.toLowerCase());
@@ -59,6 +65,7 @@ export default function Empleados() {
         <div className="mb-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100">
           <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-5">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              {/* Ícono filtro */}
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
@@ -127,6 +134,7 @@ export default function Empleados() {
                 onClick={() => navigate('/admin/nuevoEmpleado')}
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-emerald-600 rounded-xl hover:bg-emerald-50 transition-all duration-200 shadow-lg hover:shadow-xl font-bold whitespace-nowrap"
               >
+                {/* Ícono de crear */}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
@@ -168,6 +176,7 @@ export default function Empleados() {
                   <div className="p-6 space-y-4">
                     {/* Información Principal */}
                     <div className="space-y-3">
+                      {/* Correo */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +188,7 @@ export default function Empleados() {
                           <p className="text-sm text-gray-700 truncate">{emp.correo}</p>
                         </div>
                       </div>
-
+                      {/* Cédula */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +200,7 @@ export default function Empleados() {
                           <p className="text-sm text-gray-700">{emp.cedula || "No asignada"}</p>
                         </div>
                       </div>
-
+                      {/* Región */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +212,7 @@ export default function Empleados() {
                           <p className="text-sm text-gray-700">{emp.region}</p>
                         </div>
                       </div>
-
+                      {/* Cargo */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +224,7 @@ export default function Empleados() {
                           <p className="text-sm text-gray-700">{emp.cargo || "No asignado"}</p>
                         </div>
                       </div>
-
+                      {/* Estado */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,7 +242,7 @@ export default function Empleados() {
                           </span>
                         </div>
                       </div>
-
+                      {/* Fecha de ingreso */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,7 +254,7 @@ export default function Empleados() {
                           <p className="text-sm text-gray-700">{emp.fecha_ingreso || "No asignada"}</p>
                         </div>
                       </div>
-
+                      {/* Descripción */}
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                           <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,6 +268,7 @@ export default function Empleados() {
                       </div>
                     </div>
 
+                    {/* Botón para ver detalle del empleado */}
                     <div className="pt-4 border-t border-emerald-100">
                       <button
                         onClick={() => navigate(`/admin/empleados/${emp.id}`)}

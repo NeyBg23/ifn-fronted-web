@@ -2,9 +2,11 @@ import { useNavigate } from 'react-router-dom'
 // 📄 src/pages/NoAutorizado.jsx
 // Página que se muestra cuando el usuario no tiene permisos
 
+// Componente funcional para la página de "Acceso Denegado"
 function NoAutorizado() {
+    // Hook de React Router para navegar a otras rutas
     const navigate = useNavigate();
-    // Función para volver a la página anterior
+    // Función para volver a la página de login
 
     const irALogin = () => {
         localStorage.removeItem('token'); // Elimina el token del almacenamiento local

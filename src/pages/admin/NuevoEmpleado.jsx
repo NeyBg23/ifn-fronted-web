@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+// Iconos usados en los diferentes pasos y campos del formulario
 import {
   User, Settings, CheckCircle, CreditCard, LockKeyhole, FileText, Upload, FileUp, X,
   PhoneCall,
@@ -7,7 +8,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 
 // --- COMPONENTE StepIndicator ---
-// Componente para el indicador de paso (barra superior)
+// Barra de indicador de paso (en el formulario tipo wizard)
 const StepIndicator = ({ step, currentStep, totalSteps }) => {
   const isActive = currentStep === step.id;
   const isCompleted = currentStep > step.id;
@@ -28,12 +29,14 @@ const StepIndicator = ({ step, currentStep, totalSteps }) => {
           ${isCompleted ? 'bg-success text-white' : ''}
           ${isActive ? 'bg-success text-white shadow-lg' : 'bg-slate-200 text-slate-500'}
         `}>
+          {/* Ícono del paso o check si completado */}
           {isCompleted && step.id === totalSteps ? <CheckCircle className="h-6 w-6" /> : <IconComponent className="h-6 w-6" />}
         </span>
         <span className="absolute whitespace-nowrap text-slate-800 font-bold text-xs md:text-sm lg:text-base top-12">
           Paso {step.id}
         </span>
       </div>
+      {/* Línea que conecta los pasos */}
       {step.id < totalSteps && (
         <div
           className={`flex-1 h-1 transition-colors duration-300
@@ -46,7 +49,7 @@ const StepIndicator = ({ step, currentStep, totalSteps }) => {
 };
 
 // --- COMPONENTE FileUpload ---
-// Componente reutilizable para subir archivos (Foto de Perfil y Hoja de Vida)
+// Componente reutilizable para subir archivos: foto de perfil y hoja de vida
 const FileUpload = ({ 
   file, 
   handleFileChange, 
@@ -102,7 +105,7 @@ const FileUpload = ({
 };
 
 // --- COMPONENTE StepContent ---
-// Componente para el contenido de cada paso (formulario)
+// Renderiza el contenido según el paso en el wizard
 const StepContent = ({ 
   stepId, 
   nuevoEmpleado, 
@@ -116,6 +119,7 @@ const StepContent = ({
   mostrarErrorContraseña,
   mostrarErrorCamposVacios
 }) => {
+  // Primer paso: Información personal
   if (stepId === 1) {
     return (
       <div className="space-y-6">
@@ -192,6 +196,7 @@ const StepContent = ({
     );
   }
 
+  // Segundo paso: Seguridad y acceso
   if (stepId === 2) {
     return (
       <div className="space-y-6">
@@ -258,6 +263,7 @@ const StepContent = ({
     );
   }
 
+  // Tercer paso: Puesto y documentación
   if (stepId === 3) {
     return (
       <div className="space-y-6">
@@ -328,7 +334,7 @@ const StepContent = ({
           />
         </div>
 
-        {/* Hoja de Vida (File Upload) */}
+        {/* Hoja de Vida (subida de archivos) */}
         <FileUpload
             id="hojaVidaInput"
             label="Hoja de vida (PDF, DOCX)"
@@ -345,14 +351,13 @@ const StepContent = ({
 };
 
 // --- COMPONENTE PRINCIPAL: NuevoEmpleado ---
-
 const NuevoEmpleado = () => {
-  const totalSteps = 3;
+  const totalSteps = 3; // Wizard con tres pasos
   const [currentStep, setCurrentStep] = useState(1);
   const [mostrarErrorContraseña, setMostrarErrorContraseña] = useState(false);
   const [mostrarErrorCamposVacios, setMostrarErrorCamposVacios] = useState(false);
   
-  // Estado para todos los campos del formulario
+  // Estado con todos los campos del formulario de empleado nuevo
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre_completo: '',
     correo: '',
@@ -366,13 +371,11 @@ const NuevoEmpleado = () => {
     descripcion: '',
   });
 
-  // Estado separado para el archivo de la hoja de vida
+  // Estado para archivos (hoja de vida y foto perfil)
   const [hojaVida, setHojaVida] = useState(null);
-  // Estado separado para el archivo de la foto de perfil
   const [fotoPerfil, setFotoPerfil] = useState(null);
 
-
-  // Manejador de cambios de inputs
+  // Manejadores de inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNuevoEmpleado((prev) => ({
@@ -381,7 +384,7 @@ const NuevoEmpleado = () => {
     }));
   };
 
-  // Manejador de cambios de archivo (HOJA DE VIDA)
+  // Maneja el archivo de hoja de vida
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.size <= 5 * 1024 * 1024) { // Máximo 5MB
@@ -392,7 +395,7 @@ const NuevoEmpleado = () => {
     }
   };
 
-  // Manejador de cambios de archivo (FOTO DE PERFIL)
+  // Maneja el archivo de foto de perfil
   const handleFileChangeFotoPerfil = (e) => {
     const file = e.target.files[0];
     if (file && file.size <= 5 * 1024 * 1024) { // Máximo 5MB
@@ -403,25 +406,25 @@ const NuevoEmpleado = () => {
     }
   };
 
-  // Remover archivo (FOTO DE PERFIL)
+  // Remueve foto perfil seleccionada
   const handleRemoveFileFotoPerfil = () => {
     setFotoPerfil(null);
   };
 
-  // 5. Remover archivo (HOJA DE VIDA)
+  // Remueve hoja de vida seleccionada
   const handleRemoveFile = () => {
     setHojaVida(null);
     document.getElementById('hojaVidaInput').value = ''; 
   };
 
-  // Lógica de navegación "Siguiente" con validación
+  // Validación y flujo de pasos [Siguiente]
   const nextStep = () => {
     let isValid = true;
     setMostrarErrorContraseña(false);
     setMostrarErrorCamposVacios(false);
 
     if (currentStep === 1) {
-      // Validar campos del Paso 1
+      // Valida campos obligatorios del paso 1
       if (!nuevoEmpleado.nombre_completo || !nuevoEmpleado.cedula || !nuevoEmpleado.telefono) {
         setMostrarErrorCamposVacios(true);
         isValid = false;
@@ -429,7 +432,7 @@ const NuevoEmpleado = () => {
     }
 
     if (currentStep === 2) {
-      // Validar campos del Paso 2
+      // Valida campos y contraseñas paso 2
       if (!nuevoEmpleado.correo || !nuevoEmpleado.contraseña || !nuevoEmpleado.confirmarContraseña) {
           setMostrarErrorCamposVacios(true);
           isValid = false;
@@ -440,36 +443,34 @@ const NuevoEmpleado = () => {
     }
 
     if (currentStep === 3) {
-      // Validar campos del Paso 3
+      // Valida campos obligatorios paso 3
       if (!nuevoEmpleado.cargo || !nuevoEmpleado.fecha_ingreso || !nuevoEmpleado.rol) {
         setMostrarErrorCamposVacios(true);
         isValid = false;
       }
 
-      // Si es válido y es el último paso -> enviar formulario
+      // Si es válido y es el último paso, dispara el submit
       if (isValid) {
-        // Dispara el evento onSubmit del formulario. Esto llamará a handleCrearEmpleado.
         document.getElementById("formNuevoEmpleado").requestSubmit();
         return; // Salir para evitar el avance normal
       }
     }
 
-    // Si es válido y no es el último paso, avanza
+    // Si es válido y no es el último paso, avanza de paso
     if (isValid && currentStep < totalSteps) {
       setCurrentStep((prev) => prev + 1);
     }
   };
 
-
-  // Lógica de navegación "Anterior"
+  // Botón Anterior
   const prevStep = () => {
     setMostrarErrorCamposVacios(false);
     setMostrarErrorContraseña(false);
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // Manejador de envío final del formulario
-  // ESTA FUNCIÓN SOLO DEBE EJECUTARSE CUANDO nextStep() LA DISPARA EN EL PASO FINAL.
+  // Envío final del formulario de empleado
+  // Solo ejecutada al submit verdadero, último paso
   const handleCrearEmpleado = async (e) => {
     e.preventDefault();
 
@@ -477,8 +478,7 @@ const NuevoEmpleado = () => {
       const user = useAuth()
       const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
-      // 1. Registro en el servicio de Auth (Autenticación)
-
+      // 1. Registro en el servicio de Auth
       try {
         const responseAuth = await fetch(`${AUTH_SERVICE_URL}/registrar`, {
           method: "POST",
@@ -500,8 +500,7 @@ const NuevoEmpleado = () => {
             //Registro en el servicio de Brigada (Datos completos y archivos)
             const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL;
             
-            // Para enviar archivos (File objects) junto con datos 
-            // de formulario, debes usar FormData y NO 'application/json'.
+            // Enviar archivos junto con datos - usar FormData
             const formData = new FormData();
             formData.append("correo", nuevoEmpleado.correo);
             formData.append("cedula", nuevoEmpleado.cedula);
@@ -517,16 +516,14 @@ const NuevoEmpleado = () => {
                 formData.append("foto_perfil", fotoPerfil);
             }
             
-
             try {
-              // ${BRIGADA_SERVICE_URL}
-              
+              // Envío de datos al backend de brigada
               const responseBrigada = await fetch(`https://fast-api-brigada.vercel.app/registrar`, {
                 method: "POST",
                 headers: {
                   "Authorization": `Bearer ${tokenGuardado}`,
                 },
-                body: formData, // Enviar FormData
+                body: formData,
               });
 
               const dataBrigada = await responseBrigada.json();
@@ -535,8 +532,8 @@ const NuevoEmpleado = () => {
                 alert("El usuario ha sido creado con éxito.");
               } else {
 
+                // Si falla en brigadas, elimina el usuario de auth
                 try {
-
                   const responseAuthEliminar = await fetch(`${AUTH_SERVICE_URL}/eliminar-usuario`, {
                     method: "POST",
                     headers: {
@@ -573,17 +570,17 @@ const NuevoEmpleado = () => {
     }
   };
 
-
+  // Pasos del Wizard
   const steps = [
     { id: 1, title: 'Información Básica', icon: User },
     { id: 2, title: 'Seguridad y Acceso', icon: LockKeyhole },
     { id: 3, title: 'Puesto y Archivos', icon: Settings },
   ];
   
-  // Renderizado Principal
+  // Render principal del wizard de registro de empleado
   return (
     <div className="min-h-screen flex items-start justify-center p-4 md:p-12">
-      <script src="https://cdn.tailwindcss.com"></script>
+      {/* Contenedor principal */}
       <div className="w-full max-w-5xl bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-200">
 
         <h1 className="text-4xl font-extrabold text-slate-900 mb-4 flex items-center gap-3">
@@ -607,15 +604,13 @@ const NuevoEmpleado = () => {
             ))}
           </div>
 
-          {/* Contenido de pasos */}
+          {/* Contenido de pasos - Solo el activo se muestra */}
           <form id="formNuevoEmpleado" onSubmit={handleCrearEmpleado} noValidate>
             <div className="mt-6 min-h-64">
               {steps.map((step) => (
                 <div 
                   key={step.id} 
                   data-step-content={step.id} 
-                  // Usamos 'hidden' para ocultar y 'block' para mostrar, 
-                  // manteniendo el estado de los campos.
                   className={`transition-opacity duration-500 ${currentStep === step.id ? 'opacity-100 block' : 'opacity-0 hidden absolute w-full'}`}
                 >
                   <StepContent 
@@ -635,7 +630,7 @@ const NuevoEmpleado = () => {
               ))}
             </div>
 
-            {/* Botones de Navegación */}
+            {/* Botones de navegación entre pasos */}
             <div className="mt-10 pt-6 flex w-full justify-between gap-4 border-t border-slate-200">
               {/* Botón Anterior */}
               <button
@@ -650,9 +645,6 @@ const NuevoEmpleado = () => {
               
               {/* Botón Siguiente / Finalizar */}
               <button
-                // Importante: type='button' en todos los pasos excepto el último 
-                // para que solo 'nextStep' controle la validación y el avance.
-                // En el último paso, 'nextStep' llama a requestSubmit(), que dispara 'handleCrearEmpleado'.
                 type={'button'}
                 onClick={nextStep}
                 data-stepper-next

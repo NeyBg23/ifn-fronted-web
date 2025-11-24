@@ -1,39 +1,55 @@
-import { useState, useEffect } from "react";
-import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react";
-import { useLocation } from "react-router-dom";
-import Modal from "../components/Modal";
-import { useAuth } from "../../hooks/useAuth";
-import { Regiones, Departamentos } from "../../utils/ubicacion.json"
+import { useState, useEffect } from "react"; // Hooks para estado y efectos
+import { Users, UserCheck, Shield, Briefcase, MapPin, FileText } from "lucide-react"; // Iconos
+import { useLocation } from "react-router-dom"; // Hook para info de navegación y parámetros por ruta
+import Modal from "../components/Modal"; // Modal de éxito/error personalizado
+import { useAuth } from "../../hooks/useAuth"; // Contexto de usuario autenticado
+import { Regiones, Departamentos } from "../../utils/ubicacion.json" // Datos de división geográfica
 
 const ConformarBrigada = () => {
-  const [empleados, setEmpleados] = useState([]);
-  const [asignaciones, setAsignaciones] = useState([]);
+  // Estados para datos de empleados y asignaciones
+  const [empleados, setEmpleados] = useState([]); // Empleados disponibles
+  const [asignaciones, setAsignaciones] = useState([]); // Roles asignados por empleado
+
+  // Estados para los datos del formulario de brigada
   const [nombreBrigada, setNombreBrigada] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [region, setRegion] = useState("");
   const [departamento, setDepartamento] = useState("");
   const [municipio, setMunicipio] = useState("");
+  
+  // Filtros para la lista de empleados
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroRegion, setFiltroRegion] = useState("");
   const [filtroCedula, setFiltroCedula] = useState("");
+  
+  // Estado para el modal de éxito al crear la brigada
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Hook para obtener parámetros pasados por navegación
   const location = useLocation();
+  // El id del conglomerado (si se pasa por route)
   const conglomeradoId = location.state?.conglomerado;
+  
+  // Usuario autenticado
   const user = useAuth()
 
+  // API base según variable de entorno
   const API_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || "http://localhost:5000";
 
+  // useEffect para cargar empleados una sola vez al montar
   useEffect(() => {
     const fetchEmpleados = async () => {
       const token = user.token;
       if (!token) return;
 
       try {
+        // Obtiene la lista de empleados del backend
         const res = await fetch(`${API_URL}/api/empleados`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
+        // Intenta obtener URL firmada para hoja de vida
         const empleadosConUrls = await Promise.all(
           (data.data || []).map(async (emp) => {
             if (!emp.hoja_vida_url) return emp;
@@ -63,6 +79,7 @@ const ConformarBrigada = () => {
     fetchEmpleados();
   }, []);
 
+  // Filtra los empleados por nombre, cédula y región
   const empleadosFiltrados = empleados.filter((emp) => {
     const coincideNombre = `${emp.nombre_completo}`.toLowerCase().includes(filtroNombre.toLowerCase());
     const coincideCedula = `${emp.cedula}`.toLowerCase().includes(filtroCedula.toLowerCase());
@@ -70,17 +87,20 @@ const ConformarBrigada = () => {
     return coincideNombre && coincideRegion && coincideCedula;
   });
 
+  // Devuelve lista de departamentos según región seleccionada
   const getDepartamentosPorRegion = () => {
     if (!region) return [];
     return Regiones[region]?.departamentos || [];
   };
 
+  // Cambia la región y reinicia depart/municipio
   const handleRegionChange = (newRegion) => {
     setRegion(newRegion);
     setDepartamento("");
     setMunicipio("");
   };
 
+  // Solo permite departamentos válidos para la región activa
   const handleDepartamentoChange = (newDepartamento) => {
     if (!getDepartamentosPorRegion().includes(newDepartamento)) {
       alert("El departamento seleccionado no corresponde a esta región");
@@ -90,46 +110,53 @@ const ConformarBrigada = () => {
     setMunicipio("");
   };
 
+  // Alterna el rol para un empleado (asigna/desasigna, solo un rol por empleado)
   const toggleRol = (empleadoId, rol) => {
     const existe = asignaciones.find(
       (a) => a.empleadoId === empleadoId && a.rol === rol
     );
     if (existe) {
+      // Si ya lo tiene, lo quita
       setAsignaciones(
         asignaciones.filter(
           (a) => !(a.empleadoId === empleadoId && a.rol === rol)
         )
       );
     } else {
+      // Si no lo tiene, lo agrega (solo permite un rol por empleado)
       let verificarUnSoloRol = asignaciones.find(
         (a) => {
           if (a.empleadoId === empleadoId) {
-            a.rol = rol
+            a.rol = rol;
             return true;
-          };
+          }
         });
 
-      if (!verificarUnSoloRol) setAsignaciones([...asignaciones, { empleadoId, rol }])
+      if (!verificarUnSoloRol) setAsignaciones([...asignaciones, { empleadoId, rol }]);
       else setAsignaciones([...asignaciones]);
     }
   };
 
+  // Devuelve si un empleado tiene el rol específico asignado
   const tieneRol = (empleadoId, rol) => {
     return asignaciones.some(
       (a) => a.empleadoId === empleadoId && a.rol === rol
     );
   };
 
+  // Devuelve los roles asignados a un empleado
   const getRolesEmpleado = (empleadoId) => {
     return asignaciones
       .filter((a) => a.empleadoId === empleadoId)
       .map((a) => a.rol);
   };
 
+  // Devuelve el número de miembros con cierto rol
   const contarRol = (rol) => {
     return asignaciones.filter((a) => a.rol === rol).length;
   };
 
+  // Función para enviar los datos de la brigada nueva al backend
   const handleCrearBrigada = async () => {
     if (!nombreBrigada || !region || !departamento || !municipio) {
       alert("Por favor completa el nombre, región, departamento y municipio de la brigada");
@@ -142,7 +169,6 @@ const ConformarBrigada = () => {
     }
 
     if (contarRol("jefe_brigada") === 0) return alert("Debes asignar al menos un Jefe de Brigada");
-    
 
     try {
 
@@ -182,6 +208,7 @@ const ConformarBrigada = () => {
     }
   };
 
+  // Etiqueta visual para cada rol
   const getRolLabel = (rol) => {
     switch (rol) {
       case "jefe_brigada":
@@ -195,6 +222,7 @@ const ConformarBrigada = () => {
     }
   };
 
+  // Colores y badges visuales por tipo de rol
   const getRolColor = (rol) => {
     switch (rol) {
       case "jefe_brigada":
@@ -208,6 +236,7 @@ const ConformarBrigada = () => {
     }
   };
 
+  // Render principal del formulario y asignación de brigada forestal
   return (
     <div className="lista-brigadas">
       <h1>Conformar Nueva Brigada</h1>
@@ -217,6 +246,7 @@ const ConformarBrigada = () => {
 
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          {/* Datos generales de la brigada nueva */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Información de la Brigada</h2>
@@ -235,6 +265,7 @@ const ConformarBrigada = () => {
                   />
                 </div>
 
+                {/* Selección geográfica */}
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="region" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -322,10 +353,12 @@ const ConformarBrigada = () => {
             </div>
           </div>
 
+          {/* Resumen visual de roles y miembros asignados */}
           <div>
             <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl shadow-lg p-6 text-white sticky top-6">
               <h3 className="text-white font-bold mb-4">Resumen de Asignaciones</h3>
               <div className="space-y-2">
+                {/* Contadores por rol */}
                 <div className="bg-emerald-500 bg-opacity-40 rounded-lg p-3 border border-emerald-400 border-opacity-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -380,6 +413,7 @@ const ConformarBrigada = () => {
           </div>
         </div>
 
+        {/* Sección de filtrado de empleados */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <FileText size={24} className="text-emerald-600" />
@@ -414,11 +448,10 @@ const ConformarBrigada = () => {
           </div>
         </div>
 
+        {/* Lista de empleados disponibles con opción de roles */}
         <div>
-          
           <h1>Seleccionar Empleados</h1>
           <p>Solo saldran los empleados con estado "Disponible"</p>
-
           <br />
           {empleadosFiltrados.length === 0 ? (
             <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
@@ -436,18 +469,15 @@ const ConformarBrigada = () => {
                     <div key={empleado.id} className={`bg-white rounded-xl border-2 transition-all ${tieneAlgunRol ? 'border-emerald-400 shadow-md' : 'border-gray-200 shadow-sm hover:shadow-md'}`}>
                       <div className="p-5">
                         <div className="flex items-start gap-3 mb-4">
-
-                            {
-                              urlFotoPerfil ?
-                                <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
-                                    <img src={urlFotoPerfil} alt="Foto" className="w-full h-full object-cover rounded-full"/>
-                                </div>
-                              :
-                              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
-                                {empleado.nombre_completo?.charAt(0) || '?'}
-                              </div>
-                            }
-
+                          {urlFotoPerfil ?
+                            <div className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
+                              <img src={urlFotoPerfil} alt="Foto" className="w-full h-full object-cover rounded-full"/>
+                            </div>
+                          :
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
+                              {empleado.nombre_completo?.charAt(0) || '?'}
+                            </div>
+                          }
 
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-gray-900 truncate">{empleado.nombre_completo}</h3>
@@ -484,6 +514,7 @@ const ConformarBrigada = () => {
                           </div>
                         )}
 
+                        {/* Botones de rol para cada empleado */}
                         <div className="flex gap-2">
                           {[
                             { rol: "jefe_brigada", icon: Shield },
@@ -509,11 +540,13 @@ const ConformarBrigada = () => {
                     </div>
                   );
                 }
+                return null;
               })}
             </div>
           )}
         </div>
 
+        {/* Botones para cancelar o crear la brigada */}
         <div className="flex justify-end gap-4 mt-8">
           <button className="px-6 py-3 rounded-lg border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition">
             Cancelar
@@ -528,6 +561,7 @@ const ConformarBrigada = () => {
         </div>
       </div>
 
+      {/* Modal para mostrar brigada creada exitosamente */}
       <Modal
         show={modalOpen}
         titulo="¡Éxito!"

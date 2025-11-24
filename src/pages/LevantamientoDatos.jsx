@@ -1,10 +1,12 @@
+// Hooks de estado y efecto para componentes funcionales
 import { useState, useEffect } from 'react'
+// Importa estilos CSS específicos para el levantamiento de datos
 import '../styles/LevantamientoDatos.css'
+// Importa Leaflet para mapas interactivos
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-
-//  CONFIGURACIÓN DE APIs
+// ========== CONFIGURACIÓN DE APIs ==========
 const API_BRIGADAS = 'https://brigada-informe-ifn.vercel.app'
 //const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app/' //  En producción
 //  DESARROLLO LOCAL (comentar Vercel)
@@ -12,17 +14,17 @@ const API_LEVANTAMIENTO = 'https://monitoring-backend-eight.vercel.app'    //  E
 
 export default function LevantamientoDatos() {
   // ========== ESTADO GENERAL ==========
-  const [conglomerado, setConglomerado] = useState(null)
-  const [cargando, setCargando] = useState(true)
-  const [error, setError] = useState(null)
+  const [conglomerado, setConglomerado] = useState(null) // Datos del conglomerado asignado
+  const [cargando, setCargando] = useState(true) // Trackea carga inicial
+  const [error, setError] = useState(null) // Guarda posibles errores en la carga
 
-  const [cacheArboles, setCacheArboles] = useState({}) // Guardar por subparcela_id
+  const [cacheArboles, setCacheArboles] = useState({}) // Guarda los árboles por subparcela_id (memoria)
   // ========== ESTADO SUBPARCELAS ==========
-  const [subparcelas, setSubparcelas] = useState([])
-  const [subparcelaSeleccionada, setSubparcelaSeleccionada] = useState(null)
+  const [subparcelas, setSubparcelas] = useState([]) // Todas las subparcelas
+  const [subparcelaSeleccionada, setSubparcelaSeleccionada] = useState(null) // Subparcela activa
 
   // ========== ESTADO FORMULARIO ÁRBOL ==========
-  const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [mostrarFormulario, setMostrarFormulario] = useState(false) // Muestra/oculta formulario de árbol
   const [arbolForm, setArbolForm] = useState({
     numero_arbol: '',
     especie: '',
@@ -31,20 +33,19 @@ export default function LevantamientoDatos() {
     condicion: 'vivo',
     observaciones: ''
   })
-  const [enviando, setEnviando] = useState(false)
+  const [enviando, setEnviando] = useState(false) // Bandera para mostrar estado de envío
 
   // ========== ESTADO LISTADO ÁRBOLES ==========
-  const [arboles, setArboles] = useState([])
-  const [cargandoArboles, setCargandoArboles] = useState(false)
+  const [arboles, setArboles] = useState([]) // Lista de árboles registrados en subparcela
+  const [cargandoArboles, setCargandoArboles] = useState(false) // Bandera para mostrar carga árboles
 
   // ========== ESTADO RESUMEN/CONTEO ==========
-  const [resumen, setResumen] = useState(null)
-  const [validacion, setValidacion] = useState(null)
-  const [cargandoResumen, setCargandoResumen] = useState(false)
-
+  const [resumen, setResumen] = useState(null) // Resumen total y por categorías
+  const [validacion, setValidacion] = useState(null) // Resultado de validación automática
+  const [cargandoResumen, setCargandoResumen] = useState(false) // Bandera para carga de resumen
 
   // ========== MOSTRAR MAPA DE ÁRBOLES DETECTADOS ==========
-
+  // Esta función muestra el mapa de detección de árboles de la subparcela activa
   const mostrarMapaArboles = async () => {
     try {
       if (!conglomerado || !subparcelaSeleccionada) {
@@ -54,11 +55,11 @@ export default function LevantamientoDatos() {
 
       let data;
 
-      // Verificar cache
+      // Verifica si los datos ya están en cache
       if (cacheArboles[subparcelaSeleccionada]) {
         data = cacheArboles[subparcelaSeleccionada];
       } else {
-        // GET para obtener árboles guardados
+        // GET para obtener árboles guardados de la subparcela
         const responseGet = await fetch(
           `${API_LEVANTAMIENTO}/api/levantamiento/detecciones/${subparcelaSeleccionada}`,
           { method: 'GET', headers: { 'Content-Type': 'application/json' } }
@@ -70,7 +71,7 @@ export default function LevantamientoDatos() {
           arbolesExistentes = dataGet.data || [];
         }
 
-        // Si no hay árboles, detectar nuevos
+        // Si no hay árboles guardados, se detectan nuevos (llamado por POST)
         if (arbolesExistentes.length === 0) {
           const responsePost = await fetch(
             'https://monitoring-backend-eight.vercel.app/api/levantamiento/detectar-arboles-satelital',
@@ -104,6 +105,7 @@ export default function LevantamientoDatos() {
           };
         }
 
+        // Guarda en cache los datos de árboles
         setCacheArboles(prev => ({
           ...prev,
           [subparcelaSeleccionada]: data
@@ -117,7 +119,7 @@ export default function LevantamientoDatos() {
       }
 
       // ========== FUNCIÓN PARA CALCULAR COORDENADAS ==========
-      // Convierte azimut y distancia a latitud/longitud
+      // Convierte azimut y distancia desde el centro en lat/lon (coordenadas)
       const calcularCoordenadas = (latBase, lngBase, azimut, distancia) => {
         // distancia en metros, convertir a grados (1 grado ≈ 111,320 metros)
         const distanciaGrados = distancia / 111320;
@@ -125,7 +127,7 @@ export default function LevantamientoDatos() {
         // Convertir azimut a radianes
         const azimuteRad = (azimut * Math.PI) / 180;
         
-        // Calcular nueva latitud y longitud
+        // Calcular nueva latitud y longitud 
         const latNueva = latBase + distanciaGrados * Math.cos(azimuteRad);
         const lngNueva = lngBase + (distanciaGrados * Math.sin(azimuteRad)) / Math.cos((latBase * Math.PI) / 180);
         
@@ -139,14 +141,15 @@ export default function LevantamientoDatos() {
         return;
       }
 
-      // Centro del mapa: conglomerado
+      // Centro del mapa: conglomerado/subparcela
       //const coordenadasCentro = [
         //Number(conglomerado.latitud) || 4.6097,
         //Number(conglomerado.longitud) || -74.0817
       //];
 
+      // Devuelve el centro real de la subparcela por su UUID
       const obtenerCentroSubparcela = () => {
-        // ✅ Mapeo con UUIDs reales a coordenadas
+        // ✅ Centros “reales” con UUID
         const centros = {
           '8c7e0893-8800-403c-bb5d-403bec4f3e27': [4.790639, -73.829806],  // SP1 Centro
           '1b12b55c-9986-4989-b5fe-ca2fc33bfccc': [4.792437, -73.829806],  // SP2 Norte
@@ -157,11 +160,10 @@ export default function LevantamientoDatos() {
         return centros[subparcelaSeleccionada] || [4.790639, -73.829806];
       };
 
-
-      // ✅ Asigna correctamente el centro según subparcela seleccionada
+      // Obtiene las coordenadas reales (centro) segun la subparcela seleccionada
       const coordenadasCentro = obtenerCentroSubparcela();
 
-      // Inicializar o actualizar mapa
+      // Inicializa/actualiza mapa
       if (window.mapaActual) {
         window.mapaActual.setView(coordenadasCentro, 15);
         window.mapaActual.eachLayer((layer) => {
@@ -179,8 +181,7 @@ export default function LevantamientoDatos() {
 
       const mapa = window.mapaActual;
 
-
-      // Dibujar radio de subparcela (15m)
+      // Dibuja radio de la subparcela (15m)
       L.circle(coordenadasCentro, {
         radius: 15,
         color: '#0033cc',
@@ -191,7 +192,7 @@ export default function LevantamientoDatos() {
         .bindPopup(`<b>Radio Subparcela: 15 m</b><br>Área: 707 m²`)
         .addTo(mapa);
 
-      // Dibujar centro
+      // Dibuja punto central de referencia
       L.circleMarker(coordenadasCentro, {
         radius: 6,
         fillColor: '#0066ff',
@@ -200,22 +201,23 @@ export default function LevantamientoDatos() {
         opacity: 1,
         fillOpacity: 0.8
       })
-        .bindPopup('<b>🎯 Centro de la Subparcela</b>')
+        .bindPopup('<b🎯 Centro de la Subparcela</b>')
         .addTo(mapa);
 
-      // ✅ Dibujar árboles con coordenadas CALCULADAS
-      // ✅ Dibujar árboles con coordenadas CALCULADAS desde el CENTRO DE LA SUBPARCELA
+      // ✅ Dibuja los primeros 20 árboles (para no saturar el mapa)
       data.arboles.slice(0, 20).forEach((arbol) => {
-        // Calcular coordenadas a partir de azimut y distancia
+        // Calcula las coordenadas a partir del centro usando azimut/distancia
         const [arbolLat, arbolLng] = calcularCoordenadas(
-          coordenadasCentro[0],  // ✅ Centro real de la SUBPARCELA
+          coordenadasCentro[0],  // Centro real de la SUBPARCELA
           coordenadasCentro[1],
           arbol.azimut || 0,
           arbol.distancia || 100
         );
 
+        // Determina color del marcador por categoría del árbol
         const color = obtenerColorPorCategoria(arbol.categoria);
 
+        // Añade círculo para cada árbol
         L.circleMarker([arbolLat, arbolLng], {
           radius: 6,
           fillColor: color,
@@ -239,6 +241,7 @@ export default function LevantamientoDatos() {
           .addTo(mapa);
       });
 
+      // Muestra popup con estadística rápida
       const arboles20 = data.arboles.slice(0, 20);
       alert(`${arboles20.length} árboles mostrados en el mapa
 
@@ -248,44 +251,38 @@ export default function LevantamientoDatos() {
   Vivos: ${data.estadisticas.vivos}
   Enfermos: ${data.estadisticas.enfermos}
   Muertos: ${data.estadisticas.muertos}`);
-
     } catch (error) {
       console.error('❌ Error:', error);
       alert('Error mostrando mapa: ' + error.message);
     }
   };
 
-
-
-
-
-
-
-
-const obtenerColorPorCategoria = (categoria) => {
-  switch (categoria) {
-    case 'FG':
-      return '#cc0000'; // Rojo: Fustal Grande
-    case 'F':
-      return '#ff6600'; // Naranja: Fustal
-    case 'L':
-      return '#ffcc00'; // Amarillo: Latizal
-    case 'B':
-      return '#00cc00'; // Verde: Brinzal
-    default:
-      return '#999999';
-  }
-};
-
-
+  // Función para obtener color según la categoría de árbol
+  const obtenerColorPorCategoria = (categoria) => {
+    switch (categoria) {
+      case 'FG':
+        return '#cc0000'; // Rojo: Fustal Grande
+      case 'F':
+        return '#ff6600'; // Naranja: Fustal
+      case 'L':
+        return '#ffcc00'; // Amarillo: Latizal
+      case 'B':
+        return '#00cc00'; // Verde: Brinzal
+      default:
+        return '#999999';
+    }
+  };
 
   // ========== CARGAR CONGLOMERADO ==========
+
+  // Efecto para cargar el conglomerado asignado al brigadista
   useEffect(() => {
     const cargarConglomeradoBrigadista = async () => {
       try {
         const token = localStorage.getItem('token')
         if (!token) throw new Error('Token no disponible')
 
+        // Llama API para obtener el conglomerado del usuario actual
         const response = await fetch(
           `${API_BRIGADAS}/api/brigadista/mi-conglomerado`,
           {
@@ -303,17 +300,17 @@ const obtenerColorPorCategoria = (categoria) => {
           throw new Error(`Error: ${response.status}`)
         }
 
+        // Si todo OK, guarda datos en estado
         const data = await response.json()
         if (data.conglomerado) {
           // ✅ BRIGADA devuelve TODO lo que necesitamos
           setConglomerado(data.conglomerado)
           console.log('✅ Árboles cargados:', data.data)
-          console.log(' Llamando cargarResumenSubparcela para:', subparcelaSeleccionada
-)
+          console.log(' Llamando cargarResumenSubparcela para:', subparcelaSeleccionada)
 
-          // Cargar subparcelas
+          // Cargar subparcelas de este conglomerado
           cargarSubparcelas(data.conglomerado.id)
-          // Cargar resumen general
+          // Resumen general del conglomerado
           cargarResumenConglomerado(data.conglomerado.id)
         }
         setCargando(false)
@@ -327,12 +324,11 @@ const obtenerColorPorCategoria = (categoria) => {
     cargarConglomeradoBrigadista()
   }, [])
 
-
-
   // ========== CARGAR SUBPARCELAS ==========
+  // Método para poner subparcelas en el estado
   const cargarSubparcelas = async (conglomeradoId) => {
     try {
-      // ✅ UUIDs reales de las subparcelas en Supabase
+      // ✅ UUIDs reales de subparcelas, aquí se pueden agregar más si cambia la estructura
       const subparcelas_temp = [
         { 
           id: '8c7e0893-8800-403c-bb5d-403bec4f3e27', 
@@ -381,6 +377,7 @@ const obtenerColorPorCategoria = (categoria) => {
     }
   }
 
+  // Carga los árboles de una subparcela (GET)
   const cargarArboles = async (subparcelaSeleccionada) => {
     try {
       console.log(' Iniciando cargarArboles para:', subparcelaSeleccionada)
@@ -396,7 +393,7 @@ const obtenerColorPorCategoria = (categoria) => {
         setArboles(data.data || [])
         console.log('✅ Árboles cargados:', data.data)
         
-        //  LLAMAR resumen
+        //  LLAMAR resumen por subparcela
         console.log(' Llamando cargarResumenSubparcela para:', subparcelaSeleccionada)
         await cargarResumenSubparcela(subparcelaSeleccionada)
       }
@@ -407,11 +404,8 @@ const obtenerColorPorCategoria = (categoria) => {
     }
   }
 
-
-
-
-
   // ========== CARGAR RESUMEN CONGLOMERADO ==========
+  // Ejecuta el resumen general del conglomerado
   const cargarResumenConglomerado = async (conglomeradoId) => {
     try {
       setCargandoResumen(true)
@@ -433,6 +427,7 @@ const obtenerColorPorCategoria = (categoria) => {
   }
 
   // ========== CARGAR RESUMEN SUBPARCELA ==========
+  // Ejecuta el resumen solo para la subparcela seleccionada
   const cargarResumenSubparcela = async (subparcelaSeleccionada
 ) => {
     try {
@@ -450,8 +445,6 @@ const obtenerColorPorCategoria = (categoria) => {
     }
   }
 
-
-
   // ========== CARGAR VALIDACIÓN ==========
   const cargarValidacion = async (conglomeradoId) => {
     try {
@@ -466,11 +459,12 @@ const obtenerColorPorCategoria = (categoria) => {
         console.log('✅ Validación:', data)
       }
     } catch (err) {
-      
+      // Silencia error
     }
   }
 
   // ========== MANEJAR CAMBIOS EN FORMULARIO ==========
+  // Actualiza el estado del formulario árbol por cada campo editado
   const manejarCambioFormulario = (e) => {
     const { name, value } = e.target
     setArbolForm(prev => ({
@@ -480,6 +474,7 @@ const obtenerColorPorCategoria = (categoria) => {
   }
 
   // ========== ENVIAR ÁRBOL ==========
+  // Función para enviar los datos del formulario al backend (POST)
   const enviarArbol = async (e) => {
   e.preventDefault()
 
@@ -513,8 +508,7 @@ const obtenerColorPorCategoria = (categoria) => {
       observaciones: arbolForm.observaciones || ''
     }
 
-    
-
+    // Envía los datos al backend
     const response = await fetch(
       `${API_LEVANTAMIENTO}/api/levantamiento/registrar-arbol`,
       {
@@ -541,11 +535,7 @@ const obtenerColorPorCategoria = (categoria) => {
 
     const result = await response.json()
 
-
-
-
-    
-
+    // Limpia el formulario y cierra el modal
     setArbolForm({
       numero_arbol: '',
       especie: '',
@@ -562,15 +552,13 @@ const obtenerColorPorCategoria = (categoria) => {
     
   } catch (err) {
     
-    
   } finally {
     setEnviando(false)
   }
 }
 
-
-
   // ========== CAMBIAR SUBPARCELA ==========
+  // Función que cambia la subparcela activa y recarga sus árboles
   const cambiarSubparcela = (subparcelaSeleccionada) => {
     setSubparcelaSeleccionada(subparcelaSeleccionada)
     cargarArboles(subparcelaSeleccionada)
@@ -578,6 +566,7 @@ const obtenerColorPorCategoria = (categoria) => {
 
   // ========== RENDERIZADO ==========
 
+  // Si está cargando, muestra mensaje de carga
   if (cargando) {
     return (
       <div style={{ padding: '2rem', color: '#1B5E20', textAlign: 'center', fontSize: '1.2rem' }}>
@@ -586,6 +575,7 @@ const obtenerColorPorCategoria = (categoria) => {
     )
   }
 
+  // Si hay error, muestra panel rojo de error
   if (error) {
     return (
       <div style={{ padding: '2rem', color: 'white', backgroundColor: '#d32f2f', borderRadius: '8px', textAlign: 'center' }}>
@@ -594,6 +584,7 @@ const obtenerColorPorCategoria = (categoria) => {
     )
   }
 
+  // Si no se encontró conglomerado, muestra mensaje
   if (!conglomerado) {
     return (
       <div style={{ padding: '2rem', color: '#1565c0', textAlign: 'center' }}>
@@ -602,6 +593,7 @@ const obtenerColorPorCategoria = (categoria) => {
     )
   }
 
+  // RENDERIZADO PRINCIPAL: Panel, resumen, selector, mapa, formularios, listado y validación
   return (
     <div style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
       <h1>📍 Levantamiento de Datos IFN </h1>
@@ -624,8 +616,6 @@ const obtenerColorPorCategoria = (categoria) => {
         <p><strong>Estado:</strong> <span style={{ color: '#1B5E20', fontWeight: 'bold' }}>Listo para captura</span></p>
       </div>
     </div>
-
-
 
       {/* RESUMEN GENERAL */}
       {resumen && (
@@ -656,6 +646,7 @@ const obtenerColorPorCategoria = (categoria) => {
             </div>
           </div>
 
+          {/* Estadísticas técnicas */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
             <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '6px', textAlign: 'center' }}>
               <p style={{ fontSize: '1.5rem', color: '#1976d2', margin: 0 }}>{resumen.diametro_promedio} cm</p>
@@ -682,9 +673,7 @@ const obtenerColorPorCategoria = (categoria) => {
         </div>
       )}
 
-     
-
-      {/* SELECTOR SUBPARCELAS */}
+     {/* SELECTOR SUBPARCELAS */}
       <div style={{
         marginTop: '2rem',
         padding: '1.5rem',
@@ -730,7 +719,7 @@ const obtenerColorPorCategoria = (categoria) => {
           🗺️ Mostrar Mapa de Árboles Detectados
         </button>
 
-        {/* CONTENEDOR MAPA (UN SOLO DIV) */}
+        {/* CONTENEDOR MAPA */}
         <div
           id="mapContainer"
           style={{
@@ -954,7 +943,7 @@ const obtenerColorPorCategoria = (categoria) => {
         )}
       </div>
 
-      {/* VALIDACIÓN */}
+      {/* VALIDACIÓN AUTOMÁTICA */}
       <div style={{
         marginTop: '2rem',
         padding: '1rem',
@@ -994,7 +983,7 @@ const obtenerColorPorCategoria = (categoria) => {
         )}
       </div>
 
-      {/* INFO PANEL */}
+      {/* PANEL INFO FINAL */}
       <div style={{ 
         marginTop: '2rem', 
         padding: '1rem', 
