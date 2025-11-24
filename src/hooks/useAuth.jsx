@@ -7,17 +7,24 @@ const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localh
 const BRIGADA_SERVICE_URL = import.meta.env.VITE_BRIGADA_SERVICE_URL || 'http://localhost:5000';
 
 export function AuthProvider({ children }) {
-  // Inicializa a partir de localStorage para no perder sesión tras recarga
+
+  // Estado inicial tomando lo que haya quedado guardado en localStorage
   const [token, setToken] = useState(() => localStorage.getItem("token"));
+
+  // Recupera el usuario guardado para mantener la sesión tras refrescar
   const [usuario, setUsuario] = useState(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
     return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
   });
+
+  // Obtiene el rol según el usuario cargado
   const [rol, setRol] = useState(() => usuario ? usuario.rol || null : null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Limpia estados y localStorage para logout
+
+  // Limpia toda la información de autenticación (logout o token inválido)
   const clearAuth = () => {
     setToken(null);
     setUsuario(null);
@@ -27,11 +34,13 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("usuario");
   };
 
+
   useEffect(() => {
-    // Cuando la app inicia o el token cambia, refresca usuario si hay token
+    // Cuando la app carga o el token cambia, intenta obtener el usuario
     const checkAuthAndFetchUser = async () => {
       if (token) {
         try {
+          // Llama al backend que devuelve la info del usuario según el token
           const brigResponse = await axios.get(
             `${BRIGADA_SERVICE_URL}/api/usuarios/me`,
             {
@@ -40,32 +49,38 @@ export function AuthProvider({ children }) {
               }
             }
           );
+
+          // A veces viene en data.usuario, otras veces directamente en data
           const usuarioBrigada = brigResponse.data.usuario || brigResponse.data;
+
           setUsuario(usuarioBrigada);
           setRol(usuarioBrigada.rol || null);
 
-          // Actualiza usuario localStorage si cambió (mantén sincronizado)
+          // Mantiene sincronizado el usuario en localStorage
           localStorage.setItem("usuario", JSON.stringify(usuarioBrigada));
+
         } catch (err) {
-          console.error('Token inválido, expirado o error en el Backend (500). Forzando logout.', err);
+          // Si el token ya no sirve, simplemente se limpia la sesión
           clearAuth();
         }
       } else {
         clearAuth();
       }
+
       setLoading(false);
     };
 
     checkAuthAndFetchUser();
-  }, [token]); // Se ejecuta cuando el token cambia
+  }, [token]); // Se vuelve a ejecutar si el token cambia
 
-  // LOGIN: actualiza estado y persistencia local
+
+  // Proceso de inicio de sesión
   const login = async (email, password, hcaptchaToken) => {
     try {
       setLoading(true);
       setError(null);
 
-      // 🚨 No pongas Authorization en login, aún no tienes token
+      // Aquí no debe enviarse Authorization porque aún no hay token
       const response = await axios.post(
         `${AUTH_SERVICE_URL}/login`,
         {
@@ -83,7 +98,7 @@ export function AuthProvider({ children }) {
       const nuevoToken = response.data.session.access_token;
       if (!nuevoToken) throw new Error('No se recibió token del Auth Service');
 
-      // Obtiene el usuario desde el backend de brigada
+      // Luego de obtener el token, trae el usuario desde el backend de brigadas
       const brigResponse = await axios.get(
         `https://fast-api-brigada.vercel.app/usuarios/${response.data.user.email}`, 
         {
@@ -95,7 +110,7 @@ export function AuthProvider({ children }) {
 
       const usuarioBrigada = brigResponse.data;
 
-      // Guarda en estado React Y localStorage
+      // Guarda todo tanto en el estado de React como en localStorage
       setToken(nuevoToken);
       setUsuario(usuarioBrigada);
       setRol(usuarioBrigada.rol || null);
@@ -104,32 +119,37 @@ export function AuthProvider({ children }) {
       localStorage.setItem("usuario", JSON.stringify(usuarioBrigada));
 
       return { success: true, message: 'Login exitoso', usuario: usuarioBrigada };
+
     } catch (err) {
+      // Intenta obtener un mensaje más claro del backend
       const mensaje = err.response?.data?.detail || err.response?.data?.error || err.message || 'Error desconocido al iniciar sesión';
+
       setError(mensaje);
-      clearAuth(); 
+      clearAuth();
       return { success: false, message: mensaje };
+
     } finally {
       setLoading(false);
     }
   };
 
+
+  // Cierra sesión limpiando todo
   const logout = () => {
     clearAuth();
     console.log('Usuario desconectado');
   };
 
+
+  // Valida si el usuario tiene un rol específico (uno o varios)
   const tieneRol = (rolRequerido) => {
     if (typeof rolRequerido === 'string') return rol === rolRequerido;
     return Array.isArray(rolRequerido) && rolRequerido.includes(rol);
   };
 
 
-  // Lo que hice fue guardarlo en React para obtener en si toda la información
-  // que necesito en una sola variable y llamar en cualquier archivo
-
-  // El localStorage lo deje para que se quede la sesión guardada
-
+  // Se agrupa todo lo que expondrá el contexto de autenticación
+  // Para evitar renders innecesarios se envuelve en useMemo
   const value = useMemo(() => ({
     usuario,
     rol,
@@ -143,6 +163,7 @@ export function AuthProvider({ children }) {
     estaAutenticado: !!token
   }), [usuario, rol, token, loading, error]);
 
+
   return (
     <AuthContext.Provider value={value}>
       {children}
@@ -150,6 +171,8 @@ export function AuthProvider({ children }) {
   );
 }
 
+
+// Hook para poder usar el contexto desde cualquier parte de la app
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

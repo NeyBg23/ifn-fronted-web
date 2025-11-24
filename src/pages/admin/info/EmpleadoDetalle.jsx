@@ -1,15 +1,19 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useAuth } from "../../../hooks/useAuth";
+import { useParams, useNavigate } from "react-router-dom"; // Para obtener el id de la URL y navegación entre rutas
+import { useEffect, useState } from "react"; // Hooks de estado y efecto
+import { useAuth } from "../../../hooks/useAuth";          // Hook personalizado de autenticación
 
 const EmpleadoDetalle = () => {
+  // Extrae el parámetro idempleado de la URL
   const { idempleado } = useParams();
   const navigate = useNavigate();
+
+  // Estado para datos del empleado, archivo hoja de vida y carga
   const [empleado, setEmpleado] = useState(null);
   const [signedUrl, setSignedUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const user = useAuth()
 
+  // Efecto para obtener datos del empleado vía API
   useEffect(() => {
     const fetchEmpleado = async () => {
       const API_URL =
@@ -24,7 +28,7 @@ const EmpleadoDetalle = () => {
 
         setEmpleado(data?.data || null);
 
-        //  Si el empleado tiene hoja de vida, generamos el signed URL
+        // Si el empleado tiene hoja de vida, genera un signed URL
         if (data?.data?.hoja_vida_url) {
           const nombreArchivo = data.data.hoja_vida_url.split("/").pop();
 
@@ -52,9 +56,12 @@ const EmpleadoDetalle = () => {
     fetchEmpleado();
   }, [idempleado]);
 
+  // Muestra mensaje de carga si el fetch está en curso
   if (loading) return <p>Cargando empleado...</p>;
+  // Si no existe el empleado, muestra mensaje de error
   if (!empleado) return <p>No se encontró el empleado 😔</p>;
 
+  // Render principal con todos los detalles y acciones disponibles
   return (
     <div className="container mt-4">
       <h2>Empleado: {empleado.nombre_completo}</h2>
@@ -65,6 +72,7 @@ const EmpleadoDetalle = () => {
       <p><strong>Fecha Ingreso:</strong> {empleado.fecha_ingreso || "No asignada"}</p>
       <p><strong>Cédula:</strong> {empleado.cedula || "No asignada"}</p>
 
+      {/* Acceso a hoja de vida mediante signed URL si existe */}
       {signedUrl ? (
         <a
           href={signedUrl}
@@ -83,6 +91,7 @@ const EmpleadoDetalle = () => {
       <br />
       <br />
 
+      {/* Botón de volver */}
       <button 
         onClick={() => navigate(-1)}
         className="inline-flex items-center gap-2 px-4 py-2 bg-white text-red-600 border-2 border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
