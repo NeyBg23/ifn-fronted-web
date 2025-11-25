@@ -159,13 +159,14 @@ const BrigadaDetalle = () => {
                     <br />
 
                     {/* Muestra todos los empleados vinculados */}
-                    <div className="flex flex-col md:flex-row p-5 justify-center gap-2 md:gap-20">
+                    <div className="grid p-3 gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+
                         {empleados && empleados?.length > 0 ? (
                             empleados.map((emp) => {
                                 return (
                                     <div 
                                         key={emp.usuario_id} 
-                                        className="bg-gradient-to-br cursor-pointer w-100 from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
+                                        className="bg-gradient-to-br cursor-pointer from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1"
                                     >
                                         {/* Card Header */}
                                         <div className="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4">
