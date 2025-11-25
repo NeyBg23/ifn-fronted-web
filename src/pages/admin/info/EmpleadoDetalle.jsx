@@ -68,9 +68,10 @@ const EmpleadoDetalle = () => {
 
   // Render principal con todos los detalles y acciones disponibles
   return (
-    <div data-aos="fade-left">
-      <div className="flex justify-center cursor-pointer">
+    <div>
+      <div data-aos="fade-left" className="flex justify-center cursor-pointer">
         <div className="bg-gradient-to-br from-white to-emerald-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-emerald-100 overflow-hidden hover:scale-105 hover:-translate-y-1">
+          
           {/* Header del Card */}
           <div className="bg-gradient-to-r flex gap-5 from-emerald-600 to-green-600 px-6 py-4">
             {empleado.foto_url ?
@@ -89,7 +90,7 @@ const EmpleadoDetalle = () => {
           {/* Body del Card */}
           <div className="p-6 space-y-4">
             {/* Información Principal */}
-            <div className="grid gap-5 grid-cols-3 space-y-3">
+            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,6 +174,7 @@ const EmpleadoDetalle = () => {
 
       <button 
         onClick={() => navigate(-1)}
+        data-aos="fade-right"
         className="inline-flex items-center m-5 gap-2 px-4 py-2 bg-white text-red-600 border-2 border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
